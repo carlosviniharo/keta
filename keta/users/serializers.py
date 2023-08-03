@@ -15,7 +15,6 @@ class JusuariosSerializer(serializers.ModelSerializer):
                 email=validate_data['email'],
                 username=validate_data['username'],
                 idrol=validate_data['idrol'],
-                idpersona=validate_data['idpersona'],
                 iddepartamento=validate_data['iddepartamento'],
                 idcargo=validate_data['idcargo']
             )
@@ -84,13 +83,17 @@ class JsucursalesSerializer(serializers.ModelSerializer):
 
 class JtipoidentificacionesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Jtipoidentificaciones
+        model = Jtiposidentificaciones
         fields = '__all__'
 
 
 class JtipopersonasSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Jtipopersonas
+        model = Jtipospersonas
         fields = '__all__'
 
+
+class JpersonasUsuariosSerializer(serializers.Serializer):
+    persona = JpersonasSerializer()
+    usuario = JusuariosSerializer()
 

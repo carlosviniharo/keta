@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-c19l-6+f_mvcu=!hkn7ox7bxl@o!jc63ie=hl9^_!-3($i4$%r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'dea5-186-101-18-252.ngrok-free.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,9 +38,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'users',
-    'rest_framework'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
+]
+
+CORS_ALLOW_ALL_HEADERS=True
+
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -51,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'keta.urls'
@@ -93,7 +107,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'keta_development_cinthya',
+            'NAME': 'keta_development_carlos',
             'USER': 'postgres',
             'PASSWORD': 'C0n310n3s81324ML',
             'HOST': '172.31.100.180',
