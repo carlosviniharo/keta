@@ -1,6 +1,13 @@
+import sys
+import logging
+
+from django.apps import apps
 from django.db import transaction
+from django.http import Http404
+from django.template.response import ContentNotRenderedError
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -47,6 +54,13 @@ class JusuariosRegisterView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class JususarioRegisterView(RetrieveAPIView):
+    queryset = Jusuarios.objects.all()
+    serializer_class = JusuariosSerializer
+    lookup_field = 'email'
+
+
+
 class JpersonasRegisterView(APIView):
 
     def get(self, request):
@@ -63,69 +77,72 @@ class JpersonasRegisterView(APIView):
 
 # View from retrieving all static tables.
 # TODO: Restrict the access to the services with IsAuthenticated.
-class JcargosListView(APIView):
-    def get(self, request):
-        jcargos = Jcargos.objects.all()
-        serializer = JcargosSerializer(jcargos, many=True)
-        return Response(serializer.data)
+# Base class for classe which retrieves allways all the fields of the tables
+class BaseListView(ListAPIView):
+    queryset = None
+    serializer_class = None
 
 
-class JdepartamentosListView(APIView):
+# Metaclass to customize the initialization of the classes
+class ListViewMeta(type):
+    def __new__(cls, name, bases, attrs):
+        new_class = super().__new__(cls, name, bases, attrs)
 
-    def get(self, request):
-        jdepartamentos = Jdepartamentos.objects.all()
-        serializer = JdepartamentosSerializer(jdepartamentos, many=True)
-        return Response(serializer.data)
+        model_name = name[:-8]  # Remove "ListView" from the class name
+        model = apps.get_model('users', model_name)
 
+        new_class.queryset = model.objects.all()
 
-class JcorporacionesListView(APIView):
+        serializer_name = f"{model_name}Serializer"
+        serializer_class = getattr(sys.modules[__name__], serializer_name)
+        new_class.serializer_class = serializer_class
 
-    def get(self, request):
-        jcorporaciones = Jcorporaciones.objects.all()
-        serializer = JcorporacionesSerializer(jcorporaciones, many=True)
-        return Response(serializer.data)
-
-
-class JgenerosListView(APIView):
-    def get(self,request):
-        jgeneros = Jgeneros.objects.all()
-        serializer = JgenerosSerializer(jgeneros, many=True)
-        return Response(serializer.data)
+        return new_class
 
 
-class JgeografiaListView(APIView):
-    def get(self, request):
-        jgeografia = Jgeografia.objects.all()
-        serializer = JgeografiaSerializer(jgeografia, many=True)
-        return Response(serializer.data)
+class JcargosListView(BaseListView, metaclass=ListViewMeta):
+    pass
 
 
-class JrolesListView(APIView):
-    def get(self, request):
-        jroles = Jroles.objects.all()
-        serializer = JrolesSerializer(jroles, many=True)
-        return Response(serializer.data)
+class JdepartamentosListView(BaseListView, metaclass=ListViewMeta):
+    pass
 
 
-class JsucursalesListView(APIView):
-    def get(self, request):
-        jsucursales = Jsucursales.objects.all()
-        serializer = JsucursalesSerializer(jsucursales, many=True)
-        return Response(serializer.data)
+class JcorporacionesListView(BaseListView, metaclass=ListViewMeta):
+    pass
 
 
-class JtipoidentificacionesListView(APIView):
-    def get(self, request):
-        jtipoidentificaciones = Jtiposidentificaciones.objects.all()
-        serializer = JtipoidentificacionesSerializer(jtipoidentificaciones, many=True)
-        return Response(serializer.data)
+class JgenerosListView(BaseListView, metaclass=ListViewMeta):
+    pass
 
 
-class JtipopersonasListView(APIView):
-    def get(self, request):
-        jtipopersonas = Jtipospersonas.objects.all()
-        serializer = JtipopersonasSerializer(jtipopersonas, many=True)
-        return Response(serializer.data)
+class JgeografiaListView(BaseListView, metaclass=ListViewMeta):
+    pass
+
+
+class JrolesListView(BaseListView, metaclass=ListViewMeta):
+    pass
+
+
+class JsucursalesListView(BaseListView, metaclass=ListViewMeta):
+    pass
+
+
+class JtiposidentificacionesListView(BaseListView, metaclass=ListViewMeta):
+    pass
+
+
+class JtipospersonasListView(BaseListView, metaclass=ListViewMeta):
+    pass
+
+
+# Retrieve only the departamentos of each sucursal.
+class JsucursalJdepartamentosListView(ListAPIView):
+    serializer_class = JdepartamentosSerializer
+
+    def get_queryset(self):
+        idsucursal = self.request.query_params.get('idsucursal', None)
+        return Jdepartamentos.objects.filter(idsucursal=idsucursal)
 
 
 # View from login and logout.

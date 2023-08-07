@@ -81,13 +81,13 @@ class JsucursalesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class JtipoidentificacionesSerializer(serializers.ModelSerializer):
+class JtiposidentificacionesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jtiposidentificaciones
         fields = '__all__'
 
 
-class JtipopersonasSerializer(serializers.ModelSerializer):
+class JtipospersonasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jtipospersonas
         fields = '__all__'
@@ -96,4 +96,5 @@ class JtipopersonasSerializer(serializers.ModelSerializer):
 class JpersonasUsuariosSerializer(serializers.Serializer):
     persona = JpersonasSerializer()
     usuario = JusuariosSerializer()
+
 
