@@ -1,0 +1,44 @@
+[
+    {
+        "model": "users.Jgeneros",
+        "pk": 1,
+        "fields": {
+            "descripciongenero": "Male"
+        }
+    },
+    {
+        "model": "users.Jtiposidentificaciones",
+        "pk": 1,
+        "fields": {
+            "descripciontipoidentificacion": "Cedula"
+        }
+    },
+    {
+        "model": "users.Jtipospersonas",
+        "pk": 2,
+        "fields": {
+            "descripciontipopersona": "Natural"
+        }
+    },
+    {
+        "model": "users.Jroles",
+        "pk": 1,
+        "fields": {
+            "descripcionrol": "Admin"
+        }
+    },
+    {
+        "model": "users.Jdepartamentos",
+        "pk": 2,
+        "fields": {
+            "nombredepartamento": "Inversiones"
+        }
+    },
+    {
+        "model": "users.Jcargos",
+        "pk": 2,
+        "fields": {
+            "descripcioncargo": "Gerente"
+        }
+    }
+]

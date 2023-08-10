@@ -1,10 +1,7 @@
 import sys
-import logging
 
 from django.apps import apps
 from django.db import transaction
-from django.http import Http404
-from django.template.response import ContentNotRenderedError
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -52,13 +49,6 @@ class JusuariosRegisterView(APIView):
             user.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class JususarioRegisterView(RetrieveAPIView):
-    queryset = Jusuarios.objects.all()
-    serializer_class = JusuariosSerializer
-    lookup_field = 'email'
-
 
 
 class JpersonasRegisterView(APIView):
@@ -136,13 +126,31 @@ class JtipospersonasListView(BaseListView, metaclass=ListViewMeta):
     pass
 
 
+# Retrieve the user using the column email.
+class JususarioRegisterView(RetrieveAPIView):
+    queryset = Jusuarios.objects.all()
+    serializer_class = JusuariosSerializer
+    lookup_field = 'email'
+
+
 # Retrieve only the departamentos of each sucursal.
 class JsucursalJdepartamentosListView(ListAPIView):
+
     serializer_class = JdepartamentosSerializer
 
     def get_queryset(self):
         idsucursal = self.request.query_params.get('idsucursal', None)
         return Jdepartamentos.objects.filter(idsucursal=idsucursal)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if not queryset.exists():
+            return Response({f"detail": "idsucursal " + request.query_params.get('idsucursal')
+                                        + " was not found in the records"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 # View from login and logout.

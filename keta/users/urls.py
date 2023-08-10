@@ -21,5 +21,5 @@ urlpatterns = [
     path('tiposidentificaciones/', JtiposidentificacionesListView.as_view(), name='tipoidentificaciones_list'),
     path('tipospersonas/', JtipospersonasListView.as_view(), name='tipopersonas_list'),
     path('person_register/', JpersonasRegisterView.as_view(), name='jpersonas_create'),
-    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='sucursaldepartamentos_list'),
+    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='jsucursal_jdepartamentos'),
 ]
