@@ -1,6 +1,9 @@
+
+
 from django.db import models
 
 from users.models import Jpersonas, Jusuarios, Jsucursales
+from .utils.helper import generate_ticket_id
 
 
 class Jcanalesrecepciones(models.Model):
@@ -32,7 +35,7 @@ class Jtiposproductos(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+
         db_table = 'jtiposproductos'
 
 
@@ -78,7 +81,7 @@ class Jtipostarjetas(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+
         db_table = 'jtipostarjetas'
 
 
@@ -126,6 +129,10 @@ class Jtipostransacciones(models.Model):
         db_table = 'jtipostransacciones'
 
 
+class JproblemasManager(models.Manager):
+    pass
+
+
 class Jproblemas(models.Model):
     idproblema = models.AutoField(primary_key=True)
     idusuario = models.ForeignKey(Jusuarios, models.DO_NOTHING, db_column='idusuario', blank=True, null=True)
@@ -148,3 +155,13 @@ class Jproblemas(models.Model):
     class Meta:
 
         db_table = 'jproblemas'
+
+    def save(self, *args, **kwargs):
+        if len(self.numeroticket.strip(" ")) == 0:
+            self.numeroticket = generate_ticket_id()
+
+        super(Jproblemas, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.numeroticket #"{} - {}".format(self.idtipoticket, self.numeroticket)
+

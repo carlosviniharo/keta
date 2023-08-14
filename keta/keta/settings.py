@@ -110,12 +110,20 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'keta_development_carlos',
+            'NAME': 'keta_development',
             'USER': 'postgres',
             'PASSWORD': 'C0n310n3s81324ML',
             'HOST': '172.31.100.180',
             'PORT': '5432',
-        }
+        },
+    'test': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'keta_test',
+        'USER': 'postgres',
+        'PASSWORD': 'C0n310n3s81324ML',
+        'HOST': '172.31.100.180',
+        'PORT': '5432',
+    },
 }
 
 

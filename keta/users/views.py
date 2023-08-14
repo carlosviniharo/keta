@@ -67,62 +67,57 @@ class JpersonasRegisterView(APIView):
 
 # View from retrieving all static tables.
 # TODO: Restrict the access to the services with IsAuthenticated.
-# Base class for classe which retrieves allways all the fields of the tables
+# Base class for classe which retrieves  all the fields of the tables
 class BaseListView(ListAPIView):
     queryset = None
     serializer_class = None
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-# Metaclass to customize the initialization of the classes
-class ListViewMeta(type):
-    def __new__(cls, name, bases, attrs):
-        new_class = super().__new__(cls, name, bases, attrs)
-
-        model_name = name[:-8]  # Remove "ListView" from the class name
+        model_name = self.__class__.__name__[:-8]  # Remove "ListView" from the class name
         model = apps.get_model('users', model_name)
 
-        new_class.queryset = model.objects.all()
+        self.queryset = model.objects.all()
 
         serializer_name = f"{model_name}Serializer"
         serializer_class = getattr(sys.modules[__name__], serializer_name)
-        new_class.serializer_class = serializer_class
-
-        return new_class
+        self.serializer_class = serializer_class
 
 
-class JcargosListView(BaseListView, metaclass=ListViewMeta):
+class JcargosListView(BaseListView):
     pass
 
 
-class JdepartamentosListView(BaseListView, metaclass=ListViewMeta):
+class JdepartamentosListView(BaseListView):
     pass
 
 
-class JcorporacionesListView(BaseListView, metaclass=ListViewMeta):
+class JcorporacionesListView(BaseListView):
     pass
 
 
-class JgenerosListView(BaseListView, metaclass=ListViewMeta):
+class JgenerosListView(BaseListView):
     pass
 
 
-class JgeografiaListView(BaseListView, metaclass=ListViewMeta):
+class JgeografiaListView(BaseListView):
     pass
 
 
-class JrolesListView(BaseListView, metaclass=ListViewMeta):
+class JrolesListView(BaseListView):
     pass
 
 
-class JsucursalesListView(BaseListView, metaclass=ListViewMeta):
+class JsucursalesListView(BaseListView):
     pass
 
 
-class JtiposidentificacionesListView(BaseListView, metaclass=ListViewMeta):
+class JtiposidentificacionesListView(BaseListView):
     pass
 
 
-class JtipospersonasListView(BaseListView, metaclass=ListViewMeta):
+class JtipospersonasListView(BaseListView):
     pass
 
 
@@ -172,6 +167,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 #  over time.To prevent performance issues and optimize database usage,
 #  periodically remove expired tokens.Use a scheduled task to run at
 #  regular intervals for this cleanup.
+
 class CustomLogoutView(APIView):
     """
     An endpoint to logout users.

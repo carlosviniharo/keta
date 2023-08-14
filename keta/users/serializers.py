@@ -33,64 +33,65 @@ class JusuariosSerializer(serializers.ModelSerializer):
             return None
 
 
+# Decorator wrapper for the serializers.
+def model_serializers(model_):
+    def decorator(serializer_class):
+        class ModelSerializer(serializer_class):
+            class Meta:
+                model = model_
+                fields = '__all__'
+        return ModelSerializer
+    return decorator
+
+
+@model_serializers(Jcargos)
 class JcargosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jcargos
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jcorporaciones)
 class JcorporacionesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jcorporaciones
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jdepartamentos)
 class JdepartamentosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jdepartamentos
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jgeneros)
 class JgenerosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jgeneros
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jgeografia)
 class JgeografiaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jgeografia
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jpersonas)
 class JpersonasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jpersonas
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jroles)
 class JrolesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jroles
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jsucursales)
 class JsucursalesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jsucursales
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jtiposidentificaciones)
 class JtiposidentificacionesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jtiposidentificaciones
-        fields = '__all__'
+    pass
 
 
+@model_serializers(Jtipospersonas)
 class JtipospersonasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jtipospersonas
-        fields = '__all__'
+    pass
 
 
 class JpersonasUsuariosSerializer(serializers.Serializer):

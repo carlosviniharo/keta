@@ -2,66 +2,71 @@ from rest_framework import serializers
 from .models import *
 
 
-def model_serilaizers(model_class):
+def model_serializers(model_):
     def decorator(serializer_class):
         class ModelSerializer(serializer_class):
-            class Meta(serializer_class.Meta):
-                model= model_class
+            class Meta:
+                model = model_
                 fields = '__all__'
         return ModelSerializer
     return decorator
 
 
-@model_serilaizers(Jcanalesrecepciones)
+@model_serializers(Jcanalesrecepciones)
 class JcanalesrecepcionesSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jclasestarjetas)
+@model_serializers(Jclasestarjetas)
 class JclasestarjetasSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtiposproductos)
+@model_serializers(Jtiposproductos)
 class JtiposproductosSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jconceptos)
+@model_serializers(Jconceptos)
 class JconceptosSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jmarcastarjetas)
+@model_serializers(Jmarcastarjetas)
 class JmarcastarjetasSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jprioridades)
+@model_serializers(Jprioridades)
 class JprioridadesSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtipostarjetas)
+@model_serializers(Jproblemas)
+class JproblemasSerializer(serializers.ModelSerializer):
+    pass
+
+
+@model_serializers(Jtipostarjetas)
 class JtipostarjetasSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtarjetas)
+@model_serializers(Jtarjetas)
 class JtarjetasSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtiposcomentarios)
+@model_serializers(Jtiposcomentarios)
 class JtiposcomentariosSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtickettipos)
+@model_serializers(Jtickettipos)
 class JtickettiposSerializer(serializers.ModelSerializer):
     pass
 
 
-@model_serilaizers(Jtipostransacciones)
+@model_serializers(Jtipostransacciones)
 class JtipostransaccionesSerializer(serializers.ModelSerializer):
     pass

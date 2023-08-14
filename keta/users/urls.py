@@ -20,6 +20,6 @@ urlpatterns = [
     path('sucursales/', JsucursalesListView.as_view(), name='sucursales_list'),
     path('tiposidentificaciones/', JtiposidentificacionesListView.as_view(), name='tipoidentificaciones_list'),
     path('tipospersonas/', JtipospersonasListView.as_view(), name='tipopersonas_list'),
-    path('person_register/', JpersonasRegisterView.as_view(), name='jpersonas_create'),
-    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='jsucursal_jdepartamentos')
+    path('person_register/', JpersonasRegisterView.as_view(), name='personas_create'),
+    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='sucursal_jdepartamentos')
     ]
