@@ -14,5 +14,5 @@ urlpatterns = [
     path('tarjetas/',  JtarjetasListView.as_view(), name='tarjetas'),
     path('tiposcomentarios/', JtiposcomentariosListView.as_view(),name='tipos_comentarios'),
     path('tickettipos/', JtickettiposListView.as_view(), name='tipos_tickets'),
-    path('create_tickets/', JproblemasViewSet.as_view({'get': 'list', 'post': 'create'}), name='jproblemas-list'),
+    path('create_tickets/', JproblemasViewSet.as_view(), name='problemas-list'),
         ]

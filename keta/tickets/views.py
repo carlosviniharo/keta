@@ -1,8 +1,11 @@
 import sys
 
 from django.apps import apps
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .serializers import *
 
 
@@ -68,6 +71,17 @@ class JtipostransaccionesListView(BaseListView):
     pass
 
 
-class JproblemasViewSet(viewsets.ModelViewSet):
-    queryset = Jproblemas.objects.all()
-    serializer_class = JproblemasSerializer
+class JproblemasViewSet(APIView):
+    def post(self, request):
+        serializer = JproblemasSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        jproblemas = Jproblemas.objects.all()
+        serializer = JproblemasSerializer(jproblemas, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+

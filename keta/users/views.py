@@ -122,13 +122,37 @@ class JtipospersonasListView(BaseListView):
 
 
 # Retrieve the user using the column email.
-class JususarioRegisterView(RetrieveAPIView):
+class JusuarioRegisterView(RetrieveAPIView):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
     lookup_field = 'email'
 
 
-# Retrieve only the departamentos of each sucursal.
+class JcargoRegisterView(RetrieveAPIView):
+    queryset = Jcargos.objects.all()
+    serializer_class = JcargosSerializer
+    lookup_field = 'idcargo'
+
+
+class JroleRegisterView(RetrieveAPIView):
+    queryset = Jroles.objects.all()
+    serializer_class = JrolesSerializer
+    lookup_field = 'idrol'
+
+
+class JsucursalRegisterView(RetrieveAPIView):
+    queryset = Jsucursales.objects.all()
+    serializer_class = JsucursalesSerializer
+    lookup_field = 'idsucursal'
+
+
+class JpersonaRegisterView(RetrieveAPIView):
+    queryset = Jpersonas.objects.all()
+    serializer_class = JpersonasSerializer
+    lookup_field = 'idpersona'
+
+
+# Retrieve all the departamentos of each sucursal.
 class JsucursalJdepartamentosListView(ListAPIView):
 
     serializer_class = JdepartamentosSerializer

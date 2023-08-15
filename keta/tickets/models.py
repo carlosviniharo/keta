@@ -157,11 +157,11 @@ class Jproblemas(models.Model):
         db_table = 'jproblemas'
 
     def save(self, *args, **kwargs):
-        if len(self.numeroticket.strip(" ")) == 0:
+        if self.numeroticket and len(self.numeroticket.strip()) == 0:
             self.numeroticket = generate_ticket_id()
 
         super(Jproblemas, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.numeroticket #"{} - {}".format(self.idtipoticket, self.numeroticket)
+        return "{} - {}".format(self.idtipoticket, self.numeroticket)
 
