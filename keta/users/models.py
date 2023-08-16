@@ -12,6 +12,9 @@ class Jcargos(models.Model):
     class Meta:
         db_table = "jcargos"
 
+    def __str__(self):
+        return self.descripcioncargo
+
 
 class Jclasificacionesresoluciones(models.Model):
     idclasificacionresolucion = models.AutoField(primary_key=True)
@@ -50,6 +53,9 @@ class Jcorporaciones(models.Model):
     class Meta:
         db_table = "jcorporaciones"
 
+    def __str__(self):
+        return self.nombrecorporacion
+
 
 class Jdepartamentos(models.Model):
     iddepartamento = models.AutoField(primary_key=True)
@@ -69,6 +75,8 @@ class Jdepartamentos(models.Model):
     class Meta:
         db_table = "jdepartamentos"
 
+    def __str__(self):
+        return self.nombredepartamento
 
 class Jgeneros(models.Model):
     idgenero = models.AutoField(primary_key=True)
@@ -78,6 +86,9 @@ class Jgeneros(models.Model):
 
     class Meta:
         db_table = "jgeneros"
+
+    def __str__(self):
+        return self.descripciongenero
 
 
 class Jgeografia(models.Model):
@@ -101,6 +112,9 @@ class Jgeografia(models.Model):
 
     class Meta:
         db_table = "jgeografia"
+
+    def __str__(self):
+        return self.nombre
 
 
 class Jpersonas(models.Model):
@@ -128,6 +142,9 @@ class Jpersonas(models.Model):
     class Meta:
         db_table = "jpersonas"
 
+    def __str__(self):
+        return f"Nombre : {self.nombre} - ID : {self.identificacion}"
+
 
 class Jroles(models.Model):
     idrol = models.AutoField(primary_key=True)
@@ -142,6 +159,9 @@ class Jroles(models.Model):
 
     class Meta:
         db_table = "jroles"
+
+    def __str__(self):
+        return self.nombrerol
 
 
 class Jsucursales(models.Model):
@@ -171,6 +191,9 @@ class Jsucursales(models.Model):
     class Meta:
         db_table = "jsucursales"
 
+    def __str__(self):
+        return self.nombresucursal
+
 
 class Jtiporesoluciones(models.Model):
     idtiporesolucion = models.AutoField(primary_key=True)
@@ -195,6 +218,9 @@ class Jtiposidentificaciones(models.Model):
     class Meta:
         db_table = "jtiposidentificaciones"
 
+    def __str__(self):
+        return self.descripciontipoidentificacion
+
 
 class Jtipospersonas(models.Model):
     idtipopersona = models.AutoField(primary_key=True)
@@ -204,6 +230,9 @@ class Jtipospersonas(models.Model):
 
     class Meta:
         db_table = "jtipospersonas"
+
+    def __str__(self):
+        return self.descripciontipopersona
 
 
 class JusuariosManager(BaseUserManager):

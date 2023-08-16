@@ -45,47 +45,47 @@ def model_serializers(model_):
 
 
 @model_serializers(Jcargos)
-class JcargosSerializer(serializers.ModelSerializer):
+class JcargosSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jcorporaciones)
-class JcorporacionesSerializer(serializers.ModelSerializer):
+class JcorporacionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jdepartamentos)
-class JdepartamentosSerializer(serializers.ModelSerializer):
+class JdepartamentosSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jgeneros)
-class JgenerosSerializer(serializers.ModelSerializer):
+class JgenerosSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jgeografia)
-class JgeografiaSerializer(serializers.ModelSerializer):
+class JgeografiaSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jpersonas)
-class JpersonasSerializer(serializers.ModelSerializer):
+class JpersonasSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jroles)
-class JrolesSerializer(serializers.ModelSerializer):
+class JrolesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jsucursales)
-class JsucursalesSerializer(serializers.ModelSerializer):
+class JsucursalesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
 @model_serializers(Jtiposidentificaciones)
-class JtiposidentificacionesSerializer(serializers.ModelSerializer):
+class JtiposidentificacionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 

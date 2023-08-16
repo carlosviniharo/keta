@@ -1,31 +1,26 @@
-from django.urls import path
-from .views import *
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
-    TokenRefreshView,
+    TokenRefreshView
 )
+from .views import *
 
+router = DefaultRouter()
+router.register(r'cargos', JcargosViewSet)
+router.register(r'departamentos', JdepartamentosViewSet)
+router.register(r'corporaciones', JcorporacionesViewSet)
+router.register(r'generos', JgenerosViewSet)
+router.register(r'geografia', JgeografiaViewSet)
+router.register(r'roles', JrolesListViewSet)
+router.register(r'sucursales', JsucursalesViewSet)
+router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
+router.register(r'Jtipospersonas', JtipospersonasViewSet)
+router.register(r'persona', JpersonasViewSet)
 
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', CustomLogoutView.as_view(), name='logout_user'),
     path('user_register/', JusuariosRegisterView.as_view(), name="sign_up"),
-    path('user_profile/<str:email>/', JusuarioRegisterView.as_view(), name="profile"),
-    path('user_cargo/<int:idcargo>/', JcargoRegisterView.as_view(), name="profile_cargo"),
-    path('user_rol/<int:idrol>/', JroleRegisterView.as_view(), name="profile_rol"),
-    path('user_sucursal/<int:idsucursal>/', JsucursalRegisterView.as_view(), name="profile_sucursal"),
-    path('user_persona/<int:idpersona>/', JpersonaRegisterView.as_view(), name="profile_persona"),
-    path('user_departamento/<int:iddepartamento>/', JdepartamentoRegisterView.as_view(), name="profile_departamento"),
-    path('user_tipospersona/<int:idtipopersona>/', JtipospersonaRegisterView.as_view(), name="profile_tipospersona"),
-    path('cargos/', JcargosListView.as_view(), name="cargos_list"),
-    path('corporaciones/', JcorporacionesListView.as_view(), name='corporaciones_list'),
-    path('departamentos/', JdepartamentosListView.as_view(), name='departamentos_list'),
-    path('generos/', JgenerosListView.as_view(), name='generos_list'),
-    path('geografia/', JgeografiaListView.as_view(), name='geografia_list'),
-    path('roles/', JrolesListView.as_view(), name='roles_list'),
-    path('sucursales/', JsucursalesListView.as_view(), name='sucursales_list'),
-    path('tiposidentificaciones/', JtiposidentificacionesListView.as_view(), name='tipoidentificaciones_list'),
-    path('tipospersonas/', JtipospersonasListView.as_view(), name='tipopersonas_list'),
-    path('person_register/', JpersonasRegisterView.as_view(), name='personas_create'),
-    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='sucursal_jdepartamentos')
     ]

@@ -1,31 +1,10 @@
-import sys
-
-from django.apps import apps
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import viewsets, status
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import *
-
-
-class BaseListView(ListAPIView):
-    queryset = None
-    serializer_class = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        model_name = self.__class__.__name__[
-            :-8
-        ]  # Remove "ListView" from the class name
-        model = apps.get_model("tickets", model_name)
-        self.queryset = model.objects.all()
-        serializer_name = f"{model_name}Serializer"
-        serializer_class = getattr(sys.modules[__name__], serializer_name)
-        self.serializer_class = serializer_class
 
 
 class JcanalesrecepcionesViewSet(viewsets.ModelViewSet):
