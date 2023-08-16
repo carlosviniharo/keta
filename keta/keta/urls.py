@@ -32,11 +32,10 @@ router.register(r'tarjetas', JtarjetasViewSet)
 router.register(r'tiposcomentarios', JtiposcomentariosViewSet)
 router.register(r'tickettipos', JtickettiposViewSet)
 router.register(r'tipostransacciones', JtipostransaccionesViewSet)
-router.register(r'problemas', JproblemasViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path(r'tickets/', include(router.urls)),
-    path(r'api/', include('rest_framework.urls', namespace='rest_framework'))
+    path('tickets/', include('tickets.urls')),
+    path(r'api/tickets/', include(router.urls)),
 ]

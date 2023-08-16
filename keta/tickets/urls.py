@@ -1,11 +1,10 @@
 from django.urls import path
-from rest_framework import routers
 
 from tickets.views import *
 
-# urlpatterns = [
-#     path('create_tickets/', JproblemasRegisterView.as_view(), name='create_ticket'),
-# ]
+urlpatterns = [
+    path('create_tickets/', JproblemasCreateView.as_view(), name='create_ticket'),
+]
 
 #     path('canlesrecepciones/', JcanalesrecepcionesListView.as_view(), name='canales_recepcion'),
 #     path('classestarjetas/', JclasestarjetasListView.as_view(), name='clases_tarjetas'),

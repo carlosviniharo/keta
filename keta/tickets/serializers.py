@@ -73,7 +73,7 @@ class JtipostransaccionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
+class JproblemasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jproblemas
         fields = '__all__'
@@ -84,7 +84,3 @@ class JpersonasSerializer(serializers.ModelSerializer):
         model = Jpersonas
         fields = '__all__'
 
-
-class personaticketsSerializer(serializers.Serializer):
-    persona = JpersonasSerializer()
-    ticket = JproblemasSerializer()

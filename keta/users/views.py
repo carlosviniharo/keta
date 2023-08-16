@@ -41,13 +41,9 @@ class JusuariosRegisterView(APIView):
             user_data['direccionmac'] = helper.get_mac_address()
             user_data['ipcreacion'] = helper.get_public_ip_address()
             user_data['date_joined'] = timezone.now()
-            user = Jusuarios.objects.create_user(**user_data)
-
-            # Create the persona instance and associate it with the user
-            persona_data['idpersona'] = user.idpersona
             persona = Jpersonas.objects.create(**persona_data)
+            user = Jusuarios.objects.create_user(**user_data)
             user.idpersona = persona
-            user.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
