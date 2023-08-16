@@ -1,5 +1,3 @@
-
-
 from django.db import models
 
 from users.models import Jpersonas, Jusuarios, Jsucursales
@@ -13,8 +11,10 @@ class Jcanalesrecepciones(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jcanalesrecepciones"
 
-        db_table = 'jcanalesrecepciones'
+    def __str__(self):
+        return self.descripcioncanalrecepcion
 
 
 class Jclasestarjetas(models.Model):
@@ -24,8 +24,10 @@ class Jclasestarjetas(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jclasestarjetas"
 
-        db_table = 'jclasestarjetas'
+    def __str__(self):
+        return self.descripcionclasetarjeta
 
 
 class Jtiposproductos(models.Model):
@@ -35,20 +37,30 @@ class Jtiposproductos(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtiposproductos"
 
-        db_table = 'jtiposproductos'
+    def __str__(self):
+        return self.descripciontipoproducto
 
 
 class Jconceptos(models.Model):
     idconcepto = models.AutoField(primary_key=True)
-    idtipoproducto = models.ForeignKey(Jtiposproductos, models.DO_NOTHING, db_column='idtipoproducto', blank=True, null=True)
+    idtipoproducto = models.ForeignKey(
+        Jtiposproductos,
+        models.DO_NOTHING,
+        db_column="idtipoproducto",
+        blank=True,
+        null=True,
+    )
     codigoconcepto = models.CharField(max_length=4, blank=True, null=True)
     descripcionconcepto = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jconceptos"
 
-        db_table = 'jconceptos'
+    def __str__(self):
+        return self.descripcionconcepto
 
 
 class Jmarcastarjetas(models.Model):
@@ -58,8 +70,10 @@ class Jmarcastarjetas(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jmarcastarjetas"
 
-        db_table = 'jmarcastarjetas'
+    def __str__(self):
+        return self.descripcionmarcatarjeta
 
 
 class Jprioridades(models.Model):
@@ -70,8 +84,10 @@ class Jprioridades(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jprioridades"
 
-        db_table = 'jprioridades'
+    def __str__(self):
+        return self.descripcionprioridad
 
 
 class Jtipostarjetas(models.Model):
@@ -81,20 +97,42 @@ class Jtipostarjetas(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtipostarjetas"
 
-        db_table = 'jtipostarjetas'
+    def __str__(self):
+        return self.descripciontipotarjeta
 
 
 class Jtarjetas(models.Model):
     idtarjeta = models.AutoField(primary_key=True)
-    idmarcatarjeta = models.ForeignKey(Jmarcastarjetas, models.DO_NOTHING, db_column='idmarcatarjeta', blank=True, null=True)
-    idtipotarjeta = models.ForeignKey(Jtipostarjetas, models.DO_NOTHING, db_column='idtipotarjeta', blank=True, null=True)
-    idclasetarjeta = models.ForeignKey(Jclasestarjetas, models.DO_NOTHING, db_column='idclasetarjeta', blank=True, null=True)
+    idmarcatarjeta = models.ForeignKey(
+        Jmarcastarjetas,
+        models.DO_NOTHING,
+        db_column="idmarcatarjeta",
+        blank=True,
+        null=True,
+    )
+    idtipotarjeta = models.ForeignKey(
+        Jtipostarjetas,
+        models.DO_NOTHING,
+        db_column="idtipotarjeta",
+        blank=True,
+        null=True,
+    )
+    idclasetarjeta = models.ForeignKey(
+        Jclasestarjetas,
+        models.DO_NOTHING,
+        db_column="idclasetarjeta",
+        blank=True,
+        null=True,
+    )
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtarjetas"
 
-        db_table = 'jtarjetas'
+    def __str__(self):
+        return self.idtarjeta
 
 
 class Jtiposcomentarios(models.Model):
@@ -104,8 +142,10 @@ class Jtiposcomentarios(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtiposcomentarios"
 
-        db_table = 'jtiposcomentarios'
+    def __str__(self):
+        return self.descripciontipocomentario
 
 
 class Jtickettipos(models.Model):
@@ -114,8 +154,10 @@ class Jtickettipos(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtickettipos"
 
-        db_table = 'jtickettipos'
+    def __str__(self):
+        return self.descripciontipoticket
 
 
 class Jtipostransacciones(models.Model):
@@ -125,43 +167,97 @@ class Jtipostransacciones(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jtipostransacciones"
 
-        db_table = 'jtipostransacciones'
-
-
-class JproblemasManager(models.Manager):
-    pass
+    def __str__(self):
+        return self.descripciontipotransaccion
 
 
 class Jproblemas(models.Model):
     idproblema = models.AutoField(primary_key=True)
-    idusuario = models.ForeignKey(Jusuarios, models.DO_NOTHING, db_column='idusuario', blank=True, null=True)
+    idusuario = models.ForeignKey(
+        Jusuarios, models.DO_NOTHING, db_column="idusuario", blank=True, null=True
+    )
     fechacreacion = models.DateTimeField(blank=True, null=True)
     numeroticket = models.CharField(max_length=100, blank=True, null=True)
-    idtipotransaccion = models.ForeignKey(Jtipostransacciones, models.DO_NOTHING, db_column='idtipotransaccion', blank=True, null=True)
-    idtipocomentario = models.ForeignKey(Jtiposcomentarios, models.DO_NOTHING, db_column='idtipocomentario', blank=True, null=True)
-    idcanalrecepcion = models.ForeignKey(Jcanalesrecepciones, models.DO_NOTHING, db_column='idcanalrecepcion', blank=True, null=True)
-    idpersona = models.ForeignKey(Jpersonas, models.DO_NOTHING, db_column='idpersona', blank=True, null=True)
-    idtipoticket = models.ForeignKey(Jtickettipos, models.DO_NOTHING, db_column='idtipoticket', blank=True, null=True)
-    idconcepto = models.ForeignKey(Jconceptos, models.DO_NOTHING, db_column='idconcepto', blank=True, null=True)
+    idtipotransaccion = models.ForeignKey(
+        Jtipostransacciones,
+        models.DO_NOTHING,
+        db_column="idtipotransaccion",
+        blank=True,
+        null=True,
+    )
+    idtipocomentario = models.ForeignKey(
+        Jtiposcomentarios,
+        models.DO_NOTHING,
+        db_column="idtipocomentario",
+        blank=True,
+        null=True,
+    )
+    idcanalrecepcion = models.ForeignKey(
+        Jcanalesrecepciones,
+        models.DO_NOTHING,
+        db_column="idcanalrecepcion",
+        blank=True,
+        null=True,
+    )
+    idpersona = models.ForeignKey(
+        Jpersonas,
+        models.DO_NOTHING,
+        db_column="idpersona",
+        blank=True,
+        null=True
+    )
+    idtipoticket = models.ForeignKey(
+        Jtickettipos,
+        models.DO_NOTHING,
+        db_column="idtipoticket",
+        blank=True,
+        null=True
+    )
+    idconcepto = models.ForeignKey(
+        Jconceptos,
+        models.DO_NOTHING,
+        db_column="idconcepto",
+        blank=True,
+        null=True
+    )
     descripcionasunto = models.TextField(blank=True, null=True)
     monto = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    idtarjeta = models.ForeignKey(Jtarjetas, models.DO_NOTHING, db_column='idtarjeta', blank=True, null=True)
-    idprioridad = models.ForeignKey(Jprioridades, models.DO_NOTHING, db_column='idprioridad', blank=True, null=True)
-    idsucursal = models.ForeignKey(Jsucursales, models.DO_NOTHING, db_column='idsucursal', blank=True, null=True)
+    idtarjeta = models.ForeignKey(
+        Jtarjetas,
+        models.DO_NOTHING,
+        db_column="idtarjeta",
+        blank=True,
+        null=True
+    )
+    idprioridad = models.ForeignKey(
+        Jprioridades,
+        models.DO_NOTHING,
+        db_column="idprioridad",
+        blank=True,
+        null=True
+    )
+    idsucursal = models.ForeignKey(
+        Jsucursales,
+        models.DO_NOTHING,
+        db_column="idsucursal",
+        blank=True,
+        null=True
+    )
     archivo = models.CharField(max_length=500, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "jproblemas"
 
-        db_table = 'jproblemas'
-
+    # TODO: the numeroticket should store a code that will help to identify this as
+    #       parent ticket
     def save(self, *args, **kwargs):
-        if self.numeroticket and len(self.numeroticket.strip()) == 0:
+        if not self.numeroticket:
             self.numeroticket = generate_ticket_id()
 
         super(Jproblemas, self).save(*args, **kwargs)
 
     def __str__(self):
         return "{} - {}".format(self.idtipoticket, self.numeroticket)
-

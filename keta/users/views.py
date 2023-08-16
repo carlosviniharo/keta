@@ -1,6 +1,7 @@
 import sys
 
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import status
@@ -61,7 +62,16 @@ class JpersonasRegisterView(APIView):
     def post(self, request):
         serializer = JpersonasSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        identificacion = serializer.validated_data.get('identificacion')
+        try:
+            Jpersonas.objects.get(identificacion=identificacion)
+        except ObjectDoesNotExist:
+            serializer.save()
+        else:
+            return Response(
+                {"detail": f"The person with this ID {identificacion} already exists"},
+                status=status.HTTP_208_ALREADY_REPORTED
+            )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -128,6 +138,7 @@ class JusuarioRegisterView(RetrieveAPIView):
     lookup_field = 'email'
 
 
+# Retrieve the user static tables using id of each table.
 class JcargoRegisterView(RetrieveAPIView):
     queryset = Jcargos.objects.all()
     serializer_class = JcargosSerializer
@@ -152,6 +163,18 @@ class JpersonaRegisterView(RetrieveAPIView):
     lookup_field = 'idpersona'
 
 
+class JdepartamentoRegisterView(RetrieveAPIView):
+    queryset = Jdepartamentos.objects.all()
+    serializer_class = JdepartamentosSerializer
+    lookup_field = 'iddepartamento'
+
+
+class JtipospersonaRegisterView(RetrieveAPIView):
+    queryset = Jtipospersonas.objects.all()
+    serializer_class = JtipospersonasSerializer
+    lookup_field = 'idtipopersona'
+
+
 # Retrieve all the departamentos of each sucursal.
 class JsucursalJdepartamentosListView(ListAPIView):
 
@@ -165,8 +188,11 @@ class JsucursalJdepartamentosListView(ListAPIView):
         queryset = self.get_queryset()
 
         if not queryset.exists():
-            return Response({f"detail": "idsucursal " + request.query_params.get('idsucursal')
-                                        + " was not found in the records"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {f"detail": "idsucursal " + request.query_params.get('idsucursal')
+                            + " was not found in the records"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

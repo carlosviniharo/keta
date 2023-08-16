@@ -10,24 +10,30 @@ class Jcargos(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jcargos'
+        db_table = "jcargos"
 
 
 class Jclasificacionesresoluciones(models.Model):
     idclasificacionresolucion = models.AutoField(primary_key=True)
-    codigoclasificacionresolucion = models.CharField(max_length=4, blank=True, null=True)
+    codigoclasificacionresolucion = models.CharField(
+        max_length=4, blank=True, null=True
+    )
     descripcionclasificacion = models.CharField(max_length=250, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jclasificacionesresoluciones'
+        db_table = "jclasificacionesresoluciones"
 
 
 class Jcorporaciones(models.Model):
     idcorporacion = models.AutoField(primary_key=True)
-    idpais = models.ForeignKey('Jgeografia', models.DO_NOTHING, db_column='idpais', blank=True, null=True)
+    idpais = models.ForeignKey(
+        "Jgeografia",
+        models.DO_NOTHING,
+        db_column="idpais",
+        blank=True,
+        null=True
+    )
     nombrecorporacion = models.CharField(max_length=200, blank=True, null=True)
     descripcioncorporacion = models.CharField(max_length=500, blank=True, null=True)
     representantelegal = models.CharField(max_length=200, blank=True, null=True)
@@ -42,13 +48,14 @@ class Jcorporaciones(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jcorporaciones'
+        db_table = "jcorporaciones"
 
 
 class Jdepartamentos(models.Model):
     iddepartamento = models.AutoField(primary_key=True)
-    idsucursal = models.ForeignKey('Jsucursales', models.DO_NOTHING, db_column='idsucursal', blank=True, null=True)
+    idsucursal = models.ForeignKey(
+        "Jsucursales", models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
+    )
     codigodepartamento = models.CharField(max_length=2, blank=True, null=True)
     nombredepartamento = models.CharField(max_length=200, blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
@@ -60,8 +67,7 @@ class Jdepartamentos(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jdepartamentos'
+        db_table = "jdepartamentos"
 
 
 class Jgeneros(models.Model):
@@ -71,13 +77,18 @@ class Jgeneros(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jgeneros'
+        db_table = "jgeneros"
 
 
 class Jgeografia(models.Model):
     idgeografia = models.AutoField(primary_key=True)
-    fkidgeografia = models.ForeignKey('self', models.DO_NOTHING, db_column='fkidgeografia', blank=True, null=True)
+    fkidgeografia = models.ForeignKey(
+        "self",
+        models.DO_NOTHING,
+        db_column="fkidgeografia",
+        blank=True,
+        null=True
+    )
     codigogeografia = models.CharField(max_length=2, blank=True, null=True)
     nombre = models.CharField(max_length=100, blank=True, null=True)
     nivel = models.BigIntegerField(blank=True, null=True)
@@ -89,26 +100,33 @@ class Jgeografia(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jgeografia'
+        db_table = "jgeografia"
 
 
 class Jpersonas(models.Model):
     idpersona = models.AutoField(primary_key=True)
-    idgenero = models.ForeignKey(Jgeneros, models.DO_NOTHING, db_column='idgenero', blank=True, null=True)
-    idtipoidentificacion = models.ForeignKey('Jtiposidentificaciones', models.DO_NOTHING, db_column='idtipoidentificacion', blank=True, null=True)
-    idtipopersona = models.ForeignKey('Jtipospersonas', models.DO_NOTHING, db_column='idtipopersona', blank=True, null=True)
-    identificacion = models.CharField(max_length=10, blank=True, unique=True)
-    nombre = models.CharField(max_length=250, blank=True, null=True)
-    apellido = models.CharField(max_length=250, blank=True, null=True)
-    emailcliente = models.CharField(max_length=100, blank=True, null=True)
-    celular = models.CharField(max_length=10, blank=True, null=True)
+    idgenero = models.ForeignKey(Jgeneros, models.DO_NOTHING, db_column="idgenero")
+    idtipoidentificacion = models.ForeignKey(
+        "Jtiposidentificaciones",
+        models.DO_NOTHING,
+        db_column="idtipoidentificacion"
+    )
+    idtipopersona = models.ForeignKey(
+        "Jtipospersonas",
+        models.DO_NOTHING,
+        db_column="idtipopersona"
+    )
+    identificacion = models.CharField(max_length=10)
+    nombre = models.CharField(max_length=250, null=False)
+    apellido = models.CharField(max_length=250, null=False)
+    emailcliente = models.EmailField(max_length=100, null=True)
+    celular = models.CharField(max_length=10, null=False)
     telefono = models.CharField(max_length=9, blank=True, null=True)
-    direccion = models.CharField(max_length=500, blank=True, null=True)
+    direccion = models.CharField(max_length=500, null=False)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'jpersonas'
+        db_table = "jpersonas"
 
 
 class Jroles(models.Model):
@@ -123,14 +141,21 @@ class Jroles(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jroles'
+        db_table = "jroles"
 
 
 class Jsucursales(models.Model):
     idsucursal = models.AutoField(primary_key=True)
-    idpais = models.ForeignKey(Jgeografia, models.DO_NOTHING, db_column='idpais', blank=True, null=True)
-    idcorporacion = models.ForeignKey(Jcorporaciones, models.DO_NOTHING, db_column='idcorporacion', blank=True, null=True)
+    idpais = models.ForeignKey(
+        Jgeografia, models.DO_NOTHING, db_column="idpais", blank=True, null=True
+    )
+    idcorporacion = models.ForeignKey(
+        Jcorporaciones,
+        models.DO_NOTHING,
+        db_column="idcorporacion",
+        blank=True,
+        null=True,
+    )
     codigosucursal = models.CharField(max_length=2, blank=True, null=True)
     nombresucursal = models.CharField(max_length=200, blank=True, null=True)
     descripcionsucursal = models.CharField(max_length=500, blank=True, null=True)
@@ -144,11 +169,7 @@ class Jsucursales(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jsucursales'
-
-
-
+        db_table = "jsucursales"
 
 
 class Jtiporesoluciones(models.Model):
@@ -158,19 +179,21 @@ class Jtiporesoluciones(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jtiporesoluciones'
+        db_table = "jtiporesoluciones"
 
 
 class Jtiposidentificaciones(models.Model):
     idtipoidentificacion = models.AutoField(primary_key=True)
     codigotipoidentificacion = models.CharField(max_length=2, blank=True, null=True)
-    descripciontipoidentificacion = models.CharField(max_length=50, blank=True, null=True)
+    descripciontipoidentificacion = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jtiposidentificaciones'
+        db_table = "jtiposidentificaciones"
 
 
 class Jtipospersonas(models.Model):
@@ -180,8 +203,7 @@ class Jtipospersonas(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-
-        db_table = 'jtipospersonas'
+        db_table = "jtipospersonas"
 
 
 class JusuariosManager(BaseUserManager):
@@ -189,34 +211,48 @@ class JusuariosManager(BaseUserManager):
 
     def _create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('Email is Required')
+            raise ValueError("Email is Required")
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
         return user
 
-    def create_user(self, email, password, ** extra_fields):
+    def create_user(self, email, password, **extra_fields):
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff = True')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser = True')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff = True")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser = True")
 
         return self._create_user(email, password, **extra_fields)
 
 
 class Jusuarios(AbstractUser):
     idusuario = models.AutoField(primary_key=True)
-    idrol = models.ForeignKey(Jroles, models.DO_NOTHING, db_column='idrol', blank=True, null=True)
-    idpersona = models.ForeignKey(Jpersonas, models.DO_NOTHING, db_column='idpersona', blank=True, null=True)
-    iddepartamento = models.ForeignKey(Jdepartamentos, models.DO_NOTHING, db_column='iddepartamento', blank=True, null=True)
-    idcargo = models.ForeignKey(Jcargos, models.DO_NOTHING, db_column='idcargo', blank=True, null=True)
+    idrol = models.ForeignKey(
+        Jroles, models.DO_NOTHING, db_column="idrol", blank=True, null=True
+    )
+    idpersona = models.ForeignKey(
+        Jpersonas, models.DO_NOTHING,
+        db_column="idpersona",
+        blank=True, null=True
+    )
+    iddepartamento = models.ForeignKey(
+        Jdepartamentos,
+        models.DO_NOTHING,
+        db_column="iddepartamento",
+        blank=True,
+        null=True,
+    )
+    idcargo = models.ForeignKey(
+        Jcargos, models.DO_NOTHING, db_column="idcargo", blank=True, null=True
+    )
     is_active = models.BooleanField(blank=True, null=True, default=True)
     direccionmac = models.CharField(max_length=100, blank=True, null=True)
     date_joined = models.DateTimeField(blank=True, null=True)
@@ -233,11 +269,11 @@ class Jusuarios(AbstractUser):
 
     objects = JusuariosManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     class Meta:
-        db_table = 'jusuarios'
+        db_table = "jusuarios"
 
     def __str__(self):
         return self.username
