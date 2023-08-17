@@ -78,6 +78,7 @@ class Jdepartamentos(models.Model):
     def __str__(self):
         return self.nombredepartamento
 
+
 class Jgeneros(models.Model):
     idgenero = models.AutoField(primary_key=True)
     codigogenero = models.CharField(max_length=2, blank=True, null=True)

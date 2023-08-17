@@ -16,35 +16,41 @@ from .serializers import *
 from .utils import helper
 
 
-# view for registering users and persons
-class JusuariosRegisterView(APIView):
-    def get(self, request):
-        jusuarios = Jusuarios.objects.all()
-        serializer = JusuariosSerializer(jusuarios, many=True)
-        return Response(serializer.data)
+# Views for registering users and persons
+class JusuariosViewSet(viewsets.ModelViewSet):
+    queryset = Jusuarios.objects.all()
+    serializer_class = JusuariosSerializer
 
-    def post(self, request):
-        serializer = JpersonasUsuariosSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Extract the data from the serializer
-        persona_data = serializer.validated_data.get("persona", {})
-        user_data = serializer.validated_data.get("usuario", {})
-
-        # Use a database transaction to ensure atomicity
-        with transaction.atomic():
-            # Create the user instance
-            user_data["idpersona"] = None
-            user_data["last_name"] = persona_data.get("apellido")
-            user_data["first_name"] = persona_data.get("nombre")
-            user_data["direccionmac"] = helper.get_mac_address()
-            user_data["ipcreacion"] = helper.get_public_ip_address()
-            user_data["date_joined"] = timezone.now()
-            persona = Jpersonas.objects.create(**persona_data)
-            user = Jusuarios.objects.create_user(**user_data)
-            user.idpersona = persona
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # def create(self, request):
+    #     persona_serializer = JpersonasSerializer(data=request.data["persona"])
+    #     usuario_serializer = JusuariosSerializer(data=request.data["usuario"])
+    #
+    #     # Extract the data from the serializer
+    #     persona_serializer.is_valid(raise_exception=True)
+    #     usuario_serializer.is_valid(raise_exception=True)
+    #
+    #     # Use a database transaction to ensure atomicity
+    #     with transaction.atomic():
+    #         # Create the user instance
+    #         persona = persona_serializer.save()
+    #         usuario_data = usuario_serializer.validated_data
+    #         usuario_data["idpersona"] = None
+    #         usuario_data["last_name"] = persona.apellido
+    #         usuario_data["first_name"] = persona.nombre
+    #         usuario_data["direccionmac"] = helper.get_mac_address()
+    #         usuario_data["ipcreacion"] = helper.get_public_ip_address()
+    #         usuario_data["date_joined"] = timezone.now()
+    #         user = Jusuarios.objects.create_user(**usuario_data)
+    #         user.idpersona = persona
+    #
+    #     return Response(
+    #         {
+    #             "persona": persona_serializer.data,
+    #             "usuario": usuario_serializer.data,
+    #             "user_link": self.get_serializer_context().get('request').build_absolute_uri(user.get_absolute_url()),
+    #         },
+    #         status=status.HTTP_201_CREATED
+    #     )
 
 
 class JpersonasViewSet(viewsets.ModelViewSet):
@@ -67,20 +73,6 @@ class JpersonasViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
-    # def create(self, request):
-    #     serializer = JpersonasSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     identificacion = serializer.validated_data.get("identificacion")
-    #     try:
-    #         Jpersonas.objects.get(identificacion=identificacion)
-    #     except ObjectDoesNotExist:
-    #         serializer.save()
-    #     else:
-    #         return Response(
-    #             {"detail": f"The person with this ID {identificacion} already exists"},
-    #             status=status.HTTP_208_ALREADY_REPORTED,
-    #         )
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # View from retrieving all static tables.
@@ -164,6 +156,9 @@ class JsucursalJdepartamentosListView(ListAPIView):
 
 # View from login and logout.
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    An endpoint to login users.
+    """
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 

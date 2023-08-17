@@ -14,13 +14,13 @@ router.register(r'geografia', JgeografiaViewSet)
 router.register(r'roles', JrolesListViewSet)
 router.register(r'sucursales', JsucursalesViewSet)
 router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
-router.register(r'Jtipospersonas', JtipospersonasViewSet)
+router.register(r'tipospersonas', JtipospersonasViewSet)
 router.register(r'persona', JpersonasViewSet)
+router.register(r'usuario', JusuariosViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', CustomLogoutView.as_view(), name='logout_user'),
-    path('user_register/', JusuariosRegisterView.as_view(), name="sign_up"),
     ]
