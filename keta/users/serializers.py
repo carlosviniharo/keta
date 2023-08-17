@@ -56,14 +56,16 @@ def model_serializers(model_):
         class ModelSerializer(serializer_class):
             class Meta:
                 model = model_
-                fields = '__all__'
+                fields = tuple(f.name for f in model_._meta.fields) + ('url',)
         return ModelSerializer
     return decorator
 
 
-@model_serializers(Jcargos)
+# @model_serializers(Jcargos)
 class JcargosSerializer(serializers.HyperlinkedModelSerializer):
-    pass
+    class Meta:
+        model = Jcargos
+        fields = tuple(f.name for f in Jcargos._meta.fields) + ('url',)
 
 
 @model_serializers(Jcorporaciones)
