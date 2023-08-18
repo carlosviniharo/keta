@@ -15,8 +15,10 @@ router.register(r'tarjetas', JtarjetasViewSet)
 router.register(r'tiposcomentarios', JtiposcomentariosViewSet)
 router.register(r'tickettipos', JtickettiposViewSet)
 router.register(r'tipostransacciones', JtipostransaccionesViewSet)
+router.register(r'id_persona', JpersonasListView)
+router.register(r'ticket', JproblemasViewSet)
+
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('create_tickets/', JproblemasCreateView.as_view(), name='create_ticket'),
 ]

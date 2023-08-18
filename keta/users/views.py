@@ -13,7 +13,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
 from .serializers import *
-from .utils import helper
 
 
 # Views for registering users and persons
@@ -21,36 +20,37 @@ class JusuariosViewSet(viewsets.ModelViewSet):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
 
-    # def create(self, request):
-    #     persona_serializer = JpersonasSerializer(data=request.data["persona"])
-    #     usuario_serializer = JusuariosSerializer(data=request.data["usuario"])
-    #
-    #     # Extract the data from the serializer
-    #     persona_serializer.is_valid(raise_exception=True)
-    #     usuario_serializer.is_valid(raise_exception=True)
-    #
-    #     # Use a database transaction to ensure atomicity
-    #     with transaction.atomic():
-    #         # Create the user instance
-    #         persona = persona_serializer.save()
-    #         usuario_data = usuario_serializer.validated_data
-    #         usuario_data["idpersona"] = None
-    #         usuario_data["last_name"] = persona.apellido
-    #         usuario_data["first_name"] = persona.nombre
-    #         usuario_data["direccionmac"] = helper.get_mac_address()
-    #         usuario_data["ipcreacion"] = helper.get_public_ip_address()
-    #         usuario_data["date_joined"] = timezone.now()
-    #         user = Jusuarios.objects.create_user(**usuario_data)
-    #         user.idpersona = persona
-    #
-    #     return Response(
-    #         {
-    #             "persona": persona_serializer.data,
-    #             "usuario": usuario_serializer.data,
-    #             "user_link": self.get_serializer_context().get('request').build_absolute_uri(user.get_absolute_url()),
-    #         },
-    #         status=status.HTTP_201_CREATED
-    #     )
+    def create(self, request):
+        persona_serializer = JpersonasSerializer(data=request.data["persona"], context={'request': request})
+        usuario_serializer = JusuariosSerializer(data=request.data["usuario"], context={'request': request})
+
+        # Extract the data from the serializer
+        persona_serializer.is_valid(raise_exception=True)
+        usuario_serializer.is_valid(raise_exception=True)
+
+        identificacion = persona_serializer.validated_data["identificacion"]
+
+        # Use a database transaction to ensure atomicity
+        with transaction.atomic():
+            # Create the user instance
+            existing_persona, created = Jpersonas.objects.get_or_create(
+                identificacion=identificacion,
+                defaults={"idpersona": None, **persona_serializer.validated_data}
+            )
+            usuario_data = usuario_serializer.validated_data
+            usuario_data["idpersona"] = existing_persona
+            usuario_data["last_name"] = existing_persona.apellido
+            usuario_data["first_name"] = existing_persona.nombre
+            user = Jusuarios.objects.create_user(**usuario_data)
+            user_serializer = JusuariosSerializer(user, context={"request": request})
+            person_serializer = JpersonasSerializer(existing_persona, context={"request": request})
+        return Response(
+            {
+                "persona": person_serializer.data,
+                "usuario": user_serializer.data,
+            },
+            status=status.HTTP_201_CREATED
+        )
 
 
 class JpersonasViewSet(viewsets.ModelViewSet):

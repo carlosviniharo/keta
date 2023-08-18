@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import Jpersonas, Jusuarios, Jsucursales
+from users.models import *
 from .utils.helper import generate_ticket_id
 
 
@@ -132,7 +132,7 @@ class Jtarjetas(models.Model):
         db_table = "jtarjetas"
 
     def __str__(self):
-        return self.idtarjeta
+        return f"{self.idmarcatarjeta} - {self.idtipotarjeta} - {self.idclasetarjeta}"
 
 
 class Jtiposcomentarios(models.Model):
@@ -178,7 +178,7 @@ class Jproblemas(models.Model):
     idusuario = models.ForeignKey(
         Jusuarios, models.DO_NOTHING, db_column="idusuario", blank=True, null=True
     )
-    fechacreacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now=True, null=True)
     numeroticket = models.CharField(max_length=100, blank=True, null=True)
     idtipotransaccion = models.ForeignKey(
         Jtipostransacciones,
@@ -202,54 +202,31 @@ class Jproblemas(models.Model):
         null=True,
     )
     idpersona = models.ForeignKey(
-        Jpersonas,
-        models.DO_NOTHING,
-        db_column="idpersona",
-        blank=True,
-        null=True
+        Jpersonas, models.DO_NOTHING, db_column="idpersona", blank=True, null=True
     )
     idtipoticket = models.ForeignKey(
-        Jtickettipos,
-        models.DO_NOTHING,
-        db_column="idtipoticket",
-        blank=True,
-        null=True
+        Jtickettipos, models.DO_NOTHING, db_column="idtipoticket", blank=True, null=True
     )
     idconcepto = models.ForeignKey(
-        Jconceptos,
-        models.DO_NOTHING,
-        db_column="idconcepto",
-        blank=True,
-        null=True
+        Jconceptos, models.DO_NOTHING, db_column="idconcepto", blank=True, null=True
     )
     descripcionasunto = models.TextField(blank=True, null=True)
     monto = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     idtarjeta = models.ForeignKey(
-        Jtarjetas,
-        models.DO_NOTHING,
-        db_column="idtarjeta",
-        blank=True,
-        null=True
+        Jtarjetas, models.DO_NOTHING, db_column="idtarjeta", blank=True, null=True
     )
     idprioridad = models.ForeignKey(
-        Jprioridades,
-        models.DO_NOTHING,
-        db_column="idprioridad",
-        blank=True,
-        null=True
+        Jprioridades, models.DO_NOTHING, db_column="idprioridad", blank=True, null=True
     )
     idsucursal = models.ForeignKey(
-        Jsucursales,
-        models.DO_NOTHING,
-        db_column="idsucursal",
-        blank=True,
-        null=True
+        Jsucursales, models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
     )
     archivo = models.CharField(max_length=500, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "jproblemas"
+        ordering = ["-fechacreacion"]
 
     # TODO: the numeroticket should store a code that will help to identify this as
     #       parent ticket
@@ -260,4 +237,4 @@ class Jproblemas(models.Model):
         super(Jproblemas, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "{} - {}".format(self.idtipoticket, self.numeroticket)
+        return self.descripcionasunto

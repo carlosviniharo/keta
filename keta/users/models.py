@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from .utils.helper import *
 
 
 class Jcargos(models.Model):
@@ -46,7 +47,7 @@ class Jcorporaciones(models.Model):
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(blank=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
@@ -68,7 +69,7 @@ class Jdepartamentos(models.Model):
     descripciondepartamento = models.CharField(max_length=500, blank=True, null=True)
     fechacreacion = models.DateTimeField(blank=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
@@ -107,7 +108,7 @@ class Jgeografia(models.Model):
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(blank=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
@@ -139,6 +140,7 @@ class Jpersonas(models.Model):
     telefono = models.CharField(max_length=9, blank=True, null=True)
     direccion = models.CharField(max_length=500, null=False)
     fecharegistro = models.DateTimeField(blank=True, null=True)
+    extension = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
         db_table = "jpersonas"
@@ -154,7 +156,7 @@ class Jroles(models.Model):
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(blank=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
@@ -185,7 +187,7 @@ class Jsucursales(models.Model):
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(blank=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
@@ -284,10 +286,10 @@ class Jusuarios(AbstractUser):
         Jcargos, models.DO_NOTHING, db_column="idcargo", blank=True, null=True
     )
     is_active = models.BooleanField(blank=True, null=True, default=True)
-    direccionmac = models.CharField(max_length=100, blank=True, null=True)
-    date_joined = models.DateTimeField(blank=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
-    ipcreacion = models.CharField(max_length=50, blank=True, null=True)
+    direccionmac = models.CharField(max_length=100, default=get_mac_address, null=True)
+    date_joined = models.DateTimeField(auto_now=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now_add=True, null=True)
+    ipcreacion = models.CharField(max_length=50, default=get_public_ip_address, null=True)
     ipmodificacion = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(max_length=100, blank=True, unique=True)
     username = models.CharField(max_length=100, blank=True, null=True)
@@ -306,4 +308,4 @@ class Jusuarios(AbstractUser):
         db_table = "jusuarios"
 
     def __str__(self):
-        return self.username
+        return self.email

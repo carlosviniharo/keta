@@ -1,10 +1,9 @@
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .serializers import *
+from users.serializers import *
 
 
 class JcanalesrecepcionesViewSet(viewsets.ModelViewSet):
@@ -62,100 +61,87 @@ class JtipostransaccionesViewSet(viewsets.ModelViewSet):
     serializer_class = JtipostransaccionesSerializer
 
 
+class JpersonasListView(viewsets.ModelViewSet):
+    queryset = Jpersonas.objects.all()
+    serializer_class = JpersonasSerializer
+    lookup_field = "identificacion"
+
+
 # TODO: The valitadion if there is not repeated tickets should be improved
 #  as for now it only invalidated tickets that have the same user, tipo ticket
 #  and canal de recepcion.
-# class JproblemasViewSet(viewsets.ModelViewSet):
-#     queryset = Jproblemas.objects.all()
-#     serializer_class = JproblemasSerializer
-#
-#     def create(self, request, *args, **kwargs):
-#         personas_serializer = JpersonasSerializer(data=request.data.get('persona'))
-#         problemas_serializer = self.get_serializer(data=request.data.get('ticket'))
-#
-#         if personas_serializer.is_valid() and problemas_serializer.is_valid():
-#             # Save the persona record
-#             persona_instance = personas_serializer.save()
-#
-#             # Associate the persona with the ticket and save the ticket record
-#             ticket_data = problemas_serializer.validated_data
-#             ticket_data['idpersona'] = persona_instance.idpersona # Set the foreign key
-#             ticket_instance = Jproblemas.objects.create(**ticket_data)
-#
-#             return Response(
-#                 {
-#                     'persona': personas_serializer.data,
-#                     'ticket': problemas_serializer.data
-#                 },
-#                 status=status.HTTP_201_CREATED
-#             )
-#
-#         return Response(
-#             {
-#                 'errors': {
-#                     'persona': personas_serializer.errors,
-#                     'ticket': problemas_serializer.errors
-#                 }
-#             },
-#             status=status.HTTP_400_BAD_REQUEST
-#         )
 
-class JproblemasCreateView(APIView):
-    def post(self, request):
-        personas_serializer = JpersonasSerializer(data=request.data.get("persona"))
-        problemas_serializer = JproblemasSerializer(data=request.data.get('ticket'))
-        if personas_serializer.is_valid() and problemas_serializer.is_valid():
-            data_ticket = problemas_serializer.validated_data
-            data_persona = personas_serializer.validated_data
-        # Fields in a ticket that help to control not create repeated tickets
-            tipo_ticket = data_ticket.get("idtipoticket")
-            canal_recepcion = data_ticket.get("idcanalrecepcion")
 
-            with transaction.atomic():
-                # Create or retrieve the persona instance
-                identificacion = data_persona.get("identificacion")
-                existing_persona, created = Jpersonas.objects.get_or_create(
-                    identificacion=identificacion,
-                    defaults={"idpersona": None, **data_persona}
-                )
-                # If persona was just created or retrieved, update data_ticket
-                data_ticket["idpersona"] = existing_persona
-                data_ticket["fechacreacion"] = timezone.now()
+class JproblemasViewSet(viewsets.ModelViewSet):
+    queryset = Jproblemas.objects.all()
+    serializer_class = JproblemasSerializer
 
-                # Check if a similar ticket already exists
-                similar_tickets_exist = Jproblemas.objects.filter(
-                    idpersona=existing_persona,
-                    idtipoticket=tipo_ticket,
-                    idcanalrecepcion=canal_recepcion
-                ).exists()
-
-                if similar_tickets_exist:
-                    return Response(
-                        {"detail": f"The ticket already exists"},
-                        status=status.HTTP_208_ALREADY_REPORTED
-                    )
-
-                    # Create the ticket
-                Jproblemas.objects.create(**data_ticket)
-
-            return Response(
-                {
-                    'persona': personas_serializer.data,
-                    'ticket': problemas_serializer.data
-                },
-                status=status.HTTP_201_CREATED
+    def create(self, request):
+        personas_serializer = JpersonasSerializer(data=request.data.get("persona"), context={'request': request})
+        tarjeta_serializer = JtarjetasSerializer(data=request.data.get('tarjeta'), context={'request': request})
+        problemas_serializer = JproblemasSerializer(data=request.data.get('ticket'), context={'request': request})
+        # Validating data
+        personas_serializer.is_valid(raise_exception=True)
+        problemas_serializer.is_valid(raise_exception=True)
+        # Get field to check if it is a new ticket
+        tipo_ticket = problemas_serializer.validated_data["idtipoticket"]
+        canal_recepcion = problemas_serializer.validated_data["idcanalrecepcion"]
+        identificacion = personas_serializer.validated_data["identificacion"]
+        # Get the dictionary with the data to create the ticket
+        data_ticket = problemas_serializer.validated_data
+        # check if the ticket needs to a tarjeta
+        if tipo_ticket == 2:
+            tarjeta_serializer.is_valid(raise_exception=True)
+            # Create or retrieve the Jtarjetas instance
+            tarjeta, created = Jtarjetas.objects.get_or_create(
+                idmarcatarjeta=tarjeta_serializer.validated_data["idmarcatarjeta"],
+                idtipotarjeta=tarjeta_serializer.validated_data["idtipotarjeta"],
+                idclasetarjeta=tarjeta_serializer.validated_data["idclasetarjeta"],
+                defaults=tarjeta_serializer.validated_data
             )
+            # Associate the ticket with the tarjeta
+            data_ticket['idtarjeta'] = tarjeta
+
+        with transaction.atomic():
+            # Create or retrieve the persona instance
+            existing_persona, created = Jpersonas.objects.get_or_create(
+                identificacion=identificacion,
+                defaults={"idpersona": None, **personas_serializer.validated_data}
+            )
+
+            # Update existing persona with new data
+            if not created:
+                for attr, value in personas_serializer.validated_data.items():
+                    setattr(existing_persona, attr, value)
+                existing_persona.save()
+
+            # Associate ticket with persona
+            data_ticket["idpersona"] = existing_persona
+
+            # Check if a similar ticket already exists
+            similar_tickets_exist = Jproblemas.objects.filter(
+                idpersona=existing_persona,
+                idtipoticket=tipo_ticket,
+                idcanalrecepcion=canal_recepcion
+            ).exists()
+
+            if similar_tickets_exist:
+                return Response(
+                    {"detail": f"The ticket already exists"},
+                    status=status.HTTP_208_ALREADY_REPORTED
+                )
+
+            # Create the ticket
+            ticket = Jproblemas.objects.create(**data_ticket)
+            person_serializer = JpersonasSerializer(existing_persona, context={"request": request})
+            ticket_serializer = JproblemasSerializer(ticket, context={"request": request})
+
         return Response(
             {
-                'errors': {
-                    'persona': personas_serializer.errors,
-                    'ticket': problemas_serializer.errors
-                }
+                'Nueva persona': f'{created}',
+                'persona': person_serializer.data,
+                'ticket': ticket_serializer.data
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_201_CREATED
         )
 
-    def get(self, request):
-        jproblemas = Jproblemas.objects.all()
-        serializer = JproblemasSerializer(jproblemas, many=True, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)

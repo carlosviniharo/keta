@@ -43,10 +43,6 @@ class JprioridadesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-# class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = Jproblemas
-#         fields = '__all__'
 
 @model_serializers(Jtipostarjetas)
 class JtipostarjetasSerializer(serializers.HyperlinkedModelSerializer):
@@ -73,14 +69,7 @@ class JtipostransaccionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-class JproblemasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jproblemas
-        fields = '__all__'
-
-
-class JpersonasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Jpersonas
-        fields = '__all__'
+@model_serializers(Jproblemas)
+class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
+    pass
 
