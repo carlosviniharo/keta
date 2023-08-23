@@ -2,10 +2,10 @@ from django.db import models
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
 
-indicators = {
-    "Padre": "P",
-    "Ayuda": "A"
-}
+indicators = (
+    ("P", "Padre"),
+    ("A", "Ayuda")
+)
 
 
 class Jestados(models.Model):
@@ -21,10 +21,25 @@ class Jestados(models.Model):
         return self.descripcionestado
 
 
+class Jestadotareas(models.Model):
+    idestadotarea = models.AutoField(primary_key=True)
+    diaoptimo = models.BigIntegerField(blank=True, null=True)
+    diarequerido = models.BigIntegerField(blank=True, null=True)
+    color = models.CharField(max_length=100, blank=True, null=True)
+    fecharegistro = models.DateTimeField(blank=True, null=True)
+    idtarea = models.ForeignKey('Jtareasticket', models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
+
+    class Meta:
+        db_table = 'jestadotareas'
+
+    def __str__(self):
+        return self.color
+
+
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
-    indicador = models.CharField(max_length=2, choices=[value for value in indicators.values()], blank=True, null=True)
+    indicador = models.CharField(max_length=2, choices=[value for value in indicators], blank=True, null=True)
     fechaasignacion = models.DateTimeField(auto_now=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
     archivo = models.CharField(max_length=500, blank=True, null=True)
@@ -41,4 +56,4 @@ class Jtareasticket(models.Model):
         db_table = 'jtareasticket'
 
     def __str__(self):
-        return f"{self.idtarea} - {self.tareaprincipal} - {self.idusuarioasignado}"
+        return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"
