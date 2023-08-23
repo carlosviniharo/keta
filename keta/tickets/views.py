@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import viewsets, status
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
 from .serializers import *
@@ -61,10 +62,39 @@ class JtipostransaccionesViewSet(viewsets.ModelViewSet):
     serializer_class = JtipostransaccionesSerializer
 
 
+# Customize methods to get certain types of field in the tables.
 class JpersonasListView(viewsets.ModelViewSet):
     queryset = Jpersonas.objects.all()
     serializer_class = JpersonasSerializer
     lookup_field = "identificacion"
+
+
+class JtiposproductosJconceptosListView(ListAPIView):
+    serializer_class = JconceptosSerializer
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.idtipoproducto = None
+
+    def get_queryset(self):
+        self.idtipoproducto = self.kwargs.get("idtipoproducto")
+        return Jconceptos.objects.filter(idtipoproducto=self.idtipoproducto)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if not queryset.exists():
+            return Response(
+                {
+                    "detail": "idtipoproducto "
+                    + f"{self.idtipoproducto}"
+                    + " was not found in the records"
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 # TODO: The valitadion if there is not repeated tickets should be improved
@@ -77,71 +107,88 @@ class JproblemasViewSet(viewsets.ModelViewSet):
     serializer_class = JproblemasSerializer
 
     def create(self, request):
-        personas_serializer = JpersonasSerializer(data=request.data.get("persona"), context={'request': request})
-        tarjeta_serializer = JtarjetasSerializer(data=request.data.get('tarjeta'), context={'request': request})
-        problemas_serializer = JproblemasSerializer(data=request.data.get('ticket'), context={'request': request})
-        # Validating data
+        personas_serializer = JpersonasSerializer(
+            data=request.data.get("persona"), context={"request": request}
+        )
+        tarjeta_serializer = JtarjetasSerializer(
+            data=request.data.get("tarjeta"), context={"request": request}
+        )
+        problemas_serializer = JproblemasSerializer(
+            data=request.data.get("ticket"), context={"request": request}
+        )
+    
         personas_serializer.is_valid(raise_exception=True)
         problemas_serializer.is_valid(raise_exception=True)
-        # Get field to check if it is a new ticket
+    
         tipo_ticket = problemas_serializer.validated_data["idtipoticket"]
         canal_recepcion = problemas_serializer.validated_data["idcanalrecepcion"]
-        identificacion = personas_serializer.validated_data["identificacion"]
-        # Get the dictionary with the data to create the ticket
+        monto = problemas_serializer.validated_data["monto"]
+        idtipocomentario = problemas_serializer.validated_data["idtipocomentario"]
+    
         data_ticket = problemas_serializer.validated_data
-        # check if the ticket needs to a tarjeta
-        if tipo_ticket == 2:
+    
+        if tipo_ticket.idtipoticket == 3:
             tarjeta_serializer.is_valid(raise_exception=True)
-            # Create or retrieve the Jtarjetas instance
-            tarjeta, created = Jtarjetas.objects.get_or_create(
-                idmarcatarjeta=tarjeta_serializer.validated_data["idmarcatarjeta"],
-                idtipotarjeta=tarjeta_serializer.validated_data["idtipotarjeta"],
-                idclasetarjeta=tarjeta_serializer.validated_data["idclasetarjeta"],
-                defaults=tarjeta_serializer.validated_data
+            tarjeta, created_tarjeta = self.create_tarjeta(
+                tarjeta_serializer.validated_data
             )
-            # Associate the ticket with the tarjeta
-            data_ticket['idtarjeta'] = tarjeta
-
+            data_ticket["idtarjeta"] = tarjeta
+        else:
+            created_tarjeta = False
+    
         with transaction.atomic():
-            # Create or retrieve the persona instance
-            existing_persona, created = Jpersonas.objects.get_or_create(
-                identificacion=identificacion,
-                defaults={"idpersona": None, **personas_serializer.validated_data}
+            persona, created_persona = self.create_persona(
+                personas_serializer.validated_data
             )
-
-            # Update existing persona with new data
-            if not created:
-                for attr, value in personas_serializer.validated_data.items():
-                    setattr(existing_persona, attr, value)
-                existing_persona.save()
-
-            # Associate ticket with persona
-            data_ticket["idpersona"] = existing_persona
-
-            # Check if a similar ticket already exists
-            similar_tickets_exist = Jproblemas.objects.filter(
-                idpersona=existing_persona,
+    
+            similar_tickets_exist = self.queryset.filter(
+                idpersona=persona,
                 idtipoticket=tipo_ticket,
-                idcanalrecepcion=canal_recepcion
+                idcanalrecepcion=canal_recepcion,
+                monto=monto,
+                idtipocomentario=idtipocomentario,
             ).exists()
-
+    
             if similar_tickets_exist:
                 return Response(
                     {"detail": f"The ticket already exists"},
-                    status=status.HTTP_208_ALREADY_REPORTED
+                    status=status.HTTP_208_ALREADY_REPORTED,
                 )
-
-            # Create the ticket
-            ticket = Jproblemas.objects.create(**data_ticket)
-            person_serializer = JpersonasSerializer(existing_persona, context={"request": request})
+    
+            ticket = self.create_ticket(persona, data_ticket)
+            person_serializer = JpersonasSerializer(persona, context={"request": request})
             ticket_serializer = JproblemasSerializer(ticket, context={"request": request})
-
+    
         return Response(
             {
-                'Nueva persona': f'{created}',
-                'persona': person_serializer.data,
-                'ticket': ticket_serializer.data
+                "nueva persona": f"{created_persona}",
+                "tarjeta": f"{created_tarjeta}",
+                "persona": person_serializer.data,
+                "ticket": ticket_serializer.data,
             },
-            status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED,
         )
+
+    def create_persona(self, data):
+        persona, created = Jpersonas.objects.get_or_create(
+            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
+        )
+        if not created:
+            for attr, value in data.items():
+                setattr(persona, attr, value)
+            persona.save()
+        return persona, created
+
+    def create_tarjeta(self, data):
+        tarjeta, created = Jtarjetas.objects.get_or_create(
+            idmarcatarjeta=data["idmarcatarjeta"],
+            idtipotarjeta=data["idtipotarjeta"],
+            idclasetarjeta=data["idclasetarjeta"],
+            defaults=data,
+        )
+        return tarjeta, created
+
+    def create_ticket(self, persona, data_ticket):
+        ticket = Jproblemas.objects.create(idpersona=persona, **data_ticket)
+        return ticket
 

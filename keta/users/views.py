@@ -1,11 +1,7 @@
-import sys
-
-from django.apps import apps
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import status, viewsets
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -20,7 +16,7 @@ class JusuariosViewSet(viewsets.ModelViewSet):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         persona_serializer = JpersonasSerializer(data=request.data["persona"], context={'request': request})
         usuario_serializer = JusuariosSerializer(data=request.data["usuario"], context={'request': request})
 
@@ -37,6 +33,11 @@ class JusuariosViewSet(viewsets.ModelViewSet):
                 identificacion=identificacion,
                 defaults={"idpersona": None, **persona_serializer.validated_data}
             )
+            if not created:
+                for attr, value in persona_serializer.validated_data.items():
+                    setattr(existing_persona, attr, value)
+                existing_persona.save()
+
             usuario_data = usuario_serializer.validated_data
             usuario_data["idpersona"] = existing_persona
             usuario_data["last_name"] = existing_persona.apellido
@@ -58,26 +59,24 @@ class JpersonasViewSet(viewsets.ModelViewSet):
     serializer_class = JpersonasSerializer
 
     def create(self, request, *args, **kwargs):
-        identificacion = request.data.get("identificacion")
-
-        if Jpersonas.objects.filter(identificacion=identificacion).exists():
-            return Response(
-                {"detail": f"The person with this ID {identificacion} already exists"},
-                status=status.HTTP_409_CONFLICT,
-            )
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        data = request.data
+        persona, created = Jpersonas.objects.get_or_create(
+            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
         )
+        if not created:
+            for attr, value in data.items():
+                setattr(persona, attr, value)
+            persona.save()
+
+        serializer = self.serializer_class(persona)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # View from retrieving all static tables.
 # TODO: Restrict the access to the services with IsAuthenticated.
 class JcargosViewSet(viewsets.ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     queryset = Jcargos.objects.all()
     serializer_class = JcargosSerializer
 
@@ -123,7 +122,7 @@ class JtipospersonasViewSet(viewsets.ModelViewSet):
 
 
 # Retrieve the user using the column email.
-class JusuarioRegisterView(RetrieveAPIView):
+class JusuarioListView(RetrieveUpdateAPIView):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
     lookup_field = "email"
@@ -143,8 +142,8 @@ class JsucursalJdepartamentosListView(ListAPIView):
         if not queryset.exists():
             return Response(
                 {
-                    f"detail": "idsucursal "
-                    + request.query_params.get("idsucursal")
+                    "detail": "idsucursal "
+                    + f"{request.query_params.get('idsucursal')}"
                     + " was not found in the records"
                 },
                 status=status.HTTP_404_NOT_FOUND,
@@ -185,7 +184,7 @@ class CustomLogoutView(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         try:
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,10 +25,7 @@ SECRET_KEY = 'django-insecure-c19l-6+f_mvcu=!hkn7ox7bxl@o!jc63ie=hl9^_!-3($i4$%r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '28b8-186-101-18-252.ngrok-free.app', '172.19.250.116']
-
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['*'] # ['localhost', '127.0.0.1', '28b8-186-101-18-252.ngrok-free.app', '172.19.250.116']
 
 # Application definition
 
@@ -45,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'users',
     'tickets',
+    'tasks'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -95,6 +93,13 @@ WSGI_APPLICATION = 'keta.wsgi.application'
 
 # JWT configurations for REST framework
 # https://pypi.org/project/djangorestframework-simplejwt/
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=30),  # Access token expiration time
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=1),  # Refresh token expiration time
+    # Other JWT settings...
+}
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

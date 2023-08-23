@@ -15,12 +15,15 @@ router.register(r'roles', JrolesListViewSet)
 router.register(r'sucursales', JsucursalesViewSet)
 router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
 router.register(r'tipospersonas', JtipospersonasViewSet)
-router.register(r'persona', JpersonasViewSet)
-router.register(r'usuario', JusuariosViewSet)
+router.register(r'personas', JpersonasViewSet)
+router.register(r'usuarios', JusuariosViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    # Not CRUD supported endpoints
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', CustomLogoutView.as_view(), name='logout_user'),
+    path('user_profile/<str:email>/', JusuarioListView.as_view(), name="profile"),
+    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='jsucursal_jdepartamentos'),
     ]

@@ -21,4 +21,6 @@ router.register(r'ticket', JproblemasViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    # Not CRUD supported endpoints
+    path('tiposproductosconceptos/<int:idtipoproducto>/', JtiposproductosJconceptosListView.as_view(), name='tiposproductosconceptos')
 ]
