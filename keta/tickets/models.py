@@ -230,6 +230,16 @@ class Jproblemas(models.Model):
         db_table = "jproblemas"
         ordering = ["-fechacreacion"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if isinstance(self.archivo, str):
+            self.archivo = self._parse_archivo(self.archivo)
+
+    def _parse_archivo(self, archivo_str):
+        if archivo_str:
+            return archivo_str[1:-1].split(',')
+        return []
+
     # TODO: the numeroticket should store a code that will help to identify this as
     #       parent ticket
     def save(self, *args, **kwargs):

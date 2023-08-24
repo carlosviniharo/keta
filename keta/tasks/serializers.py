@@ -3,9 +3,12 @@ from users.serializers import model_serializers
 from .models import *
 
 
-@model_serializers(Jtareasticket)
 class JtareasticketSerializer(serializers.HyperlinkedModelSerializer):
-    pass
+    archivo = serializers.ListField(child=serializers.CharField(), required=False)
+
+    class Meta:
+        model = Jtareasticket
+        fields = tuple(f.name for f in Jtareasticket._meta.fields) + ("url",)
 
 
 @model_serializers(Jestadotareas)

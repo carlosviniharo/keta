@@ -57,5 +57,15 @@ class Jtareasticket(models.Model):
     class Meta:
         db_table = 'jtareasticket'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if isinstance(self.archivo, str):
+            self.archivo = self._parse_archivo(self.archivo)
+
+    def _parse_archivo(self, archivo_str):
+        if archivo_str:
+            return archivo_str[1:-1].split(',')
+        return []
+
     def __str__(self):
         return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"

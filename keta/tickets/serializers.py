@@ -60,7 +60,10 @@ class JtipostransaccionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-@model_serializers(Jproblemas)
 class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
-    pass
+    archivo = serializers.ListField(child=serializers.CharField(), required=False)
+    class Meta:
+        model = Jproblemas
+        fields = tuple(f.name for f in Jproblemas._meta.fields) + ("url",)
+
 

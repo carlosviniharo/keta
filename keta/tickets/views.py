@@ -133,7 +133,8 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 tarjeta_serializer.is_valid(raise_exception=True)
             except serializers.ValidationError:
                 custom_response = {
-                    "Validation failed:": "Ticket type 'Reclamos Tarjetas',  please include tarjeta in the request"
+                    "Validation failed:": "Ticket type 'Reclamos Tarjetas',  "
+                                          "please include tarjeta in the request"
                 }
                 raise ValidationError(custom_response)
 
@@ -156,11 +157,12 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 idcanalrecepcion=canal_recepcion,
                 monto=monto,
                 idtipocomentario=idtipocomentario,
-            ).exists()
+            )
 
-            if similar_tickets_exist:
+            if similar_tickets_exist.exists():
                 return Response(
-                    {"detail": f"The ticket already exists"},
+                    {"detail": f"The ticket already exists and the "
+                               f"number of this ticket is {similar_tickets_exist[0].numeroticket}"},
                     status=status.HTTP_208_ALREADY_REPORTED,
                 )
 
