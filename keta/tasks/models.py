@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
@@ -36,13 +37,14 @@ class Jestadotareas(models.Model):
         return self.color
 
 
+# TODO tests a example of store several base64 strings in archivo
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
     indicador = models.CharField(max_length=2, choices=[value for value in indicators], blank=True, null=True)
     fechaasignacion = models.DateTimeField(auto_now=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
-    archivo = models.CharField(max_length=500, blank=True, null=True)
+    archivo = ArrayField(models.TextField(blank=True, null=True), default=list)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     fkidtarea = models.ForeignKey('self', models.DO_NOTHING, db_column='fkidtarea', blank=True, null=True)
     idestado = models.ForeignKey(Jestados, models.DO_NOTHING, db_column='idestado', blank=True, null=True)

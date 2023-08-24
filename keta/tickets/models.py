@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from users.models import *
@@ -221,7 +222,8 @@ class Jproblemas(models.Model):
     idsucursal = models.ForeignKey(
         Jsucursales, models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
     )
-    archivo = models.CharField(max_length=500, blank=True, null=True)
+    archivo = ArrayField(models.TextField(blank=True, null=True), default=list)
+
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
