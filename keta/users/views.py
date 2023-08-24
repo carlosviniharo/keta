@@ -8,7 +8,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
-from .serializers import *
+from .serializers import (
+    JusuariosSerializer, JpersonasSerializer, JcargosSerializer,
+    JdepartamentosSerializer, JcorporacionesSerializer, JgenerosSerializer,
+    JgeografiaSerializer, JrolesSerializer, JsucursalesSerializer,
+    JtiposidentificacionesSerializer, JtipospersonasSerializer,
+)
+from .models import (
+    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
+    Jcorporaciones, Jgeneros, Jgeografia, Jroles,
+    Jsucursales, Jtiposidentificaciones, Jtipospersonas,
+)
 
 
 # Views for registering users and persons
@@ -17,8 +27,14 @@ class JusuariosViewSet(viewsets.ModelViewSet):
     serializer_class = JusuariosSerializer
 
     def create(self, request, *args, **kwargs):
-        persona_serializer = JpersonasSerializer(data=request.data["persona"], context={'request': request})
-        usuario_serializer = JusuariosSerializer(data=request.data["usuario"], context={'request': request})
+        persona_serializer = JpersonasSerializer(
+            data=request.data["persona"],
+            context={'request': request}
+        )
+        usuario_serializer = JusuariosSerializer(
+            data=request.data["usuario"],
+            context={'request': request}
+        )
 
         # Extract the data from the serializer
         persona_serializer.is_valid(raise_exception=True)

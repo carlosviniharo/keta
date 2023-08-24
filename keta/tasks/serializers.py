@@ -1,6 +1,7 @@
 from rest_framework import serializers
+
 from users.serializers import model_serializers
-from .models import *
+from .models import Jtareasticket, Jestadotareas, Jestados
 
 
 class JtareasticketSerializer(serializers.HyperlinkedModelSerializer):

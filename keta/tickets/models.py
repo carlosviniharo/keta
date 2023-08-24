@@ -14,6 +14,8 @@ class Jcanalesrecepciones(models.Model):
     class Meta:
         db_table = "jcanalesrecepciones"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcioncanalrecepcion
 
@@ -27,6 +29,8 @@ class Jclasestarjetas(models.Model):
     class Meta:
         db_table = "jclasestarjetas"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcionclasetarjeta
 
@@ -39,6 +43,8 @@ class Jtiposproductos(models.Model):
 
     class Meta:
         db_table = "jtiposproductos"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciontipoproducto
@@ -60,6 +66,8 @@ class Jconceptos(models.Model):
     class Meta:
         db_table = "jconceptos"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcionconcepto
 
@@ -72,6 +80,8 @@ class Jmarcastarjetas(models.Model):
 
     class Meta:
         db_table = "jmarcastarjetas"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripcionmarcatarjeta
@@ -87,6 +97,8 @@ class Jprioridades(models.Model):
     class Meta:
         db_table = "jprioridades"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcionprioridad
 
@@ -99,6 +111,8 @@ class Jtipostarjetas(models.Model):
 
     class Meta:
         db_table = "jtipostarjetas"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciontipotarjeta
@@ -132,6 +146,8 @@ class Jtarjetas(models.Model):
     class Meta:
         db_table = "jtarjetas"
 
+    objects = models.Manager()
+
     def __str__(self):
         return f"{self.idmarcatarjeta} - {self.idtipotarjeta} - {self.idclasetarjeta}"
 
@@ -145,6 +161,8 @@ class Jtiposcomentarios(models.Model):
     class Meta:
         db_table = "jtiposcomentarios"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripciontipocomentario
 
@@ -156,6 +174,8 @@ class Jtickettipos(models.Model):
 
     class Meta:
         db_table = "jtickettipos"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciontipoticket
@@ -169,6 +189,8 @@ class Jtipostransacciones(models.Model):
 
     class Meta:
         db_table = "jtipostransacciones"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciontipotransaccion
@@ -229,6 +251,8 @@ class Jproblemas(models.Model):
     class Meta:
         db_table = "jproblemas"
         ordering = ["-fechacreacion"]
+
+    objects = models.Manager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

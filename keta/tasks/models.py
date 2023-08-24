@@ -18,6 +18,8 @@ class Jestados(models.Model):
     class Meta:
         db_table = 'jestados'
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcionestado
 
@@ -32,6 +34,8 @@ class Jestadotareas(models.Model):
 
     class Meta:
         db_table = 'jestadotareas'
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.color
@@ -56,6 +60,8 @@ class Jtareasticket(models.Model):
 
     class Meta:
         db_table = 'jtareasticket'
+
+    objects = models.Manager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

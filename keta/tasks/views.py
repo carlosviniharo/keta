@@ -5,8 +5,8 @@ from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
-from .serializers import *
-from .models import Jtareasticket
+from .serializers import JtareasticketSerializer, JestadotareasSerializers, JestadosSerializer
+from .models import Jtareasticket, Jestadotareas, Jestados
 
 
 # TODO The class only handles parent tasks please include support tasks.
@@ -24,6 +24,13 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         ticket = task_serializer.validated_data["idproblema"]
 
         if check_indicator == "P":
+            existing_task = Jtareasticket.objects.filter(idproblema=ticket).first()
+            if existing_task:
+                return Response(
+                    {"error": "A task for this ticket already exists, "
+                              f"the task ID is {existing_task.idtarea}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             priority = ticket.idprioridad
             max_days_resolution = int(self.get_time_priority(priority)[1])
             # TODO : check the type for the archivo as this  must be a list

@@ -1,6 +1,11 @@
 from django.db import IntegrityError
 from rest_framework import serializers
-from .models import *
+
+from .models import (
+    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
+    Jcorporaciones, Jgeneros, Jgeografia, Jroles,
+    Jsucursales, Jtiposidentificaciones, Jtipospersonas,
+)
 
 
 # Decorator wrapper for the serializers.
@@ -66,16 +71,16 @@ class JtipospersonasSerializer(serializers.HyperlinkedModelSerializer):
 
 @model_serializers(Jusuarios)
 class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
-    def create(self, validate_data):
+    def create(self, validated_data):
         try:
             user = Jusuarios.objects.create(
-                email=validate_data['email'],
-                username=validate_data['username'],
-                idrol=validate_data['idrol'],
-                iddepartamento=validate_data['iddepartamento'],
-                idcargo=validate_data['idcargo']
+                email=validated_data['email'],
+                username=validated_data['username'],
+                idrol=validated_data['idrol'],
+                iddepartamento=validated_data['iddepartamento'],
+                idcargo=validated_data['idcargo']
             )
-            user.set_password(validate_data['password'])
+            user.set_password(validated_data['password'])
             user.save()
             return user
         except IntegrityError as e:
@@ -88,5 +93,3 @@ class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
             # For example, you can log the error or raise a custom exception
             print("Error: Required key is missing:", e)
             return None
-
-

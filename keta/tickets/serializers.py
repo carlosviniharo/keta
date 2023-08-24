@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from .models import *
-from users.models import *
+
 from users.serializers import model_serializers
+from .models import (
+    Jcanalesrecepciones, Jclasestarjetas, Jtiposproductos,
+    Jconceptos, Jmarcastarjetas, Jprioridades, Jtipostarjetas,
+    Jtarjetas, Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
+    Jproblemas
+)
 
 
 @model_serializers(Jcanalesrecepciones)
@@ -34,7 +39,6 @@ class JprioridadesSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-
 @model_serializers(Jtipostarjetas)
 class JtipostarjetasSerializer(serializers.HyperlinkedModelSerializer):
     pass
@@ -62,8 +66,7 @@ class JtipostransaccionesSerializer(serializers.HyperlinkedModelSerializer):
 
 class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
     archivo = serializers.ListField(child=serializers.CharField(), required=False)
+
     class Meta:
         model = Jproblemas
         fields = tuple(f.name for f in Jproblemas._meta.fields) + ("url",)
-
-

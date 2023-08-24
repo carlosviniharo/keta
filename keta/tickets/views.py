@@ -4,8 +4,20 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
-from .serializers import *
-from users.serializers import *
+from .serializers import (
+    JcanalesrecepcionesSerializer, JclasestarjetasSerializer, JtiposproductosSerializer,
+    JconceptosSerializer, JmarcastarjetasSerializer, JprioridadesSerializer,
+    JtipostarjetasSerializer, JtarjetasSerializer, JtiposcomentariosSerializer,
+    JtickettiposSerializer, JtipostransaccionesSerializer, JproblemasSerializer,
+)
+from .models import (
+    Jcanalesrecepciones, Jclasestarjetas, Jtiposproductos,
+    Jconceptos, Jmarcastarjetas, Jprioridades, Jtipostarjetas,
+    Jtarjetas, Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
+    Jproblemas
+)
+from users.serializers import JpersonasSerializer
+from users.models import Jpersonas
 
 
 class JcanalesrecepcionesViewSet(viewsets.ModelViewSet):
@@ -122,10 +134,6 @@ class JproblemasViewSet(viewsets.ModelViewSet):
         problemas_serializer.is_valid(raise_exception=True)
 
         tipo_ticket = problemas_serializer.validated_data["idtipoticket"]
-        canal_recepcion = problemas_serializer.validated_data["idcanalrecepcion"]
-        monto = problemas_serializer.validated_data["monto"]
-        idtipocomentario = problemas_serializer.validated_data["idtipocomentario"]
-
         data_ticket = problemas_serializer.validated_data
 
         if tipo_ticket.idtipoticket == 2:
@@ -154,9 +162,9 @@ class JproblemasViewSet(viewsets.ModelViewSet):
             similar_tickets_exist = self.queryset.filter(
                 idpersona=persona,
                 idtipoticket=tipo_ticket,
-                idcanalrecepcion=canal_recepcion,
-                monto=monto,
-                idtipocomentario=idtipocomentario,
+                idcanalrecepcion=problemas_serializer.validated_data["idcanalrecepcion"],
+                monto=problemas_serializer.validated_data["monto"],
+                idtipocomentario=problemas_serializer.validated_data["idtipocomentario"],
             )
 
             if similar_tickets_exist.exists():

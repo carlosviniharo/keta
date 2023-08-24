@@ -13,6 +13,8 @@ class Jcargos(models.Model):
     class Meta:
         db_table = "jcargos"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripcioncargo
 
@@ -54,6 +56,8 @@ class Jcorporaciones(models.Model):
     class Meta:
         db_table = "jcorporaciones"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.nombrecorporacion
 
@@ -76,6 +80,8 @@ class Jdepartamentos(models.Model):
     class Meta:
         db_table = "jdepartamentos"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.nombredepartamento
 
@@ -88,6 +94,8 @@ class Jgeneros(models.Model):
 
     class Meta:
         db_table = "jgeneros"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciongenero
@@ -114,6 +122,8 @@ class Jgeografia(models.Model):
 
     class Meta:
         db_table = "jgeografia"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.nombre
@@ -145,6 +155,8 @@ class Jpersonas(models.Model):
     class Meta:
         db_table = "jpersonas"
 
+    objects = models.Manager()
+
     def __str__(self):
         return f"Nombre : {self.nombre} - ID : {self.identificacion}"
 
@@ -162,6 +174,8 @@ class Jroles(models.Model):
 
     class Meta:
         db_table = "jroles"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.nombrerol
@@ -194,6 +208,8 @@ class Jsucursales(models.Model):
     class Meta:
         db_table = "jsucursales"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.nombresucursal
 
@@ -221,6 +237,8 @@ class Jtiposidentificaciones(models.Model):
     class Meta:
         db_table = "jtiposidentificaciones"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.descripciontipoidentificacion
 
@@ -233,6 +251,8 @@ class Jtipospersonas(models.Model):
 
     class Meta:
         db_table = "jtipospersonas"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.descripciontipopersona
