@@ -1,6 +1,6 @@
 import re
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from .serializers import JtareasticketSerializer, JestadotareasSerializers, Jest
 from .models import Jtareasticket, Jestadotareas, Jestados
 
 
-# TODO The class only handles parent tasks please include support tasks.
+# TODO Fix how the files should be appended. They should go to main Task.
 class JtareasticketViewSet(viewsets.ModelViewSet):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
@@ -19,41 +19,42 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             data=request.data, context={"request": request}
         )
         task_serializer.is_valid(raise_exception=True)
+        task_data = task_serializer.validated_data
+        is_father = True
         # Check if the problem is Parent
-        check_indicator = task_serializer.validated_data["indicador"]
-        ticket = task_serializer.validated_data["idproblema"]
-
+        check_indicator = task_data['indicador']
         if check_indicator == "P":
-            existing_task = Jtareasticket.objects.filter(idproblema=ticket).first()
-            if existing_task:
-                return Response(
-                    {"error": "A task for this ticket already exists, "
-                              f"the task ID is {existing_task.idtarea}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            priority = ticket.idprioridad
-            max_days_resolution = int(self.get_time_priority(priority)[1])
-            # TODO : check the type for the archivo as this  must be a list
-            if task_serializer.validated_data.get("archivo", ""):
-                task_serializer.validated_data["archivo"] += ticket.archivo
-            else:
-                task_serializer.validated_data["archivo"] = ticket.archivo
+            ticket = task_data['idproblema']
+        elif check_indicator == "A":
+            main_task = task_data['tareaprincipal']
+            ticket = main_task.idproblema
+            is_father = False
 
-            task_serializer.validated_data["idprioridad"] = priority
-            task_serializer.validated_data[
-                "fechaentrega"
-            ] = timezone.now() + timezone.timedelta(days=max_days_resolution)
+        priority = ticket.idprioridad
+        max_days_resolution = int(self.get_time_priority(priority)[1])
+        task_data["idprioridad"] = priority
+        task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=max_days_resolution)
 
-            task = Jtareasticket.objects.create(**task_serializer.validated_data)
-            task.tareaprincipal = task
-
-            task_resp = JtareasticketSerializer(task, context={"request": request})
-
-            return Response(task_resp.data, status=status.HTTP_201_CREATED)
+        # TODO : check the type for the archivo as this  must be a list
+        if task_data.get("archivo", ""):
+            task_data["archivo"] += ticket.archivo
         else:
-            return Response(
-                {"error": "Include indicator value"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            task_data["archivo"] = ticket.archivo
+
+        try:
+            task = Jtareasticket.objects.create(**task_data)
+        except ValidationError as e:
+            return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
+
+        task.tareaprincipal = task
+
+        if not is_father:
+            task.tareaprincipal = main_task
+
+        task.save()
+        task_resp = JtareasticketSerializer(task, context={"request": request})
+
+        return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
     @staticmethod
     def get_time_priority(priority):

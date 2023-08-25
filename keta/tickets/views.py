@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import viewsets, status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ValidationError
 
 from .serializers import (
     JcanalesrecepcionesSerializer, JclasestarjetasSerializer, JtiposproductosSerializer,
@@ -115,11 +115,21 @@ class JtiposproductosJconceptosListView(ListAPIView):
 #  and canal de recepcion.Also, include the number of ticket that is repeating.
 
 
+def create_tarjeta(data):
+    tarjeta, created = Jtarjetas.objects.get_or_create(
+        idmarcatarjeta=data["idmarcatarjeta"],
+        idtipotarjeta=data["idtipotarjeta"],
+        idclasetarjeta=data["idclasetarjeta"],
+        defaults=data,
+    )
+    return tarjeta, created
+
+
 class JproblemasViewSet(viewsets.ModelViewSet):
     queryset = Jproblemas.objects.all()
     serializer_class = JproblemasSerializer
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         personas_serializer = JpersonasSerializer(
             data=request.data.get("persona"), context={"request": request}
         )
@@ -146,7 +156,7 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 }
                 raise ValidationError(custom_response)
 
-            tarjeta, created_tarjeta = self.create_tarjeta(
+            tarjeta, created_tarjeta = create_tarjeta(
                 tarjeta_serializer.validated_data
             )
             data_ticket["idtarjeta"] = tarjeta
@@ -159,22 +169,13 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 personas_serializer.validated_data
             )
 
-            similar_tickets_exist = self.queryset.filter(
-                idpersona=persona,
-                idtipoticket=tipo_ticket,
-                idcanalrecepcion=problemas_serializer.validated_data["idcanalrecepcion"],
-                monto=problemas_serializer.validated_data["monto"],
-                idtipocomentario=problemas_serializer.validated_data["idtipocomentario"],
-            )
+            data_ticket["idpersona"] = persona
 
-            if similar_tickets_exist.exists():
-                return Response(
-                    {"detail": f"The ticket already exists and the "
-                               f"number of this ticket is {similar_tickets_exist[0].numeroticket}"},
-                    status=status.HTTP_208_ALREADY_REPORTED,
-                )
+            try:
+                ticket = Jproblemas.objects.create(**data_ticket)
+            except ValidationError as e:
+                return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
-            ticket = self.create_ticket(persona, data_ticket)
             person_serializer = JpersonasSerializer(
                 persona, context={"request": request}
             )
@@ -201,16 +202,3 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 setattr(persona, attr, value)
             persona.save()
         return persona, created
-
-    def create_tarjeta(self, data):
-        tarjeta, created = Jtarjetas.objects.get_or_create(
-            idmarcatarjeta=data["idmarcatarjeta"],
-            idtipotarjeta=data["idtipotarjeta"],
-            idclasetarjeta=data["idclasetarjeta"],
-            defaults=data,
-        )
-        return tarjeta, created
-
-    def create_ticket(self, persona, data_ticket):
-        ticket = Jproblemas.objects.create(idpersona=persona, **data_ticket)
-        return ticket

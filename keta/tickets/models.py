@@ -1,7 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.db import models
 
-from users.models import *
+from users.models import Jusuarios, Jpersonas, Jsucursales
 from .utils.helper import generate_ticket_id
 
 
@@ -264,13 +265,27 @@ class Jproblemas(models.Model):
             return archivo_str[1:-1].split(',')
         return []
 
-    # TODO: the numeroticket should store a code that will help to identify this as
-    #       parent ticket
     def save(self, *args, **kwargs):
+        existing_instances = Jproblemas.objects.filter(
+            idusuario=self.idusuario,
+            idtipotransaccion=self.idtipotransaccion,
+            idtipocomentario=self.idtipocomentario,
+            idpersona=self.idpersona,
+            idtipoticket=self.idtipoticket,
+            idprioridad=self.idprioridad,
+            monto=self.monto
+        ).exclude(pk=self.pk)
+
+        if existing_instances.exists():
+            raise ValidationError(
+                f"A record with similar data already exists in "
+                f" ticket {existing_instances[0].numeroticket}"
+            )
+
         if not self.numeroticket:
             self.numeroticket = generate_ticket_id()
 
-        super(Jproblemas, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.descripcionasunto

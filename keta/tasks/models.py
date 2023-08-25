@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.db import models
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
@@ -60,6 +61,7 @@ class Jtareasticket(models.Model):
 
     class Meta:
         db_table = 'jtareasticket'
+        ordering = ["-fechaasignacion"]
 
     objects = models.Manager()
 
@@ -72,6 +74,21 @@ class Jtareasticket(models.Model):
         if archivo_str:
             return archivo_str[1:-1].split(',')
         return []
+
+    def save(self, *args, **kwargs):
+        if self.indicador == "P":
+            # Check for existing instances with the same idproblema and idusuarioasignado
+            existing_instances = Jtareasticket.objects.filter(
+                idproblema=self.idproblema,
+                idusuarioqasigno=self.idusuarioqasigno,
+                indicador="P"
+            ).exclude(pk=self.pk)
+
+            if existing_instances.exists():
+                raise ValidationError(f"A record with the ticket ID {self.idproblema.numeroticket} "
+                                      f"and {self.idusuarioasignado.email} already exists.")
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"

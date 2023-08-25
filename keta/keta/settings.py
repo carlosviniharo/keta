@@ -90,6 +90,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'keta.wsgi.application'
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # JWT configurations for REST framework
 # https://pypi.org/project/djangorestframework-simplejwt/
