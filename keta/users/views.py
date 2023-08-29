@@ -28,12 +28,10 @@ class JusuariosViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         persona_serializer = JpersonasSerializer(
-            data=request.data["persona"],
-            context={'request': request}
+            data=request.data["persona"], context={'request': request}
         )
         usuario_serializer = JusuariosSerializer(
-            data=request.data["usuario"],
-            context={'request': request}
+            data=request.data["usuario"], context={'request': request}
         )
 
         # Extract the data from the serializer
@@ -45,14 +43,10 @@ class JusuariosViewSet(viewsets.ModelViewSet):
         # Use a database transaction to ensure atomicity
         with transaction.atomic():
             # Create the user instance
-            existing_persona, created = Jpersonas.objects.get_or_create(
+            existing_persona, created = Jpersonas.objects.update_or_create(
                 identificacion=identificacion,
-                defaults={"idpersona": None, **persona_serializer.validated_data}
+                defaults=persona_serializer.validated_data
             )
-            if not created:
-                for attr, value in persona_serializer.validated_data.items():
-                    setattr(existing_persona, attr, value)
-                existing_persona.save()
 
             usuario_data = usuario_serializer.validated_data
             usuario_data["idpersona"] = existing_persona
@@ -75,18 +69,19 @@ class JpersonasViewSet(viewsets.ModelViewSet):
     serializer_class = JpersonasSerializer
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        persona, created = Jpersonas.objects.get_or_create(
-            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+    
+        persona, created = Jpersonas.objects.update_or_create(
+            identificacion=serializer.validated_data["identificacion"],
+            defaults=serializer.validated_data,
         )
-        if not created:
-            for attr, value in data.items():
-                setattr(persona, attr, value)
-            persona.save()
-
-        serializer = self.serializer_class(persona)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        person_serializer = JpersonasSerializer(persona, context={'request': request})
+    
+        return Response(
+            {"new person": f"{created}", "persona": person_serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 # View from retrieving all static tables.

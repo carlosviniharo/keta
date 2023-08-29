@@ -14,7 +14,7 @@ from .serializers import JtareasticketSerializer, JestadotareasSerializers, Jest
 from .models import Jtareasticket, Jestadotareas, Jestados
 
 
-# TODO Fix how the files should be appended. They should go to main Task.
+# TODO Fix the field archivo as this would be a table
 class JtareasticketViewSet(viewsets.ModelViewSet):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
@@ -32,7 +32,11 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             ticket = task_data.get('idproblema')
             if not ticket:
                 return Response({"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST)
-
+            if not ticket.status:
+                return Response(
+                    {"detail": f"A main task with the ticket index {ticket.idproblema} already exits"},
+                    status=status.HTTP_409_CONFLICT,
+                )
         elif check_indicator == "A":
             ticket = task_data.get('tareaprincipal')
             if not ticket:
@@ -47,7 +51,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         task_data["idprioridad"] = priority
         task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=int(max_days_resolution))
 
-        task_data["archivo"] = task_data.get("archivo", []) + ticket.archivo
+        # task_data["archivo"] = task_data.get("archivo", []) + ticket.archivo
 
         try:
             with transaction.atomic():

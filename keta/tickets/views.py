@@ -9,6 +9,7 @@ from .serializers import (
     JconceptosSerializer, JmarcastarjetasSerializer, JprioridadesSerializer,
     JtipostarjetasSerializer, JtarjetasSerializer, JtiposcomentariosSerializer,
     JtickettiposSerializer, JtipostransaccionesSerializer, JproblemasSerializer,
+    JpersonasSerializer,
 )
 from .models import (
     Jcanalesrecepciones, Jclasestarjetas, Jtiposproductos,
@@ -16,7 +17,7 @@ from .models import (
     Jtarjetas, Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
     Jproblemas
 )
-from users.serializers import JpersonasSerializer
+
 from users.models import Jpersonas
 
 

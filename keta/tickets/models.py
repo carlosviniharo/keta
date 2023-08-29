@@ -245,7 +245,7 @@ class Jproblemas(models.Model):
     idsucursal = models.ForeignKey(
         Jsucursales, models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
     )
-    archivo = ArrayField(models.TextField(blank=True, null=True), default=list)
+    archivo = models.TextField(blank=True, null=True)
 
     fecharegistro = models.DateTimeField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True, default=True)
@@ -256,15 +256,15 @@ class Jproblemas(models.Model):
 
     objects = models.Manager()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if isinstance(self.archivo, str):
-            self.archivo = self._parse_archivo(self.archivo)
-
-    def _parse_archivo(self, archivo_str):
-        if archivo_str:
-            return archivo_str[1:-1].split(',')
-        return []
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     if isinstance(self.archivo, str):
+    #         self.archivo = self._parse_archivo(self.archivo)
+    #
+    # def _parse_archivo(self, archivo_str):
+    #     if archivo_str:
+    #         return archivo_str[1:-1].split(',')
+    #     return []
 
     def save(self, *args, **kwargs):
         existing_instances = Jproblemas.objects.filter(

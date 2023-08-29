@@ -1,11 +1,12 @@
 from rest_framework import serializers
 
+from users.models import Jpersonas
 from users.serializers import model_serializers
 from .models import (
     Jcanalesrecepciones, Jclasestarjetas, Jtiposproductos,
     Jconceptos, Jmarcastarjetas, Jprioridades, Jtipostarjetas,
     Jtarjetas, Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
-    Jproblemas
+    Jproblemas,
 )
 
 
@@ -33,6 +34,10 @@ class JconceptosSerializer(serializers.HyperlinkedModelSerializer):
 class JmarcastarjetasSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
+
+@model_serializers(Jpersonas)
+class JpersonasSerializer(serializers.HyperlinkedModelSerializer):
+    pass
 
 @model_serializers(Jprioridades)
 class JprioridadesSerializer(serializers.HyperlinkedModelSerializer):

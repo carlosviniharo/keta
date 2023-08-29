@@ -49,7 +49,7 @@ class Jtareasticket(models.Model):
     indicador = models.CharField(max_length=2, choices=[value for value in indicators], blank=True, null=True)
     fechaasignacion = models.DateTimeField(auto_now=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
-    archivo = ArrayField(models.TextField(blank=True, null=True), default=list)
+    archivo = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     fkidtarea = models.ForeignKey('self', models.DO_NOTHING, db_column='fkidtarea', blank=True, null=True)
     idestado = models.ForeignKey(Jestados, models.DO_NOTHING, db_column='idestado', blank=True, null=True)
@@ -65,30 +65,15 @@ class Jtareasticket(models.Model):
 
     objects = models.Manager()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if isinstance(self.archivo, str):
-            self.archivo = self._parse_archivo(self.archivo)
-
-    def _parse_archivo(self, archivo_str):
-        if archivo_str:
-            return archivo_str[1:-1].split(',')
-        return []
-
-    def save(self, *args, **kwargs):
-        # if self.indicador == "P":
-        #     # Check for existing instances with the same idproblema and idusuarioasignado
-        #     existing_instances = Jtareasticket.objects.filter(
-        #         idproblema=self.idproblema,
-        #         idusuarioqasigno=self.idusuarioqasigno,
-        #         indicador="P"
-        #     ).exclude(pk=self.pk)
-
-        if self.indicador == "P" and not self.idproblema.status:
-            raise ValidationError(f"A main task with the ticket index {self.idproblema.idproblema} "
-                                  f"already exits")
-
-        super().save(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     if isinstance(self.archivo, str):
+    #         self.archivo = self._parse_archivo(self.archivo)
+    #
+    # def _parse_archivo(self, archivo_str):
+    #     if archivo_str:
+    #         return archivo_str[1:-1].split(',')
+    #     return []
 
     def __str__(self):
         return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"

@@ -84,6 +84,7 @@ class JusuariosRegisterViewTestCase(APITestCase):
             reverse("jusuarios-list"), data_second_account, format="json"
         )
         self.assertEqual(Jusuarios.objects.count(), 2)
+        # pdb.set_trace()
         self.assertEqual(Jpersonas.objects.count(), 1)
         # Check the if the fields are updated rightfully.
         persona_updated = Jpersonas.objects.first()

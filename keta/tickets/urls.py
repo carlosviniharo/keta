@@ -1,7 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from tickets.views import *
+from tickets.views import (
+    JcanalesrecepcionesViewSet, JclasestarjetasViewSet, JtiposproductosViewSet,
+    JconceptosViewSet, JmarcastarjetasViewSet, JprioridadesViewSet,
+    JtipostarjetasViewSet, JtarjetasViewSet, JtiposcomentariosViewSet,
+    JtickettiposViewSet, JtipostransaccionesViewSet, JpersonasListView,
+    JproblemasViewSet, JtiposproductosJconceptosListView,
+)
 
 router = DefaultRouter()
 router.register(r'canalesrecepciones', JcanalesrecepcionesViewSet)
@@ -15,7 +21,7 @@ router.register(r'tarjetas', JtarjetasViewSet)
 router.register(r'tiposcomentarios', JtiposcomentariosViewSet)
 router.register(r'tickettipos', JtickettiposViewSet)
 router.register(r'tipostransacciones', JtipostransaccionesViewSet)
-router.register(r'id_persona', JpersonasListView)
+router.register(r'personaidentificacion', JpersonasListView, basename='custom-personas')
 router.register(r'ticket', JproblemasViewSet)
 
 

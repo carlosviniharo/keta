@@ -1,10 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenRefreshView
-)
-from .views import *
+from rest_framework_simplejwt.views import TokenRefreshView
 
+from .views import (
+    JcargosViewSet, JdepartamentosViewSet, JcorporacionesViewSet,
+    JgenerosViewSet, JgeografiaViewSet, JrolesListViewSet,
+    JsucursalesViewSet, JtiposidentificacionesViewSet, JtipospersonasViewSet,
+    JpersonasViewSet, JusuariosViewSet, CustomTokenObtainPairView,
+    CustomLogoutView, JusuarioListView, JsucursalJdepartamentosListView,
+)
 router = DefaultRouter()
 router.register(r'cargos', JcargosViewSet)
 router.register(r'departamentos', JdepartamentosViewSet)
