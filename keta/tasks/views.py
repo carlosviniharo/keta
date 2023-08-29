@@ -90,9 +90,31 @@ class JestadosViewSet(viewsets.ModelViewSet):
     queryset = Jestados.objects.all()
     serializer_class = JestadosSerializer
 
+    def create(self, request, *args, **kwargs):
+        state_serializer = JestadosSerializer(
+            data=request.data,
+            context={"request": request})
+        state_serializer.is_valid(raise_exception=True)
+        task = state_serializer.validated_data['idtarea']
+        fechaasignacion = task.get("fechaasignacion")
+        fechaentrega = task.get("fechaasignacion")
+        delta_time = (fechaentrega - fechaasignacion) / 3
+        colours = {"green": 1, "yellow": 2, "red": 3}
+        for colour, factor in colours:
+            state_colour = state_serializer.validated_data
+            state_colour["color"] = colour
+            state_colour["tiempofinal"] = fechaasignacion + (factor * delta_time)
+            Jestados.objects.create(**state_colour)
+        return Response(status=status.HTTP_200_OK)
+
+
+class StopLightViewSet(viewsets.ModelViewSet):
+    pass
+
 
 class FilteredTaskView(ListAPIView):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['idusuarioasignado__idusuario', 'idestado__idestado']
+

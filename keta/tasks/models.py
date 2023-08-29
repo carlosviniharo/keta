@@ -27,8 +27,10 @@ class Jestados(models.Model):
 
 class Jestadotareas(models.Model):
     idestadotarea = models.AutoField(primary_key=True)
-    diaoptimo = models.BigIntegerField(blank=True, null=True)
-    diarequerido = models.BigIntegerField(blank=True, null=True)
+    tiempooptimo = models.DateTimeField(blank=True, null=True)
+    tiemporequerido = models.DateTimeField(blank=True, null=True)
+    tiempoinicial = models.DateTimeField(blank=True, null=True)
+    tiempofinal = models.DateTimeField(blank=True, null=True)
     color = models.CharField(max_length=100, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     idtarea = models.ForeignKey('Jtareasticket', models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
