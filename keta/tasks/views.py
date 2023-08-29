@@ -1,10 +1,14 @@
 import re
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import transaction
 from django.utils import timezone
-from rest_framework import viewsets, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, status, filters
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
+from tickets.models import Jproblemas
 from .serializers import JtareasticketSerializer, JestadotareasSerializers, JestadosSerializer
 from .models import Jtareasticket, Jestadotareas, Jestados
 
@@ -21,39 +25,39 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         task_serializer.is_valid(raise_exception=True)
         task_data = task_serializer.validated_data
         is_father = True
-        # Check if the problem is Parent
-        check_indicator = task_data['indicador']
+        check_indicator = task_data.get('indicador')
+
         if check_indicator == "P":
-            ticket = task_data['idproblema']
+            ticket_id = task_data.get('idproblema')
+            if not ticket_id:
+                return Response({"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST)
+            ticket = Jproblemas.objects.filter(pk=ticket_id).first()
+
         elif check_indicator == "A":
-            main_task = task_data['tareaprincipal']
-            ticket = main_task.idproblema
+            main_task_id = task_data.get('tareaprincipal')
+            if not main_task_id:
+                return Response({"detail": "Missing tareaprincipal"}, status=status.HTTP_400_BAD_REQUEST)
             is_father = False
+        else:
+            return Response({"detail": "Invalid indicador"}, status=status.HTTP_400_BAD_REQUEST)
 
         priority = ticket.idprioridad
-        max_days_resolution = int(self.get_time_priority(priority)[1])
+        _, max_days_resolution = self.get_time_priority(priority)
         task_data["idprioridad"] = priority
-        task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=max_days_resolution)
+        task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=int(max_days_resolution))
 
-        # TODO : check the type for the archivo as this  must be a list
-        if task_data.get("archivo", ""):
-            task_data["archivo"] += ticket.archivo
-        else:
-            task_data["archivo"] = ticket.archivo
+        task_data["archivo"] = task_data.get("archivo", []) + ticket.archivo
 
         try:
-            task = Jtareasticket.objects.create(**task_data)
+            with transaction.atomic():
+                task = Jtareasticket.objects.create(**task_data)
+                if is_father:
+                    Jtareasticket.objects.filter(pk=task.pk).update(tareaprincipal=task)
+                    Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
         except ValidationError as e:
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
-        task.tareaprincipal = task
-
-        if not is_father:
-            task.tareaprincipal = main_task
-
-        task.save()
         task_resp = JtareasticketSerializer(task, context={"request": request})
-
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
     @staticmethod
@@ -80,3 +84,10 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
 class JestadosViewSet(viewsets.ModelViewSet):
     queryset = Jestados.objects.all()
     serializer_class = JestadosSerializer
+
+
+class FilteredTaskView(ListAPIView):
+    queryset = Jtareasticket.objects.all()
+    serializer_class = JtareasticketSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['idusuarioasignado__idusuario', 'idestado__idestado']

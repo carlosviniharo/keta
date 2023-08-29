@@ -248,6 +248,7 @@ class Jproblemas(models.Model):
     archivo = ArrayField(models.TextField(blank=True, null=True), default=list)
 
     fecharegistro = models.DateTimeField(blank=True, null=True)
+    status = models.BooleanField(blank=True, null=True, default=True)
 
     class Meta:
         db_table = "jproblemas"

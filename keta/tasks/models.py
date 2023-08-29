@@ -76,17 +76,17 @@ class Jtareasticket(models.Model):
         return []
 
     def save(self, *args, **kwargs):
-        if self.indicador == "P":
-            # Check for existing instances with the same idproblema and idusuarioasignado
-            existing_instances = Jtareasticket.objects.filter(
-                idproblema=self.idproblema,
-                idusuarioqasigno=self.idusuarioqasigno,
-                indicador="P"
-            ).exclude(pk=self.pk)
+        # if self.indicador == "P":
+        #     # Check for existing instances with the same idproblema and idusuarioasignado
+        #     existing_instances = Jtareasticket.objects.filter(
+        #         idproblema=self.idproblema,
+        #         idusuarioqasigno=self.idusuarioqasigno,
+        #         indicador="P"
+        #     ).exclude(pk=self.pk)
 
-            if existing_instances.exists():
-                raise ValidationError(f"A record with the ticket ID {self.idproblema.numeroticket} "
-                                      f"and {self.idusuarioasignado.email} already exists.")
+        if not self.iproblema.status:
+            raise ValidationError(f"A main task with the ticket index {self.idproblema.numeroticket}"
+                                  f"already exits")
 
         super().save(*args, **kwargs)
 
