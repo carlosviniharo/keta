@@ -2,6 +2,7 @@ import re
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, filters
@@ -28,16 +29,16 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         check_indicator = task_data.get('indicador')
 
         if check_indicator == "P":
-            ticket_id = task_data.get('idproblema')
-            if not ticket_id:
+            ticket = task_data.get('idproblema')
+            if not ticket:
                 return Response({"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST)
-            ticket = Jproblemas.objects.filter(pk=ticket_id).first()
 
         elif check_indicator == "A":
-            main_task_id = task_data.get('tareaprincipal')
-            if not main_task_id:
+            ticket = task_data.get('tareaprincipal')
+            if not ticket:
                 return Response({"detail": "Missing tareaprincipal"}, status=status.HTTP_400_BAD_REQUEST)
             is_father = False
+
         else:
             return Response({"detail": "Invalid indicador"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,7 +53,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             with transaction.atomic():
                 task = Jtareasticket.objects.create(**task_data)
                 if is_father:
-                    Jtareasticket.objects.filter(pk=task.pk).update(tareaprincipal=task)
+                    Jtareasticket.objects.filter(pk=task.pk).update(tareaprincipal=F("pk"))
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
         except ValidationError as e:
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)

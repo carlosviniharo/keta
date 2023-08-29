@@ -84,8 +84,8 @@ class Jtareasticket(models.Model):
         #         indicador="P"
         #     ).exclude(pk=self.pk)
 
-        if not self.iproblema.status:
-            raise ValidationError(f"A main task with the ticket index {self.idproblema.numeroticket}"
+        if self.indicador == "P" and not self.idproblema.status:
+            raise ValidationError(f"A main task with the ticket index {self.idproblema.idproblema} "
                                   f"already exits")
 
         super().save(*args, **kwargs)
