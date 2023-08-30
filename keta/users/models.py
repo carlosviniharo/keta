@@ -1,7 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .utils.helper import *
+from .utils.helper import get_public_ip_address, get_mac_address
 
 
 class Jcargos(models.Model):

@@ -39,6 +39,7 @@ class JmarcastarjetasSerializer(serializers.HyperlinkedModelSerializer):
 class JpersonasSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
+
 @model_serializers(Jprioridades)
 class JprioridadesSerializer(serializers.HyperlinkedModelSerializer):
     pass

@@ -77,7 +77,7 @@ class JpersonasViewSet(viewsets.ModelViewSet):
             defaults=serializer.validated_data,
         )
         person_serializer = JpersonasSerializer(persona, context={'request': request})
-    
+
         return Response(
             {"new person": f"{created}", "persona": person_serializer.data},
             status=status.HTTP_201_CREATED,

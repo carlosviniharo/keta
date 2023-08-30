@@ -1,7 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import *
-
+from .views import (
+    JestadosViewSet, JtareasticketViewSet, JestadotareasViewSet,
+    FilteredTaskView
+)
 router = DefaultRouter()
 router.register(r'estados', JestadosViewSet)
 router.register(r'tareas', JtareasticketViewSet)

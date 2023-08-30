@@ -4,7 +4,12 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
-from .models import *
+
+from .models import (
+    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
+    Jcorporaciones, Jgeneros, Jroles, Jsucursales,
+    Jtiposidentificaciones, Jtipospersonas
+)
 
 
 class JusuariosRegisterViewTestCase(APITestCase):
@@ -177,12 +182,12 @@ class ExampleViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.created_model.refresh_from_db()
         self.assertEqual(
-            getattr(self.created_model,f"descripcion{self.field_name}"),
+            getattr(self.created_model, f"descripcion{self.field_name}"),
             updated_data[f"descripcion{self.field_name}"])
 
     def test_delete_tipopersona(self):
         url = reverse(
-    f"{self.model_name}-detail",
+            f"{self.model_name}-detail",
             kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")}
         )
         # pdb.set_trace()

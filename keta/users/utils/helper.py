@@ -3,7 +3,6 @@ import socket
 import requests
 
 
-
 def get_mac_address():
     # Get the MAC address of the computer
     mac_address = ':'.join(['{:02x}'.format((uuid.getnode() >> ele) & 0xff) for ele in range(0, 48, 8)])
@@ -31,5 +30,3 @@ def get_public_ip_address():
         pass
 
     return None
-
-
