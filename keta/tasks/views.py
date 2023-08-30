@@ -115,7 +115,7 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
             fechaentrega = state_serializer.validated_data["tiemporequerido"]
             state_serializer.validated_data["tiempooptimo"] = task.fechaentrega
         else:
-            fechaentrega = task.fechaentrega
+            state_serializer.validated_data["tiempooptimo"] = fechaentrega = task.fechaentrega
 
         delta_time = (fechaentrega - fechaasignacion) / 3
         prev_tiempoentrega = fechaasignacion
