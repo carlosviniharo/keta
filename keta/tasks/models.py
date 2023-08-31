@@ -25,24 +25,6 @@ class Jestados(models.Model):
         return self.descripcionestado
 
 
-class Jestadotareas(models.Model):
-    idestadotarea = models.AutoField(primary_key=True)
-    tiempooptimo = models.DateTimeField(blank=True, null=True)
-    tiemporequerido = models.DateTimeField(blank=True, null=True)
-    tiempocolor = models.DateTimeField(blank=True, null=True)
-    color = models.CharField(max_length=100, blank=True, null=True)
-    fecharegistro = models.DateTimeField(blank=True, null=True)
-    idtarea = models.ForeignKey('Jtareasticket', models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
-
-    class Meta:
-        db_table = 'jestadotareas'
-
-    objects = models.Manager()
-
-    def __str__(self):
-        return self.color
-
-
 # TODO tests a example of store several base64 strings in archivo
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
@@ -78,3 +60,44 @@ class Jtareasticket(models.Model):
 
     def __str__(self):
         return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"
+
+
+class Jestadotareas(models.Model):
+    idestadotarea = models.AutoField(primary_key=True)
+    tiempooptimo = models.DateTimeField(blank=True, null=True)
+    tiemporequerido = models.DateTimeField(blank=True, null=True)
+    tiempoiniciocolor = models.DateTimeField(blank=True, null=True)
+    tiempocolor = models.DateTimeField(blank=True, null=True)
+    color = models.CharField(max_length=100, blank=True, null=True)
+    fecharegistro = models.DateTimeField(blank=True, null=True)
+    idtarea = models.ForeignKey(Jtareasticket, models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
+
+    class Meta:
+        db_table = 'jestadotareas'
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return self.color
+
+
+class Vtareaestadocolor(models.Model):
+    tarea = models.IntegerField(primary_key=True)
+    color = models.CharField(max_length=100)
+    tiempo_inicial_del_color = models.DateTimeField()
+    tiempo_final_del_color = models.DateTimeField()
+    tiempooptimo = models.DateTimeField()
+    tiemporequerido = models.DateTimeField()
+    idproblema = models.IntegerField()
+    usuario_asignador = models.EmailField()
+    usuario_asignado = models.EmailField()
+    descripcionprioridad = models.CharField(max_length=50)
+    descripcionestado = models.CharField(max_length=250)
+    now_state = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = "vtareaestadocolor"
+
+
+

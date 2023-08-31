@@ -1,6 +1,7 @@
 import re
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
@@ -8,14 +9,20 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from tickets.models import Jproblemas
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializers,
     JestadosSerializer,
+    EmailNotificationSerializer,
+    VtareaestadocolorSerializer,
 )
-from .models import Jtareasticket, Jestadotareas, Jestados
+from .models import (
+    Jtareasticket, Jestadotareas, Jestados,
+    Vtareaestadocolor,
+)
 
 
 # TODO Fix the field archivo as this would be a table
@@ -80,6 +87,11 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
         task_resp = JtareasticketSerializer(task, context={"request": request})
+        send_mail(
+            "You been assigned a new Ticket",
+            f"{task_resp.data}",
+            "example@mail.com",
+            [])
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
     @staticmethod
@@ -116,14 +128,18 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
             state_serializer.validated_data["tiempooptimo"] = task.fechaentrega
         else:
             state_serializer.validated_data["tiempooptimo"] = fechaentrega = task.fechaentrega
+        try:
+            delta_time = (fechaentrega - fechaasignacion) / 3
+        except TypeError:
+            return Response({"detail": "The ticket is missing the date of fechaentrega"}, status=status.HTTP_400_BAD_REQUEST)
 
-        delta_time = (fechaentrega - fechaasignacion) / 3
         prev_tiempoentrega = fechaasignacion
         created_objects = []
 
         for colour in ["green", "yellow", "red"]:
             state_colour = state_serializer.validated_data
             state_colour["color"] = colour
+            state_colour["tiempoiniciocolor"] = prev_tiempoentrega
             state_colour["tiempocolor"] = prev_tiempoentrega + delta_time
             prev_tiempoentrega = state_colour["tiempocolor"]
 
@@ -147,12 +163,32 @@ class JestadosViewSet(viewsets.ModelViewSet):
     serializer_class = JestadosSerializer
 
 
-class StopLightViewSet(viewsets.ModelViewSet):
-    pass
-
-
 class FilteredTaskView(ListAPIView):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["idusuarioasignado__idusuario", "idestado__idestado"]
+
+
+class VtareaestadocolorListView(ListAPIView):
+    queryset = Vtareaestadocolor.objects.all()
+    serializer_class = VtareaestadocolorSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["now_state"]
+
+
+class EmailNotificationView(APIView):
+    def post(self, request, format=None):
+        serializer = EmailNotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            subject = serializer.validated_data["subject"]
+            message = serializer.validated_data["message"]
+            recipient = serializer.validated_data["recipient"]
+
+            # Send the email
+            send_mail(subject, message, "example@mail.com", recipient)
+
+            return Response(
+                {"message": "Email notification sent."}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

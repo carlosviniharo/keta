@@ -95,6 +95,15 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+# Email settings for Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = None
+EMAIL_HOST_PASSWORD = None
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
 # JWT configurations for REST framework
 # https://pypi.org/project/djangorestframework-simplejwt/
 
