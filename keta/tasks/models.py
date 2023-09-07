@@ -44,19 +44,8 @@ class Jtareasticket(models.Model):
 
     class Meta:
         db_table = 'jtareasticket'
-        ordering = ["-fechaasignacion"]
 
     objects = models.Manager()
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     if isinstance(self.archivo, str):
-    #         self.archivo = self._parse_archivo(self.archivo)
-    #
-    # def _parse_archivo(self, archivo_str):
-    #     if archivo_str:
-    #         return archivo_str[1:-1].split(',')
-    #     return []
 
     def __str__(self):
         return f"{self.idtarea} - {self.indicador} - {self.idusuarioasignado}"
@@ -81,15 +70,19 @@ class Jestadotareas(models.Model):
         return self.color
 
 
+# Views models
 class Vtareaestadocolor(models.Model):
     tarea = models.IntegerField(primary_key=True)
+    descripciontarea = models.CharField()
     color = models.CharField(max_length=100)
     tiempo_inicial_del_color = models.DateTimeField()
     tiempo_final_del_color = models.DateTimeField()
     tiempooptimo = models.DateTimeField()
     tiemporequerido = models.DateTimeField()
     idproblema = models.IntegerField()
+    id_asignador = models.IntegerField()
     usuario_asignador = models.EmailField()
+    id_asignado = models.IntegerField()
     usuario_asignado = models.EmailField()
     descripcionprioridad = models.CharField(max_length=50)
     descripcionestado = models.CharField(max_length=250)
@@ -100,4 +93,23 @@ class Vtareaestadocolor(models.Model):
         db_table = "vtareaestadocolor"
 
 
+class Vtareas(models.Model):
+    tarea = models.IntegerField(primary_key=True)
+    ticket_no = models.CharField()
+    sucursal = models.CharField()
+    nombre_cliente = models.CharField()
+    apellido_cliente = models.CharField()
+    nombres = models.CharField()
+    apellidos = models.CharField()
+    cargo = models.CharField()
+    departamento_usuario_asignado = models.CharField()
+    sucursal_usuario_asignado = models.CharField()
+    tipo_reclamo = models.CharField()
+    tipo_comentario = models.CharField()
+    prioridad = models.CharField()
+    estado = models.CharField()
+    fechaentrega = models.DateTimeField()
 
+    class Meta:
+        managed = False
+        db_table = "vtareas"

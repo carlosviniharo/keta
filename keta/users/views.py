@@ -9,15 +9,32 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
 from .serializers import (
-    JusuariosSerializer, JpersonasSerializer, JcargosSerializer,
-    JdepartamentosSerializer, JcorporacionesSerializer, JgenerosSerializer,
-    JgeografiaSerializer, JrolesSerializer, JsucursalesSerializer,
-    JtiposidentificacionesSerializer, JtipospersonasSerializer,
+    JusuariosSerializer,
+    JpersonasSerializer,
+    JcargosSerializer,
+    JdepartamentosSerializer,
+    JcorporacionesSerializer,
+    JgenerosSerializer,
+    JgeografiaSerializer,
+    JrolesSerializer,
+    JsucursalesSerializer,
+    JtiposidentificacionesSerializer,
+    JtipospersonasSerializer,
+    VusuariosSerializer,
 )
 from .models import (
-    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
-    Jcorporaciones, Jgeneros, Jgeografia, Jroles,
-    Jsucursales, Jtiposidentificaciones, Jtipospersonas,
+    Jusuarios,
+    Jpersonas,
+    Jcargos,
+    Jdepartamentos,
+    Jcorporaciones,
+    Jgeneros,
+    Jgeografia,
+    Jroles,
+    Jsucursales,
+    Jtiposidentificaciones,
+    Jtipospersonas,
+    Vusuarios,
 )
 
 
@@ -209,3 +226,9 @@ class CustomLogoutView(APIView):
             return Response(
                 {"error": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+# Views for reports
+class VusuariosReportView(ListAPIView):
+    queryset = Vusuarios.objects.all()
+    serializer_class = VusuariosSerializer

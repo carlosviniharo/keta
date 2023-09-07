@@ -329,3 +329,24 @@ class Jusuarios(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+# Views models
+class Vusuarios(models.Model):
+    idusuario = models.IntegerField(primary_key=True)
+    nombres = models.CharField()
+    apellidos = models.CharField()
+    email = models.EmailField()
+    rol = models.CharField()
+    sucursal = models.CharField()
+    departamento = models.CharField()
+    cargo = models.CharField()
+
+    # objects = models.Manager()
+
+    class Meta:
+        managed = False
+        db_table = "vusers"
+
+    def __str__(self):
+        return self.nombres

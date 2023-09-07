@@ -3,11 +3,22 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
-    JcargosViewSet, JdepartamentosViewSet, JcorporacionesViewSet,
-    JgenerosViewSet, JgeografiaViewSet, JrolesListViewSet,
-    JsucursalesViewSet, JtiposidentificacionesViewSet, JtipospersonasViewSet,
-    JpersonasViewSet, JusuariosViewSet, CustomTokenObtainPairView,
-    CustomLogoutView, JusuarioListView, JsucursalJdepartamentosListView,
+    JcargosViewSet,
+    JdepartamentosViewSet,
+    JcorporacionesViewSet,
+    JgenerosViewSet,
+    JgeografiaViewSet,
+    JrolesListViewSet,
+    JsucursalesViewSet,
+    JtiposidentificacionesViewSet,
+    JtipospersonasViewSet,
+    JpersonasViewSet,
+    JusuariosViewSet,
+    CustomTokenObtainPairView,
+    CustomLogoutView,
+    JusuarioListView,
+    JsucursalJdepartamentosListView,
+    VusuariosReportView,
 )
 router = DefaultRouter()
 router.register(r'cargos', JcargosViewSet)
@@ -30,4 +41,5 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout_user'),
     path('user_profile/<str:email>/', JusuarioListView.as_view(), name="profile"),
     path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='jsucursal_jdepartamentos'),
+    path('usuarios_reporte/',  VusuariosReportView.as_view(), name='usuariosreporte-list')
     ]

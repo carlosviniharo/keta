@@ -6,17 +6,33 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from .serializers import (
-    JcanalesrecepcionesSerializer, JclasestarjetasSerializer, JtiposproductosSerializer,
-    JconceptosSerializer, JmarcastarjetasSerializer, JprioridadesSerializer,
-    JtipostarjetasSerializer, JtarjetasSerializer, JtiposcomentariosSerializer,
-    JtickettiposSerializer, JtipostransaccionesSerializer, JproblemasSerializer,
+    JcanalesrecepcionesSerializer,
+    JclasestarjetasSerializer,
+    JtiposproductosSerializer,
+    JconceptosSerializer,
+    JmarcastarjetasSerializer,
+    JprioridadesSerializer,
+    JtipostarjetasSerializer,
+    JtarjetasSerializer,
+    JtiposcomentariosSerializer,
+    JtickettiposSerializer,
+    JtipostransaccionesSerializer,
+    JproblemasSerializer,
     JpersonasSerializer,
 )
 from .models import (
-    Jcanalesrecepciones, Jclasestarjetas, Jtiposproductos,
-    Jconceptos, Jmarcastarjetas, Jprioridades, Jtipostarjetas,
-    Jtarjetas, Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
-    Jproblemas
+    Jcanalesrecepciones,
+    Jclasestarjetas,
+    Jtiposproductos,
+    Jconceptos,
+    Jmarcastarjetas,
+    Jprioridades,
+    Jtipostarjetas,
+    Jtarjetas,
+    Jtiposcomentarios,
+    Jtickettipos,
+    Jtipostransacciones,
+    Jproblemas,
 )
 
 from users.models import Jpersonas
@@ -85,19 +101,11 @@ class JpersonasListView(viewsets.ModelViewSet):
 
 
 class JtiposproductosJconceptosListView(ListAPIView):
+    queryset = Jconceptos.objects.all()
     serializer_class = JconceptosSerializer
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.idtipoproducto = None
-
-    def get_queryset(self):
-        self.idtipoproducto = self.kwargs.get("idtipoproducto")
-        return Jconceptos.objects.filter(idtipoproducto=self.idtipoproducto)
-
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-
+        queryset = Jconceptos.objects.filter(idtipoproducto=self.kwargs.get("idtipoproducto"))
         if not queryset.exists():
             return Response(
                 {
@@ -107,24 +115,8 @@ class JtiposproductosJconceptosListView(ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
-# TODO: The valitadion if there is not repeated tickets should be improved
-#  as for now it only invalidated tickets that have the same user, tipo ticket
-#  and canal de recepcion.Also, include the number of ticket that is repeating.
-
-
-def create_tarjeta(data):
-    tarjeta, created = Jtarjetas.objects.get_or_create(
-        idmarcatarjeta=data["idmarcatarjeta"],
-        idtipotarjeta=data["idtipotarjeta"],
-        idclasetarjeta=data["idclasetarjeta"],
-        defaults=data,
-    )
-    return tarjeta, created
 
 
 class JproblemasViewSet(viewsets.ModelViewSet):
@@ -152,18 +144,15 @@ class JproblemasViewSet(viewsets.ModelViewSet):
             try:
                 tarjeta_serializer.is_valid(raise_exception=True)
             except serializers.ValidationError:
-                custom_response = {
-                    "Validation failed:": "Ticket type 'Reclamos Tarjetas',  "
-                                          "please include tarjeta in the request"
-                }
-                raise ValidationError(custom_response)
-
-            tarjeta, created_tarjeta = create_tarjeta(
+                return Response(
+                    {"detail": " Validation failed, please include tarjeta in the request"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            tarjeta, created_tarjeta = self.create_tarjeta(
                 tarjeta_serializer.validated_data
             )
             data_ticket["idtarjeta"] = tarjeta
         else:
-            print("Please make sure you are sending the right tipoticket")
             created_tarjeta = False
 
         with transaction.atomic():
@@ -195,7 +184,8 @@ class JproblemasViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def create_persona(self, data):
+    @staticmethod
+    def create_persona(data):
         persona, created = Jpersonas.objects.get_or_create(
             identificacion=data["identificacion"], defaults={"idpersona": None, **data}
         )
@@ -204,3 +194,13 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                 setattr(persona, attr, value)
             persona.save()
         return persona, created
+
+    @staticmethod
+    def create_tarjeta(data):
+        tarjeta, created = Jtarjetas.objects.get_or_create(
+            idmarcatarjeta=data["idmarcatarjeta"],
+            idtipotarjeta=data["idtipotarjeta"],
+            idclasetarjeta=data["idclasetarjeta"],
+            defaults=data,
+        )
+        return tarjeta, created

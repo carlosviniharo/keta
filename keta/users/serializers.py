@@ -2,9 +2,18 @@ from django.db import IntegrityError
 from rest_framework import serializers
 
 from .models import (
-    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
-    Jcorporaciones, Jgeneros, Jgeografia, Jroles,
-    Jsucursales, Jtiposidentificaciones, Jtipospersonas,
+    Jusuarios,
+    Jpersonas,
+    Jcargos,
+    Jdepartamentos,
+    Jcorporaciones,
+    Jgeneros,
+    Jgeografia,
+    Jroles,
+    Jsucursales,
+    Jtiposidentificaciones,
+    Jtipospersonas,
+    Vusuarios,
 )
 
 
@@ -93,3 +102,9 @@ class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
             # For example, you can log the error or raise a custom exception
             print("Error: Required key is missing:", e)
             return None
+
+
+class VusuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vusuarios
+        fields = "__all__"

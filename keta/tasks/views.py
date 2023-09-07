@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import send_mail
@@ -18,10 +19,14 @@ from .serializers import (
     JestadosSerializer,
     EmailNotificationSerializer,
     VtareaestadocolorSerializer,
+    VtareasSerializer,
 )
 from .models import (
-    Jtareasticket, Jestadotareas, Jestados,
+    Jtareasticket,
+    Jestadotareas,
+    Jestados,
     Vtareaestadocolor,
+    Vtareas,
 )
 
 
@@ -36,41 +41,14 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         )
         task_serializer.is_valid(raise_exception=True)
         task_data = task_serializer.validated_data
-        is_father = True
-        check_indicator = task_data.get("indicador")
 
-        if check_indicator == "P":
-            ticket = task_data.get("idproblema")
-            if not ticket:
-                return Response(
-                    {"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if not ticket.status:
-                return Response(
-                    {
-                        "detail": f"A main task with the ticket index {ticket.idproblema} already exits"
-                    },
-                    status=status.HTTP_409_CONFLICT,
-                )
-        elif check_indicator == "A":
-            ticket = task_data.get("tareaprincipal")
-            if not ticket:
-                return Response(
-                    {"detail": "Missing tareaprincipal"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            is_father = False
-
-        else:
-            return Response(
-                {"detail": "Invalid indicador"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        is_father, ticket = self.validate_task_data(task_data)
 
         priority = ticket.idprioridad
-        _, max_days_resolution = self.get_time_priority(priority)
+        optimal_time, max_days_resolution = self.get_time_priority(priority)
         task_data["idprioridad"] = priority
         task_data["fechaentrega"] = timezone.now() + timezone.timedelta(
-            days=int(max_days_resolution)
+            days=int(optimal_time)
         )
 
         # task_data["archivo"] = task_data.get("archivo", []) + ticket.archivo
@@ -87,12 +65,43 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
         task_resp = JtareasticketSerializer(task, context={"request": request})
-        send_mail(
-            "You been assigned a new Ticket",
-            f"{task_resp.data}",
-            "example@mail.com",
-            [])
+        # send_mail(
+        #     "You been assigned a new Ticket",
+        #     f"{task_resp.data}",
+        #     "example@mail.com",
+        #     [])
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def validate_task_data(task_data):
+        check_indicator = task_data.get("indicador")
+        
+        if check_indicator == "P":
+            ticket = task_data.get("idproblema")
+            if not ticket:
+                return Response(
+                    {"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            if not ticket.status:
+                return Response(
+                    {
+                        "detail": f"A main task with the ticket index {ticket.idproblema} already exits"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return True, ticket
+
+        elif check_indicator == "A":
+            ticket = task_data.get("tareaprincipal")
+            if not ticket:
+                return Response(
+                    {"detail": "Missing tareaprincipal"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return False, ticket
+
+        else:
+            return Response({"detail": "Invalid indicador"}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     def get_time_priority(priority):
@@ -123,7 +132,12 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
         task = state_serializer.validated_data.get("idtarea")
         fechaasignacion = task.fechaasignacion
 
-        if state_serializer.validated_data.get("tiemporequerido"):
+        if task.indicador != "P":
+            return Response(
+                {"detail": "The ticket must be Parent"},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        elif state_serializer.validated_data.get("tiemporequerido"):
             fechaentrega = state_serializer.validated_data["tiemporequerido"]
             state_serializer.validated_data["tiempooptimo"] = task.fechaentrega
         else:
@@ -173,8 +187,51 @@ class FilteredTaskView(ListAPIView):
 class VtareaestadocolorListView(ListAPIView):
     queryset = Vtareaestadocolor.objects.all()
     serializer_class = VtareaestadocolorSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["now_state"]
+
+    def list(self, request, *args, **kwargs):
+        idtarea = self.request.query_params.get("idtarea", None)
+        queryset_subtask = Jtareasticket.objects.filter(
+            tareaprincipal=idtarea,
+            indicador="A"
+        )
+        queryset_main_task = Vtareaestadocolor.objects.filter(
+            tarea=idtarea,
+            now_state=True)
+
+        if not queryset_main_task.exists():
+            return Response(
+                {
+                    "detail": "The task "
+                              + f"{request.query_params.get('idtarea')}"
+                              + " was not found in the records"
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        if not queryset_subtask.exists():
+            serializer_main = self.get_serializer(queryset_main_task, many=True)
+            return Response({
+                "task": serializer_main.data,
+                "subtasks": []
+            },
+                status=status.HTTP_200_OK
+            )
+        serializer_main = self.get_serializer(queryset_main_task, many=True)
+        serializer_sub_data = [
+            OrderedDict(JtareasticketSerializer(item, context={'request': request}).data)
+            for item in queryset_subtask
+        ]
+
+        return Response({
+                "task": serializer_main.data,
+                "subtask": serializer_sub_data,
+            },
+                status=status.HTTP_200_OK
+            )
+
+
+class VtareasListView(ListAPIView):
+    queryset = Vtareas.objects.all()
+    serializer_class = VtareasSerializer
 
 
 class EmailNotificationView(APIView):
