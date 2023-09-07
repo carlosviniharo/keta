@@ -190,15 +190,18 @@ class VtareaestadocolorListView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         idtarea = self.request.query_params.get("idtarea", None)
-        queryset_subtask = Jtareasticket.objects.filter(
-            tareaprincipal=idtarea,
-            indicador="A"
-        )
-        queryset_main_task = Vtareaestadocolor.objects.filter(
-            tarea=idtarea,
-            now_state=True)
+        id_asignado = self.request.query_params.get("id_asignado", None)
 
-        if not queryset_main_task.exists():
+        queryset_main_task = Vtareaestadocolor.objects.all()
+        querysets = None
+
+        if idtarea is not None:
+            querysets = queryset_main_task.filter(idtarea=idtarea, now_state=True)
+
+        if id_asignado is not None:
+            querysets = queryset_main_task.filter(id_asignado=id_asignado, now_state=True)
+
+        if querysets.count() == 0 or querysets is None:
             return Response(
                 {
                     "detail": "The task "
@@ -207,26 +210,27 @@ class VtareaestadocolorListView(ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-        if not queryset_subtask.exists():
-            serializer_main = self.get_serializer(queryset_main_task, many=True)
-            return Response({
-                "task": serializer_main.data,
-                "subtasks": []
-            },
-                status=status.HTTP_200_OK
-            )
-        serializer_main = self.get_serializer(queryset_main_task, many=True)
-        serializer_sub_data = [
-            OrderedDict(JtareasticketSerializer(item, context={'request': request}).data)
-            for item in queryset_subtask
-        ]
-
-        return Response({
-                "task": serializer_main.data,
-                "subtask": serializer_sub_data,
-            },
-                status=status.HTTP_200_OK
-            )
+        else:
+            serializer_main = self.get_serializer(querysets, many=True)
+            for index, queryset in enumerate(serializer_main.data):
+                idtarea = queryset.get('tarea')
+                queryset_subtask = Jtareasticket.objects.filter(tareaprincipal=idtarea, indicador="A")
+                serializer_subtask = JtareasticketSerializer(queryset_subtask, context={'request': request})
+                serializer_main.data[index]['subtasks'] = serializer_subtask.data
+        #             serializer_main = self.get_serializer(queryset_main_task, many=True)
+        #             return Response({
+        #                 "task": serializer_main.data,
+        #             },
+        #                 status=status.HTTP_200_OK
+        #             )
+        # serializer_main = self.get_serializer(queryset_main_task, many=True)
+        # serializer_sub_data = [
+        #     OrderedDict(JtareasticketSerializer(item, context={'request': request}).data)
+        #     for item in queryset_subtask
+        # ]
+        result = serializer_main.data
+        # result['subtask'] = serializer_sub_data
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class VtareasListView(ListAPIView):
