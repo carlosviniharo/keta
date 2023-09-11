@@ -142,7 +142,7 @@ class Jpersonas(models.Model):
         models.DO_NOTHING,
         db_column="idtipopersona"
     )
-    identificacion = models.CharField(max_length=10)
+    identificacion = models.CharField(max_length=100)
     nombre = models.CharField(max_length=250, null=False)
     apellido = models.CharField(max_length=250, null=False)
     emailcliente = models.EmailField(max_length=100, null=True)

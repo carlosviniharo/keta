@@ -45,7 +45,63 @@
         "model": "users.Jusuarios",
         "pk": 1,
         "fields": {
-            "descripcioncargo": "Gerente"
+            "email": "example@test.com"
+        }
+    },
+    {
+        "model": "tickets.Jcanalesrecepciones",
+        "pk": 1,
+        "fields": {
+            "descripcioncanalrecepcion": "Call Center"
+        }
+    },
+    {
+        "model": "tickets.Jclasestarjetas",
+        "pk": 1,
+        "fields": {
+            "descripcionclasetarjeta": "Nacional Individual"
+        }
+    },
+    {
+        "model": "tickets.Jtiposproductos",
+        "pk": 1,
+        "fields": {
+            "descripciontipoproducto": "Obligaciones con el público: Cuentas de ahorros/cuenta básica/Depósitos a plazo"
+        }
+    },
+        {
+        "model": "tickets.Jconceptos",
+        "pk": 1,
+        "fields": {
+            "descripcionconcepto": "Cargos por servicios financieros básicos"
+        }
+    },
+        {
+        "model": "tickets.Jmarcastarjetas",
+        "pk": 1,
+        "fields": {
+             "descripcionmarcatarjeta": "Visa"
+        }
+    },
+        {
+        "model": "tickets.Jprioridades",
+        "pk": 1,
+        "fields": {
+             "descripcionprioridad": "Media"
+        }
+    },
+        {
+        "model": "tickets.tipostarjetas",
+        "pk": 1,
+        "fields": {
+            "descripciontipotarjeta": "Tarjeta de Débito"
+        }
+    },
+        {
+        "model": "tickets.Jtiposcomentarios",
+        "pk": 1,
+        "fields": {
+            "descripciontipocomentario": "Sugerencia"
         }
     }
 ]

@@ -94,6 +94,7 @@ class JtipostransaccionesViewSet(viewsets.ModelViewSet):
 
 
 # Customize methods to get certain types of field in the tables.
+# TODO JpersonasListView should be in users
 class JpersonasListView(viewsets.ModelViewSet):
     queryset = Jpersonas.objects.all()
     serializer_class = JpersonasSerializer

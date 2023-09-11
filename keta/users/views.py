@@ -232,3 +232,4 @@ class CustomLogoutView(APIView):
 class VusuariosReportView(ListAPIView):
     queryset = Vusuarios.objects.all()
     serializer_class = VusuariosSerializer
+

@@ -8,6 +8,7 @@ from django.db.models import F
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
+from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -65,11 +66,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
         task_resp = JtareasticketSerializer(task, context={"request": request})
-        # send_mail(
-        #     "You been assigned a new Ticket",
-        #     f"{task_resp.data}",
-        #     "example@mail.com",
-        #     [])
+
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
     @staticmethod
@@ -79,29 +76,27 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         if check_indicator == "P":
             ticket = task_data.get("idproblema")
             if not ticket:
-                return Response(
-                    {"detail": "Missing idproblema"}, status=status.HTTP_400_BAD_REQUEST
+                raise APIException(
+                    detail="Missing idproblema",
                 )
             if not ticket.status:
-                return Response(
-                    {
-                        "detail": f"A main task with the ticket index {ticket.idproblema} already exits"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
+                raise APIException(
+                    detail=f"A main task with the ticket index {ticket.idproblema} already exits",
                 )
             return True, ticket
 
         elif check_indicator == "A":
             ticket = task_data.get("tareaprincipal")
             if not ticket:
-                return Response(
-                    {"detail": "Missing tareaprincipal"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                raise APIException(
+                    detail="Missing tareaprincipal",
                 )
             return False, ticket
 
         else:
-            return Response({"detail": "Invalid indicador"}, status=status.HTTP_400_BAD_REQUEST)
+            raise APIException(
+                detail="Invalid indicador",
+            )
 
     @staticmethod
     def get_time_priority(priority):
@@ -193,43 +188,46 @@ class VtareaestadocolorListView(ListAPIView):
         id_asignado = self.request.query_params.get("id_asignado", None)
 
         queryset_main_task = Vtareaestadocolor.objects.all()
-        querysets = None
 
         if idtarea is not None:
-            querysets = queryset_main_task.filter(idtarea=idtarea, now_state=True)
+            queryset_main_task = queryset_main_task.filter(idtarea=idtarea, now_state=True)
 
         if id_asignado is not None:
-            querysets = queryset_main_task.filter(id_asignado=id_asignado, now_state=True)
+            queryset_main_task = queryset_main_task.filter(id_asignado=id_asignado, now_state=True)
 
-        if querysets.count() == 0 or querysets is None:
+        if not queryset_main_task.exists():
             return Response(
                 {
                     "detail": "The task "
-                              + f"{request.query_params.get('idtarea')}"
+                              + f"The task {idtarea} or the user {id_asignado}"
                               + " was not found in the records"
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-        else:
-            serializer_main = self.get_serializer(querysets, many=True)
-            for index, queryset in enumerate(serializer_main.data):
-                idtarea = queryset.get('tarea')
-                queryset_subtask = Jtareasticket.objects.filter(tareaprincipal=idtarea, indicador="A")
-                serializer_subtask = JtareasticketSerializer(queryset_subtask, context={'request': request})
-                serializer_main.data[index]['subtasks'] = serializer_subtask.data
-        #             serializer_main = self.get_serializer(queryset_main_task, many=True)
-        #             return Response({
-        #                 "task": serializer_main.data,
-        #             },
-        #                 status=status.HTTP_200_OK
-        #             )
-        # serializer_main = self.get_serializer(queryset_main_task, many=True)
-        # serializer_sub_data = [
-        #     OrderedDict(JtareasticketSerializer(item, context={'request': request}).data)
-        #     for item in queryset_subtask
-        # ]
+        serializer_main = self.get_serializer(queryset_main_task, many=True)
+
+        tarea_ids = [item["tarea"] for item in serializer_main.data]
+
+        subtasks_dict = {}
+        if tarea_ids:
+            queryset_subtasks = Jtareasticket.objects.filter(
+                tareaprincipal__in=tarea_ids, indicador="A"
+            )
+            for subtask in queryset_subtasks:
+                tarea_id = subtask.tareaprincipal.idtarea
+                if tarea_id not in subtasks_dict:
+                    subtasks_dict[tarea_id] = []
+                subtasks_dict[tarea_id].append(
+                    OrderedDict(
+                        JtareasticketSerializer(subtask, context={"request": request}).data
+                    )
+                )
+
+        for index, queryset in enumerate(serializer_main.data):
+            tarea_id = queryset.get("tarea")
+            serializer_main.data[index]["subtasks"] = subtasks_dict.get(tarea_id, [])
+
         result = serializer_main.data
-        # result['subtask'] = serializer_sub_data
         return Response(result, status=status.HTTP_200_OK)
 
 
