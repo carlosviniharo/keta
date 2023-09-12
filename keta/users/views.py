@@ -156,6 +156,12 @@ class JusuarioListView(RetrieveUpdateAPIView):
     lookup_field = "email"
 
 
+class JpersonasListView(viewsets.ModelViewSet):
+    queryset = Jpersonas.objects.all()
+    serializer_class = JpersonasSerializer
+    lookup_field = "identificacion"
+
+
 # Retrieve all the departamentos of each sucursal.
 class JsucursalJdepartamentosListView(ListAPIView):
     serializer_class = JdepartamentosSerializer

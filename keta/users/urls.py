@@ -19,6 +19,7 @@ from .views import (
     JusuarioListView,
     JsucursalJdepartamentosListView,
     VusuariosReportView,
+    JpersonasListView,
 )
 router = DefaultRouter()
 router.register(r'cargos', JcargosViewSet)
@@ -32,6 +33,7 @@ router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
 router.register(r'tipospersonas', JtipospersonasViewSet)
 router.register(r'personas', JpersonasViewSet)
 router.register(r'usuarios', JusuariosViewSet)
+router.register(r'personaidentificacion', JpersonasListView, basename='custom-personas')
 
 urlpatterns = [
     path('api/', include(router.urls)),

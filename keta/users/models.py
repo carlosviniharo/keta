@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from .utils.helper import get_public_ip_address, get_mac_address
 
@@ -275,12 +276,24 @@ class JusuariosManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("is_active", True)
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff = True")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser = True")
+
+        idrol = extra_fields.pop("idrol", None)
+        
+        if idrol is None:
+            raise ValueError("The idrol argument is required to create a superuser.")
+
+        try:
+            jroles_instance = Jroles.objects.get(pk=idrol)
+
+        except ObjectDoesNotExist:
+            raise ValueError(f"Invalid idrol {idrol} instance does not exist.")
+
+        extra_fields["idrol"] = jroles_instance
 
         return self._create_user(email, password, **extra_fields)
 
@@ -322,7 +335,7 @@ class Jusuarios(AbstractUser):
     objects = JusuariosManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["username", "idrol"]
 
     class Meta:
         db_table = "jusuarios"

@@ -18,7 +18,6 @@ from .serializers import (
     JtickettiposSerializer,
     JtipostransaccionesSerializer,
     JproblemasSerializer,
-    JpersonasSerializer,
 )
 from .models import (
     Jcanalesrecepciones,
@@ -36,6 +35,7 @@ from .models import (
 )
 
 from users.models import Jpersonas
+from users.serializers import JpersonasSerializer
 
 
 class JcanalesrecepcionesViewSet(viewsets.ModelViewSet):
@@ -94,13 +94,6 @@ class JtipostransaccionesViewSet(viewsets.ModelViewSet):
 
 
 # Customize methods to get certain types of field in the tables.
-# TODO JpersonasListView should be in users
-class JpersonasListView(viewsets.ModelViewSet):
-    queryset = Jpersonas.objects.all()
-    serializer_class = JpersonasSerializer
-    lookup_field = "identificacion"
-
-
 class JtiposproductosJconceptosListView(ListAPIView):
     queryset = Jconceptos.objects.all()
     serializer_class = JconceptosSerializer
@@ -166,7 +159,10 @@ class JproblemasViewSet(viewsets.ModelViewSet):
             try:
                 ticket = Jproblemas.objects.create(**data_ticket)
             except ValidationError as e:
-                return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {"detail": e},
+                    status=status.HTTP_403_FORBIDDEN
+                )
 
             person_serializer = JpersonasSerializer(
                 persona, context={"request": request}
@@ -188,7 +184,8 @@ class JproblemasViewSet(viewsets.ModelViewSet):
     @staticmethod
     def create_persona(data):
         persona, created = Jpersonas.objects.get_or_create(
-            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
+            identificacion=data["identificacion"],
+            defaults={"idpersona": None, **data}
         )
         if not created:
             for attr, value in data.items():
