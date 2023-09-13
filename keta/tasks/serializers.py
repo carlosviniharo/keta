@@ -11,7 +11,7 @@ from .models import (
 
 
 @model_serializers(Jestadotareas)
-class JestadotareasSerializers(serializers.HyperlinkedModelSerializer):
+class JestadotareasSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 

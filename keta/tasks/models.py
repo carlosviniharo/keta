@@ -92,6 +92,8 @@ class Vtareaestadocolor(models.Model):
         managed = False
         db_table = "vtareaestadocolor"
 
+    objects = models.Manager()
+
 
 class Vtareas(models.Model):
     tarea = models.IntegerField(primary_key=True)
@@ -99,8 +101,8 @@ class Vtareas(models.Model):
     sucursal = models.CharField()
     nombre_cliente = models.CharField()
     apellido_cliente = models.CharField()
-    nombres = models.CharField()
-    apellidos = models.CharField()
+    nombres_tecnico = models.CharField()
+    apellidos_tecnico = models.CharField()
     cargo = models.CharField()
     departamento_usuario_asignado = models.CharField()
     sucursal_usuario_asignado = models.CharField()
@@ -113,3 +115,5 @@ class Vtareas(models.Model):
     class Meta:
         managed = False
         db_table = "vtareas"
+
+    objects = models.Manager()

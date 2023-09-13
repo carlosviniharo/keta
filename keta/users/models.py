@@ -355,7 +355,7 @@ class Vusuarios(models.Model):
     departamento = models.CharField()
     cargo = models.CharField()
 
-    # objects = models.Manager()
+    objects = models.Manager()
 
     class Meta:
         managed = False

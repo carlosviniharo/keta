@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'tickets',
-    'tasks'
+    'tasks',
+    'tracker',
+    'reports',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

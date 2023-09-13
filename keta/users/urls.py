@@ -32,8 +32,9 @@ router.register(r'sucursales', JsucursalesViewSet)
 router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
 router.register(r'tipospersonas', JtipospersonasViewSet)
 router.register(r'personas', JpersonasViewSet)
-router.register(r'usuarios', JusuariosViewSet)
 router.register(r'personaidentificacion', JpersonasListView, basename='custom-personas')
+router.register(r'usuarios', JusuariosViewSet)
+
 
 urlpatterns = [
     path('api/', include(router.urls)),

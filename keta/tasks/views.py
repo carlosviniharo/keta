@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from tickets.models import Jproblemas
 from .serializers import (
     JtareasticketSerializer,
-    JestadotareasSerializers,
+    JestadotareasSerializer,
     JestadosSerializer,
     EmailNotificationSerializer,
     VtareaestadocolorSerializer,
@@ -116,10 +116,10 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
 class JestadotareasViewSet(viewsets.ModelViewSet):
     queryset = Jestadotareas.objects.all()
-    serializer_class = JestadotareasSerializers
+    serializer_class = JestadotareasSerializer
 
     def create(self, request, *args, **kwargs):
-        state_serializer = JestadotareasSerializers(
+        state_serializer = JestadotareasSerializer(
             data=request.data, context={"request": request}
         )
         state_serializer.is_valid(raise_exception=True)
@@ -158,7 +158,7 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
                 defaults=state_colour,
             )
             created_objects.append(obj)
-            serialized_objects = JestadotareasSerializers(
+            serialized_objects = JestadotareasSerializer(
                 created_objects, many=True, context={"request": request}
             )
         return Response(
