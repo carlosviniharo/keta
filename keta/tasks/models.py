@@ -73,6 +73,7 @@ class Jestadotareas(models.Model):
 # Views models
 class Vtareaestadocolor(models.Model):
     tarea = models.IntegerField(primary_key=True)
+    no_ticket = models.CharField()
     descripciontarea = models.CharField()
     color = models.CharField(max_length=100)
     tiempo_inicial_del_color = models.DateTimeField()
@@ -98,6 +99,7 @@ class Vtareaestadocolor(models.Model):
 class Vtareas(models.Model):
     tarea = models.IntegerField(primary_key=True)
     ticket_no = models.CharField()
+    fecha_asignacion = models.DateTimeField()
     sucursal = models.CharField()
     nombre_cliente = models.CharField()
     apellido_cliente = models.CharField()

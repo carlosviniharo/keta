@@ -176,7 +176,7 @@ class FilteredTaskView(ListAPIView):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["idusuarioasignado__idusuario", "idestado__idestado"]
+    filterset_fields = ["idusuarioasignado__idusuario", "idestado__idestado", "indicador"]
 
 
 class VtareaestadocolorListView(ListAPIView):
@@ -234,6 +234,8 @@ class VtareaestadocolorListView(ListAPIView):
 class VtareasListView(ListAPIView):
     queryset = Vtareas.objects.all()
     serializer_class = VtareasSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["tarea"]
 
 
 class EmailNotificationView(APIView):
