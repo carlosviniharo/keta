@@ -1,2 +1,2 @@
 # keta
-Keta ia a ticketing system developed in Django. This repository hanldes all the API service sfor the aplication. 
+Keta is a ticketing system developed in Django. This repository handles all the API services for the application. 
