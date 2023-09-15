@@ -206,20 +206,20 @@ class VtareaestadocolorListView(ListAPIView):
             )
         serializer_main = self.get_serializer(queryset_main_task, many=True)
 
-        tarea_ids = [item["tarea"] for item in serializer_main.data]
+        tarea_ids = {item["tarea"] for item in serializer_main.data}
 
         subtasks_dict = {}
         if tarea_ids:
-            queryset_subtasks = Jtareasticket.objects.filter(
+            queryset_subtasks = Vtareas.objects.filter(
                 tareaprincipal__in=tarea_ids, indicador="A"
             )
             for subtask in queryset_subtasks:
-                tarea_id = subtask.tareaprincipal.idtarea
+                tarea_id = subtask.tareaprincipal
                 if tarea_id not in subtasks_dict:
                     subtasks_dict[tarea_id] = []
                 subtasks_dict[tarea_id].append(
                     OrderedDict(
-                        JtareasticketSerializer(subtask, context={"request": request}).data
+                        VtareasSerializer(subtask, context={"request": request}).data
                     )
                 )
 
@@ -235,7 +235,7 @@ class VtareasListView(ListAPIView):
     queryset = Vtareas.objects.all()
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["tarea"]
+    filterset_fields = ["tarea", "indicador"]
 
 
 class EmailNotificationView(APIView):

@@ -119,6 +119,8 @@ class Vtareas(models.Model):
     prioridad = models.CharField()
     estado = models.CharField()
     fechaentrega = models.DateTimeField()
+    indicador = models.CharField()
+    tareaprincipal = models.IntegerField()
 
     class Meta:
         managed = False
