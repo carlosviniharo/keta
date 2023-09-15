@@ -1,6 +1,9 @@
 import re
 from django.http import StreamingHttpResponse
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework import viewsets, status
+from django.db.models import Q
 
 from lxml import etree
 
@@ -32,7 +35,7 @@ DICTIONARY_NAMES_ENTRIES_REPORT = {
 }
 
 
-class VcobrosindebiosListView(ListAPIView):
+class VcobrosindebiosReportView(ListAPIView):
     serializer_class = VcobrosindebiosSerilizer
 
     def get(self, request, *args, **kwargs):
@@ -55,8 +58,9 @@ class VcobrosindebiosListView(ListAPIView):
         def data_generator():
 
             queryset = Vcobrosindebios.objects.filter(
-                Q(fecharecepcion__range=(fecha_inicio, fecha_final)) &
-                Q(fecharespuesta__range=(fecha_inicio, fecha_final))
+                fecharecepcion__range=(fecha_inicio, fecha_final)
+                # &
+                # Q(fecharespuesta__range=(fecha_inicio, fecha_final))
             )
 
             serializer = self.get_serializer(queryset, many=True)
@@ -113,6 +117,25 @@ class VcobrosindebiosListView(ListAPIView):
         return True
 
 
+class VcobrosindebiosListView(ListAPIView):
+    serializer_class = VcobrosindebiosSerilizer
+    queryset = Vcobrosindebios.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        fecha_inicio = self.request.query_params.get("fecha_inicio", None)
+        fecha_final = self.request.query_params.get("fecha_final", None)
+        queryset = Vcobrosindebios.objects.filter(
+            Q(fecharecepcion__range=(fecha_inicio, fecha_final))
+            # &
+            # Q(fecharespuesta__range=(fecha_inicio, fecha_final))
+        )
+        if not queryset:
+            return Response(
+                {"detail": "Not record was found in the database in that period of time"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
