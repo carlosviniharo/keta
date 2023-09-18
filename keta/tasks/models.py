@@ -105,6 +105,7 @@ class Vtareaestadocolor(models.Model):
 class Vtareas(models.Model):
     tarea = models.IntegerField(primary_key=True)
     ticket_no = models.CharField()
+    titulo_tarea = models.CharField()
     fecha_asignacion = models.DateTimeField()
     sucursal = models.CharField()
     nombre_cliente = models.CharField()
