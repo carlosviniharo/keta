@@ -202,7 +202,7 @@ class Jproblemas(models.Model):
     idusuario = models.ForeignKey(
         Jusuarios, models.DO_NOTHING, db_column="idusuario", blank=True, null=True
     )
-    fechacreacion = models.DateTimeField(auto_now=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     numeroticket = models.CharField(max_length=100, blank=True, null=True)
     idtipotransaccion = models.ForeignKey(
         Jtipostransacciones,

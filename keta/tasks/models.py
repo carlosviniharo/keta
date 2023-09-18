@@ -30,7 +30,7 @@ class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
     indicador = models.CharField(max_length=2, choices=[value for value in indicators], blank=True, null=True)
-    fechaasignacion = models.DateTimeField(auto_now=True, null=True)
+    fechaasignacion = models.DateTimeField(auto_now_add=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
     archivo = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
