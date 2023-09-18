@@ -1,9 +1,12 @@
 import re
+
 from django.http import StreamingHttpResponse
+from django.utils import timezone
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.db.models import Q
+
 
 from lxml import etree
 
@@ -33,6 +36,7 @@ DICTIONARY_NAMES_ENTRIES_REPORT = {
     "interesmonto": "interesMonto",
     "totalrestituido": "totalRestituido",
 }
+DATE_FORMAT = "%Y-%m-%d"
 
 
 class VcobrosindebiosReportView(ListAPIView):
@@ -44,8 +48,11 @@ class VcobrosindebiosReportView(ListAPIView):
         response["Content-Disposition"] = 'attachment; filename="xml_report.xml"'
 
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
+        fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
+        
         fecha_final = self.request.query_params.get("fecha_final", None)
-
+        fecha_final = timezone.datetime.strptime(fecha_final, DATE_FORMAT) + timezone.timedelta(hours=23, minutes=59)
+        
         # Validate the XML content
         if not self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final)):
             raise APIException("Invalid XML document")
@@ -58,14 +65,13 @@ class VcobrosindebiosReportView(ListAPIView):
         def data_generator():
 
             queryset = Vcobrosindebios.objects.filter(
-                fecharecepcion__range=(fecha_inicio, fecha_final)
-                # &
-                # Q(fecharespuesta__range=(fecha_inicio, fecha_final))
+                Q(fecharecepcion__range=(fecha_inicio, fecha_final)) |
+                Q(fecharespuesta__range=(fecha_inicio, fecha_final))
             )
 
             serializer = self.get_serializer(queryset, many=True)
             DICTIONARY_HEADER_REPORT["numRegistro"] = len(serializer.data)
-            DICTIONARY_HEADER_REPORT["fechaCorte"] = self.format_date(fecha_final)
+            DICTIONARY_HEADER_REPORT["fechaCorte"] = self.format_date(str(fecha_final))
             yield '<?xml version="1.0" encoding="UTF-8"?>\n'
             yield '<reclamosCI01 {}>\n'.format(" ".join([f'{k}="{v}"' for k, v in DICTIONARY_HEADER_REPORT.items()]))
 
@@ -122,12 +128,18 @@ class VcobrosindebiosListView(ListAPIView):
     queryset = Vcobrosindebios.objects.all()
 
     def list(self, request, *args, **kwargs):
+        
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
+        fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
+        
         fecha_final = self.request.query_params.get("fecha_final", None)
+        fecha_final = timezone.datetime.strptime(fecha_final, DATE_FORMAT) + timezone.timedelta(
+            hours=23, minutes=59
+        )
+        
         queryset = Vcobrosindebios.objects.filter(
             Q(fecharecepcion__range=(fecha_inicio, fecha_final))
-            # &
-            # Q(fecharespuesta__range=(fecha_inicio, fecha_final))
+            | Q(fecharespuesta__range=(fecha_inicio, fecha_final))
         )
         if not queryset:
             return Response(
