@@ -23,6 +23,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('tickets/', include('tickets.urls')),
     path('tasks/', include('tasks.urls')),
+    path("tracker/", include('tracker.urls')),
     path('reports/', include('reports.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

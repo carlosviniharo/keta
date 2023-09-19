@@ -48,10 +48,14 @@ class VcobrosindebiosReportView(ListAPIView):
         response["Content-Disposition"] = 'attachment; filename="xml_report.xml"'
 
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
-        fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
-        
         fecha_final = self.request.query_params.get("fecha_final", None)
-        fecha_final = timezone.datetime.strptime(fecha_final, DATE_FORMAT) + timezone.timedelta(hours=23, minutes=59)
+        
+        if fecha_inicio and fecha_final:
+            fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
+            fecha_final = (timezone.datetime.strptime(fecha_final, DATE_FORMAT) +
+                           timezone.timedelta(hours=23, minutes=59))
+        else:
+            raise APIException("Please provide proper fecha_inicio and fecha_final")
         
         # Validate the XML content
         if not self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final)):
@@ -128,15 +132,16 @@ class VcobrosindebiosListView(ListAPIView):
     queryset = Vcobrosindebios.objects.all()
 
     def list(self, request, *args, **kwargs):
-        
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
-        fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
-        
         fecha_final = self.request.query_params.get("fecha_final", None)
-        fecha_final = timezone.datetime.strptime(fecha_final, DATE_FORMAT) + timezone.timedelta(
-            hours=23, minutes=59
-        )
         
+        if fecha_inicio and fecha_final:
+            fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
+            fecha_final = (timezone.datetime.strptime(fecha_final, DATE_FORMAT) +
+                           timezone.timedelta(hours=23, minutes=59))
+        else:
+            raise APIException("Please provide proper fecha_inicio and fecha_final")
+    
         queryset = Vcobrosindebios.objects.filter(
             Q(fecharecepcion__range=(fecha_inicio, fecha_final))
             | Q(fecharespuesta__range=(fecha_inicio, fecha_final))
