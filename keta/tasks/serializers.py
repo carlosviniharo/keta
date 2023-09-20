@@ -5,9 +5,15 @@ from .models import (
     Jtareasticket,
     Jestadotareas,
     Jestados,
+    Jarchivos,
     Vtareaestadocolor,
     Vtareas,
 )
+
+
+@model_serializers(Jarchivos)
+class JarchivosSerializer(serializers.HyperlinkedModelSerializer):
+    pass
 
 
 @model_serializers(Jestadotareas)
@@ -25,7 +31,8 @@ class JtareasticketSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-# As the model is not managed by Django it can not be implemented Hyperlinked ModelSerializers
+# Special Serializers
+# As the views cannot be managed by Django it was not implemented Hyperlinked ModelSerializers
 class VtareaestadocolorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vtareaestadocolor
@@ -36,6 +43,12 @@ class VtareasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vtareas
         fields = "__all__"
+
+
+class JarchivoListSeriliazer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Jarchivos
+        exclude = ("contenidoarchivo",)
 
 
 class EmailNotificationSerializer(serializers.Serializer):

@@ -21,7 +21,7 @@ class JproblemasViewSetTestCase(APITestCase):
                 "emailcliente": "carlos@hotmail.es",
                 "celular": "0999999999",
                 "telefono": "062922066",
-                "direccion": "Otavalo"
+                "direccion": "Otavalo",
             },
             "ticket": {
                 "descripcionasunto": "Mal cobro indebido",
@@ -34,6 +34,6 @@ class JproblemasViewSetTestCase(APITestCase):
                 "idtipoticket": "http://127.0.0.1:8000/tickets/api/tickettipos/3/",
                 "idconcepto": "http://127.0.0.1:8000/tickets/api/conceptos/10/",
                 "idprioridad": "http://127.0.0.1:8000/tickets/api/prioridades/1/",
-                "idsucursal": "http://127.0.0.1:8000/users/api/sucursales/1/"
-            }
-}
+                "idsucursal": "http://127.0.0.1:8000/users/api/sucursales/1/",
+            },
+        }

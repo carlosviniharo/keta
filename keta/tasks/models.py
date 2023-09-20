@@ -1,13 +1,8 @@
-from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
 from django.db import models
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
 
-indicators = (
-    ("P", "Padre"),
-    ("A", "Ayuda")
-)
+indicators = (("P", "Padre"), ("A", "Ayuda"))
 
 
 class Jestados(models.Model):
@@ -17,7 +12,7 @@ class Jestados(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'jestados'
+        db_table = "jestados"
 
     objects = models.Manager()
 
@@ -29,21 +24,51 @@ class Jestados(models.Model):
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
-    indicador = models.CharField(max_length=2, choices=[value for value in indicators], blank=True, null=True)
+    indicador = models.CharField(
+        max_length=2, choices=[value for value in indicators], blank=True, null=True
+    )
     fechaasignacion = models.DateTimeField(auto_now_add=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
     archivo = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
-    fkidtarea = models.ForeignKey('self', models.DO_NOTHING, db_column='fkidtarea', blank=True, null=True)
-    idestado = models.ForeignKey(Jestados, models.DO_NOTHING, db_column='idestado', blank=True, null=True)
-    idprioridad = models.ForeignKey(Jprioridades, models.DO_NOTHING, db_column='idprioridad', blank=True, null=True)
-    idproblema = models.ForeignKey(Jproblemas, models.DO_NOTHING, db_column='idproblema', blank=True, null=True)
-    idusuarioasignado = models.ForeignKey(Jusuarios, models.DO_NOTHING, db_column='idusuarioasignado', blank=True, null=True)
-    idusuarioqasigno = models.ForeignKey(Jusuarios, models.DO_NOTHING, db_column='idusuarioqasigno', related_name='jtareasticket_idusuarioqasigno_set', blank=True, null=True)
-    tareaprincipal = models.ForeignKey('self', models.DO_NOTHING, db_column='tareaprincipal', related_name='jtareasticket_tareaprincipal_set', blank=True, null=True)
+    fkidtarea = models.ForeignKey(
+        "self", models.DO_NOTHING, db_column="fkidtarea", blank=True, null=True
+    )
+    idestado = models.ForeignKey(
+        Jestados, models.DO_NOTHING, db_column="idestado", blank=True, null=True
+    )
+    idprioridad = models.ForeignKey(
+        Jprioridades, models.DO_NOTHING, db_column="idprioridad", blank=True, null=True
+    )
+    idproblema = models.ForeignKey(
+        Jproblemas, models.DO_NOTHING, db_column="idproblema", blank=True, null=True
+    )
+    idusuarioasignado = models.ForeignKey(
+        Jusuarios,
+        models.DO_NOTHING,
+        db_column="idusuarioasignado",
+        blank=True,
+        null=True,
+    )
+    idusuarioqasigno = models.ForeignKey(
+        Jusuarios,
+        models.DO_NOTHING,
+        db_column="idusuarioqasigno",
+        related_name="jtareasticket_idusuarioqasigno_set",
+        blank=True,
+        null=True,
+    )
+    tareaprincipal = models.ForeignKey(
+        "self",
+        models.DO_NOTHING,
+        db_column="tareaprincipal",
+        related_name="jtareasticket_tareaprincipal_set",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
-        db_table = 'jtareasticket'
+        db_table = "jtareasticket"
 
     objects = models.Manager()
 
@@ -59,15 +84,40 @@ class Jestadotareas(models.Model):
     tiempocolor = models.DateTimeField(blank=True, null=True)
     color = models.CharField(max_length=100, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
-    idtarea = models.ForeignKey(Jtareasticket, models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
+    idtarea = models.ForeignKey(
+        Jtareasticket, models.DO_NOTHING, db_column="idtarea", blank=True, null=True
+    )
 
     class Meta:
-        db_table = 'jestadotareas'
+        db_table = "jestadotareas"
 
     objects = models.Manager()
 
     def __str__(self):
         return self.color
+
+
+# TODO: The 'contenidoarchivo' field only supports small-sized files.
+#  A cloud solution should be implemented so that instead of saving the base64 string,
+#  it can store a link to where the file is stored.
+class Jarchivos(models.Model):
+    idarchivo = models.AutoField(primary_key=True)
+    idtarea = models.ForeignKey(Jtareasticket, models.DO_NOTHING, db_column="idtarea")
+    nombrearchivo = models.CharField(max_length=500, blank=True, null=True)
+    fechacarga = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    fecharegistro = models.DateTimeField(auto_now=True, blank=True, null=True)
+    descripcionarchivo = models.CharField(max_length=1000)
+    contenidoarchivo = models.TextField()
+    mimetypearchivo = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = "jarchivos"
+        unique_together = ("idtarea", "nombrearchivo", "mimetypearchivo")
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return self.nombrearchivo
 
 
 # Views models

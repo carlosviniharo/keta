@@ -14,12 +14,11 @@ class Vcobrosindebios(models.Model):
     fecharespuesta = models.DateTimeField()
     tiporesolucion = models.CharField()
     montorestituido = models.FloatField()
-    interesmonto  = models.FloatField()
+    interesmonto = models.FloatField()
     totalrestituido = models.FloatField()
 
     class Meta:
         managed = False
-        db_table = 'vcobrosindebios'
+        db_table = "vcobrosindebios"
 
     objects = models.Manager()
-

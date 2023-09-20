@@ -21,28 +21,35 @@ from .views import (
     VusuariosReportView,
     JpersonasListView,
 )
+
 router = DefaultRouter()
-router.register(r'cargos', JcargosViewSet)
-router.register(r'departamentos', JdepartamentosViewSet)
-router.register(r'corporaciones', JcorporacionesViewSet)
-router.register(r'generos', JgenerosViewSet)
-router.register(r'geografia', JgeografiaViewSet)
-router.register(r'roles', JrolesListViewSet)
-router.register(r'sucursales', JsucursalesViewSet)
-router.register(r'tiposidentificaciones', JtiposidentificacionesViewSet)
-router.register(r'tipospersonas', JtipospersonasViewSet)
-router.register(r'personas', JpersonasViewSet)
-router.register(r'personaidentificacion', JpersonasListView, basename='custom-personas')
-router.register(r'usuarios', JusuariosViewSet)
+router.register(r"cargos", JcargosViewSet)
+router.register(r"departamentos", JdepartamentosViewSet)
+router.register(r"corporaciones", JcorporacionesViewSet)
+router.register(r"generos", JgenerosViewSet)
+router.register(r"geografia", JgeografiaViewSet)
+router.register(r"roles", JrolesListViewSet)
+router.register(r"sucursales", JsucursalesViewSet)
+router.register(r"tiposidentificaciones", JtiposidentificacionesViewSet)
+router.register(r"tipospersonas", JtipospersonasViewSet)
+router.register(r"personas", JpersonasViewSet)
+router.register(r"personaidentificacion", JpersonasListView, basename="custom-personas")
+router.register(r"usuarios", JusuariosViewSet)
 
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path("api/", include(router.urls)),
     # Not CRUD supported endpoints
-    path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', CustomLogoutView.as_view(), name='logout_user'),
-    path('user_profile/<str:email>/', JusuarioListView.as_view(), name="profile"),
-    path('sucursaldepartamentos/', JsucursalJdepartamentosListView.as_view(), name='jsucursal_jdepartamentos'),
-    path('usuarios_reporte/',  VusuariosReportView.as_view(), name='usuariosreporte-list')
-    ]
+    path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("login/refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("logout/", CustomLogoutView.as_view(), name="logout_user"),
+    path("user_profile/<str:email>/", JusuarioListView.as_view(), name="profile"),
+    path(
+        "sucursaldepartamentos/",
+        JsucursalJdepartamentosListView.as_view(),
+        name="jsucursal_jdepartamentos",
+    ),
+    path(
+        "usuarios_reporte/", VusuariosReportView.as_view(), name="usuariosreporte-list"
+    ),
+]

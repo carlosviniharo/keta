@@ -23,8 +23,10 @@ def model_serializers(model_):
         class ModelSerializer(serializer_class):
             class Meta:
                 model = model_
-                fields = tuple(f.name for f in model_._meta.fields) + ('url',)
+                fields = tuple(f.name for f in model_._meta.fields) + ("url",)
+
         return ModelSerializer
+
     return decorator
 
 
@@ -83,13 +85,13 @@ class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         try:
             user = Jusuarios.objects.create(
-                email=validated_data['email'],
-                username=validated_data['username'],
-                idrol=validated_data['idrol'],
-                iddepartamento=validated_data['iddepartamento'],
-                idcargo=validated_data['idcargo']
+                email=validated_data["email"],
+                username=validated_data["username"],
+                idrol=validated_data["idrol"],
+                iddepartamento=validated_data["iddepartamento"],
+                idcargo=validated_data["idcargo"],
             )
-            user.set_password(validated_data['password'])
+            user.set_password(validated_data["password"])
             user.save()
             return user
         except IntegrityError as e:

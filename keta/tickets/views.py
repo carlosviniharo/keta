@@ -37,6 +37,8 @@ from .models import (
 from users.models import Jpersonas
 from users.serializers import JpersonasSerializer
 
+CARD_TICKET_TYPE = 2
+
 
 class JcanalesrecepcionesViewSet(viewsets.ModelViewSet):
     queryset = Jcanalesrecepciones.objects.all()
@@ -99,7 +101,9 @@ class JtiposproductosJconceptosListView(ListAPIView):
     serializer_class = JconceptosSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = Jconceptos.objects.filter(idtipoproducto=self.kwargs.get("idtipoproducto"))
+        queryset = Jconceptos.objects.filter(
+            idtipoproducto=self.kwargs.get("idtipoproducto")
+        )
         if not queryset.exists():
             return Response(
                 {
@@ -134,13 +138,15 @@ class JproblemasViewSet(viewsets.ModelViewSet):
         tipo_ticket = problemas_serializer.validated_data["idtipoticket"]
         data_ticket = problemas_serializer.validated_data
 
-        if tipo_ticket.idtipoticket == 2:
+        if tipo_ticket.idtipoticket == CARD_TICKET_TYPE:
             try:
                 tarjeta_serializer.is_valid(raise_exception=True)
             except serializers.ValidationError:
                 return Response(
-                    {"detail": " Validation failed, please include tarjeta in the request"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {
+                        "detail": " Validation failed, please include tarjeta in the request"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             tarjeta, created_tarjeta = self.create_tarjeta(
                 tarjeta_serializer.validated_data
@@ -159,10 +165,7 @@ class JproblemasViewSet(viewsets.ModelViewSet):
             try:
                 ticket = Jproblemas.objects.create(**data_ticket)
             except ValidationError as e:
-                return Response(
-                    {"detail": e},
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
             person_serializer = JpersonasSerializer(
                 persona, context={"request": request}
@@ -184,8 +187,7 @@ class JproblemasViewSet(viewsets.ModelViewSet):
     @staticmethod
     def create_persona(data):
         persona, created = Jpersonas.objects.get_or_create(
-            identificacion=data["identificacion"],
-            defaults={"idpersona": None, **data}
+            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
         )
         if not created:
             for attr, value in data.items():

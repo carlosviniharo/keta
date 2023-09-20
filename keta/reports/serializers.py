@@ -6,5 +6,4 @@ from .models import Vcobrosindebios
 class VcobrosindebiosSerilizer(serializers.ModelSerializer):
     class Meta:
         model = Vcobrosindebios
-        fields = '__all__'
-        
+        fields = "__all__"

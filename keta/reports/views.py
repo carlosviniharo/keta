@@ -49,39 +49,45 @@ class VcobrosindebiosReportView(ListAPIView):
 
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
         fecha_final = self.request.query_params.get("fecha_final", None)
-        
+
         if fecha_inicio and fecha_final:
             fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
-            fecha_final = (timezone.datetime.strptime(fecha_final, DATE_FORMAT) +
-                           timezone.timedelta(hours=23, minutes=59))
+            fecha_final = timezone.datetime.strptime(
+                fecha_final, DATE_FORMAT
+            ) + timezone.timedelta(hours=23, minutes=59)
         else:
             raise APIException("Please provide proper fecha_inicio and fecha_final")
-        
+
         # Validate the XML content
-        if not self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final)):
+        if not self.validate_xml(
+            self.create_xml_streaming_response(fecha_inicio, fecha_final)
+        ):
             raise APIException("Invalid XML document")
 
-        response.streaming_content = self.create_xml_streaming_response(fecha_inicio, fecha_final)
+        response.streaming_content = self.create_xml_streaming_response(
+            fecha_inicio, fecha_final
+        )
 
         return response
 
     def create_xml_streaming_response(self, fecha_inicio, fecha_final):
         def data_generator():
-
             queryset = Vcobrosindebios.objects.filter(
-                Q(fecharecepcion__range=(fecha_inicio, fecha_final)) |
-                Q(fecharespuesta__range=(fecha_inicio, fecha_final))
+                Q(fecharecepcion__range=(fecha_inicio, fecha_final))
+                | Q(fecharespuesta__range=(fecha_inicio, fecha_final))
             )
 
             serializer = self.get_serializer(queryset, many=True)
             DICTIONARY_HEADER_REPORT["numRegistro"] = len(serializer.data)
             DICTIONARY_HEADER_REPORT["fechaCorte"] = self.format_date(str(fecha_final))
             yield '<?xml version="1.0" encoding="UTF-8"?>\n'
-            yield '<reclamosCI01 {}>\n'.format(" ".join([f'{k}="{v}"' for k, v in DICTIONARY_HEADER_REPORT.items()]))
+            yield "<reclamosCI01 {}>\n".format(
+                " ".join([f'{k}="{v}"' for k, v in DICTIONARY_HEADER_REPORT.items()])
+            )
 
             for report_dic in serializer.data:
                 attributes = self.process_report_data(report_dic)
-                yield f'  <elemento {attributes} />\n'
+                yield f"  <elemento {attributes} />\n"
 
             yield "</reclamosCI01>"
 
@@ -95,7 +101,7 @@ class VcobrosindebiosReportView(ListAPIView):
             if key in ["fecharecepcion", "fecharespuesta"]:
                 value = self.format_date(value)
             attributes.append(f'{DICTIONARY_NAMES_ENTRIES_REPORT[key]}="{value}"')
-        return ' '.join(attributes)
+        return " ".join(attributes)
 
     @staticmethod
     def format_date(date_str):
@@ -134,29 +140,25 @@ class VcobrosindebiosListView(ListAPIView):
     def list(self, request, *args, **kwargs):
         fecha_inicio = self.request.query_params.get("fecha_inicio", None)
         fecha_final = self.request.query_params.get("fecha_final", None)
-        
+
         if fecha_inicio and fecha_final:
             fecha_inicio = timezone.datetime.strptime(fecha_inicio, DATE_FORMAT)
-            fecha_final = (timezone.datetime.strptime(fecha_final, DATE_FORMAT) +
-                           timezone.timedelta(hours=23, minutes=59))
+            fecha_final = timezone.datetime.strptime(
+                fecha_final, DATE_FORMAT
+            ) + timezone.timedelta(hours=23, minutes=59)
         else:
             raise APIException("Please provide proper fecha_inicio and fecha_final")
-    
+
         queryset = Vcobrosindebios.objects.filter(
             Q(fecharecepcion__range=(fecha_inicio, fecha_final))
             | Q(fecharespuesta__range=(fecha_inicio, fecha_final))
         )
         if not queryset:
             return Response(
-                {"detail": "Not record was found in the database in that period of time"},
-                status=status.HTTP_400_BAD_REQUEST
+                {
+                    "detail": "Not record was found in the database in that period of time"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-
-
-
-

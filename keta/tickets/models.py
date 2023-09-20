@@ -263,7 +263,7 @@ class Jproblemas(models.Model):
             idpersona=self.idpersona,
             idtipoticket=self.idtipoticket,
             idprioridad=self.idprioridad,
-            monto=self.monto
+            monto=self.monto,
         ).exclude(pk=self.pk)
 
         if existing_instances.exists():
@@ -279,5 +279,6 @@ class Jproblemas(models.Model):
 
     def __str__(self):
         return self.descripcionasunto
+
 
 # Views models

@@ -1,9 +1,12 @@
 import re
 from collections import OrderedDict
+import base64
+from binascii import Error as BinasciiError
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.files.base import ContentFile
 from django.core.mail import send_mail
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import F
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,8 +24,11 @@ from .serializers import (
     EmailNotificationSerializer,
     VtareaestadocolorSerializer,
     VtareasSerializer,
+    JarchivosSerializer,
+    JarchivoListSeriliazer,
 )
 from .models import (
+    Jarchivos,
     Jtareasticket,
     Jestadotareas,
     Jestados,
@@ -30,8 +36,63 @@ from .models import (
     Vtareas,
 )
 
+FATHER_TASK_INDICATOR = "P"
+SUB_TASK_INDICATOR = "A"
 
-# TODO Fix the field archivo as this would be a table
+
+class JarchivosViewSet(viewsets.ModelViewSet):
+    queryset = Jarchivos.objects.all()
+    serializer_class = JarchivosSerializer
+
+    def create(self, request, *args, **kwargs):
+        file_serializer = JarchivosSerializer(
+            data=request.data, context={"request": request}
+        )
+        file_serializer.is_valid(raise_exception=True)
+        file = file_serializer.validated_data
+        base64_encoded_string = file["contenidoarchivo"]
+        try:
+            binary_data = base64.b64decode(base64_encoded_string)
+        except BinasciiError as e:
+            return Response(
+                {"detail": f"Invalid {e}"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create a ContentFile from the binary data
+        file["descripcionarchivo"] = ContentFile(binary_data)
+
+        task = file["idtarea"]
+        if task.indicador == SUB_TASK_INDICATOR:
+            file["idtarea"] = task.tareaprincipal
+
+        try:
+            with transaction.atomic():
+                file_saved = Jarchivos.objects.create(**file)
+        except IntegrityError:
+            return Response(
+                {
+                    "detail": f"The file with the name '{file['nombrearchivo']}' already exists in this ticket"
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        file_resp = JarchivosSerializer(file_saved, context={"request": request})
+        return Response(file_resp.data, status=status.HTTP_201_CREATED)
+
+
+class JarchivosListView(ListAPIView):
+    queryset = Jarchivos.objects.only(
+        "idarchivo",
+        "idtarea",
+        "nombrearchivo",
+        "fechacarga",
+        "fecharegistro",
+        "descripcionarchivo",
+        "mimetypearchivo",
+    )
+    serializer_class = JarchivoListSeriliazer
+    
+
+# TODO Implement pagination as the number of registers in this model can grown rapidly.
 class JtareasticketViewSet(viewsets.ModelViewSet):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
@@ -52,8 +113,6 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             days=int(optimal_time)
         )
 
-        # task_data["archivo"] = task_data.get("archivo", []) + ticket.archivo
-
         try:
             with transaction.atomic():
                 task = Jtareasticket.objects.create(**task_data)
@@ -72,8 +131,8 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
     @staticmethod
     def validate_task_data(task_data):
         check_indicator = task_data.get("indicador")
-        
-        if check_indicator == "P":
+
+        if check_indicator == FATHER_TASK_INDICATOR:
             ticket = task_data.get("idproblema")
             if not ticket:
                 raise APIException(
@@ -85,7 +144,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 )
             return True, ticket
 
-        elif check_indicator == "A":
+        elif check_indicator == SUB_TASK_INDICATOR:
             ticket = task_data.get("tareaprincipal")
             if not ticket:
                 raise APIException(
@@ -119,34 +178,58 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
     serializer_class = JestadotareasSerializer
 
     def create(self, request, *args, **kwargs):
+        # Create a state serializer instance and validate data
         state_serializer = JestadotareasSerializer(
             data=request.data, context={"request": request}
         )
         state_serializer.is_valid(raise_exception=True)
+        state = state_serializer.validated_data
 
-        task = state_serializer.validated_data.get("idtarea")
-        fechaasignacion = task.fechaasignacion
+        # Extract task  from validated data
+        task = state.get("idtarea")
 
-        if task.indicador != "P":
+        # Check if the task is a parent task
+        if task.indicador != FATHER_TASK_INDICATOR:
             return Response(
                 {"detail": "The ticket must be Parent"},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        elif state_serializer.validated_data.get("tiemporequerido"):
-            fechaentrega = state_serializer.validated_data["tiemporequerido"]
-            state_serializer.validated_data["tiempooptimo"] = task.fechaentrega
-        else:
-            state_serializer.validated_data["tiempooptimo"] = fechaentrega = task.fechaentrega
+        # Setting the tiempo optimo to fecha de entrega
+        fechaasignacion = task.fechaasignacion
+        fechaentrega = state["tiempooptimo"] = task.fechaentrega
+
+        if state.get("tiemporequerido"):
+            fechaentrega = state["tiemporequerido"]
+
         try:
             delta_time = (fechaentrega - fechaasignacion) / 3
         except TypeError:
-            return Response({"detail": "The ticket is missing the date of fechaentrega"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "The ticket is missing the date of fechaentrega"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        # Create states for "green," "yellow," and "red" colors
+        create_new, created_objects = self._create_color_states(
+            state, delta_time, fechaasignacion
+        )
 
+        # Serialize and return the created objects
+        serialized_objects = JestadotareasSerializer(
+            created_objects, many=True, context={"request": request}
+        )
+        return Response(
+            {"new_colors": f"{create_new}", "colours": serialized_objects.data},
+            status=status.HTTP_200_OK,
+        )
+
+    @staticmethod
+    def _create_color_states(state, delta_time, fechaasignacion):
         prev_tiempoentrega = fechaasignacion
         created_objects = []
 
         for colour in ["green", "yellow", "red"]:
-            state_colour = state_serializer.validated_data
+            state_colour = state.copy()
             state_colour["color"] = colour
             state_colour["tiempoiniciocolor"] = prev_tiempoentrega
             state_colour["tiempocolor"] = prev_tiempoentrega + delta_time
@@ -158,13 +241,8 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
                 defaults=state_colour,
             )
             created_objects.append(obj)
-            serialized_objects = JestadotareasSerializer(
-                created_objects, many=True, context={"request": request}
-            )
-        return Response(
-            {"new_colors": f"{create_new}", "colours": serialized_objects.data},
-            status=status.HTTP_200_OK,
-        )
+
+        return create_new, created_objects
 
 
 class JestadosViewSet(viewsets.ModelViewSet):
@@ -176,9 +254,14 @@ class FilteredTaskView(ListAPIView):
     queryset = Jtareasticket.objects.all()
     serializer_class = JtareasticketSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["idusuarioasignado__idusuario", "idestado__idestado", "indicador"]
+    filterset_fields = [
+        "idusuarioasignado__idusuario",
+        "idestado__idestado",
+        "indicador",
+    ]
 
 
+# Endpoints for the database views.
 class VtareaestadocolorListView(ListAPIView):
     queryset = Vtareaestadocolor.objects.all()
     serializer_class = VtareaestadocolorSerializer
@@ -190,17 +273,21 @@ class VtareaestadocolorListView(ListAPIView):
         queryset_main_task = Vtareaestadocolor.objects.all()
 
         if idtarea is not None:
-            queryset_main_task = queryset_main_task.filter(idtarea=idtarea, now_state=True)
+            queryset_main_task = queryset_main_task.filter(
+                idtarea=idtarea, now_state=True
+            )
 
         if id_asignado is not None:
-            queryset_main_task = queryset_main_task.filter(id_asignado=id_asignado, now_state=True)
+            queryset_main_task = queryset_main_task.filter(
+                id_asignado=id_asignado, now_state=True
+            )
 
         if not queryset_main_task.exists():
             return Response(
                 {
                     "detail": "The task "
-                              + f"The task {idtarea} or the user {id_asignado}"
-                              + " was not found in the records"
+                    + f"The task {idtarea} or the user {id_asignado}"
+                    + " was not found in the records"
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
@@ -211,7 +298,7 @@ class VtareaestadocolorListView(ListAPIView):
         subtasks_dict = {}
         if tarea_ids:
             queryset_subtasks = Vtareas.objects.filter(
-                tareaprincipal__in=tarea_ids, indicador="A"
+                tareaprincipal__in=tarea_ids, indicador=SUB_TASK_INDICATOR
             )
             for subtask in queryset_subtasks:
                 tarea_id = subtask.tareaprincipal

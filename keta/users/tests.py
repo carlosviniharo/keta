@@ -6,15 +6,21 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from .models import (
-    Jusuarios, Jpersonas, Jcargos, Jdepartamentos,
-    Jcorporaciones, Jgeneros, Jroles, Jsucursales,
-    Jtiposidentificaciones, Jtipospersonas
+    Jusuarios,
+    Jpersonas,
+    Jcargos,
+    Jdepartamentos,
+    Jcorporaciones,
+    Jgeneros,
+    Jroles,
+    Jsucursales,
+    Jtiposidentificaciones,
+    Jtipospersonas,
 )
 
 
 class JusuariosRegisterViewTestCase(APITestCase):
-
-    fixtures = ['users_test.json']
+    fixtures = ["users_test.json"]
 
     def setUp(self):
         self.client = APIClient()
@@ -28,7 +34,7 @@ class JusuariosRegisterViewTestCase(APITestCase):
             "emailclientecliente": "",
             "celular": "0999999999",
             "telefono": "062922066",
-            "direccion": "Otavalo"
+            "direccion": "Otavalo",
         }
         self.persona_data_updated = {
             "idgenero": "http://127.0.0.1:8000/users/api/generos/1/",
@@ -40,7 +46,7 @@ class JusuariosRegisterViewTestCase(APITestCase):
             "emailclientecliente": "",
             "celular": "0999999999",
             "telefono": "062922068",
-            "direccion": "Quito"
+            "direccion": "Quito",
         }
         self.usuario_data = {
             "idrol": "http://127.0.0.1:8000/users/api/roles/1/",
@@ -48,7 +54,7 @@ class JusuariosRegisterViewTestCase(APITestCase):
             "idcargo": "http://127.0.0.1:8000/users/api/cargos/2/",
             "password": "1234",
             "email": "bladimir@pilahuintio.ec",
-            "username": "Bladi"
+            "username": "Bladi",
         }
 
         self.usuario_data_second_account = {
@@ -61,13 +67,10 @@ class JusuariosRegisterViewTestCase(APITestCase):
         }
 
     def test_register_new_user(self):
-        data = {
-            "persona": self.persona_data,
-            "usuario": self.usuario_data
-        }
+        data = {"persona": self.persona_data, "usuario": self.usuario_data}
         data_second_account = {
             "persona": self.persona_data_updated,
-            "usuario": self.usuario_data_second_account
+            "usuario": self.usuario_data_second_account,
         }
         response = self.client.post(reverse("jusuarios-list"), data, format="json")
 
@@ -75,12 +78,12 @@ class JusuariosRegisterViewTestCase(APITestCase):
         self.assertEqual(Jpersonas.objects.count(), 1)
         # Check that the created user's details are correct
         created_user = Jusuarios.objects.first()
-        self.assertEqual(created_user.username, 'Bladi')
-        self.assertEqual(created_user.email, 'bladimir@pilahuintio.ec')
+        self.assertEqual(created_user.username, "Bladi")
+        self.assertEqual(created_user.email, "bladimir@pilahuintio.ec")
 
         created_persona = Jpersonas.objects.first()
-        self.assertEqual(created_persona.nombre, 'Christian Bladimir')
-        self.assertEqual(created_persona.apellido, 'Sisa Maliza')
+        self.assertEqual(created_persona.nombre, "Christian Bladimir")
+        self.assertEqual(created_persona.apellido, "Sisa Maliza")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -104,14 +107,20 @@ class JususarioRegisterViewTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
         # Create a Jusuarios instance for testing
-        self.user = Jusuarios.objects.create(email="test@users.com", password="testpassword")
+        self.user = Jusuarios.objects.create(
+            email="test@users.com", password="testpassword"
+        )
 
     def test_retrieve_user_by_email(self):
-        response = self.client.get(reverse("profile", kwargs={"email": self.user.email}))
+        response = self.client.get(
+            reverse("profile", kwargs={"email": self.user.email})
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_nonexistent(self):
-        response = self.client.get(reverse('profile', kwargs={'email': "fake@user.com"}))
+        response = self.client.get(
+            reverse("profile", kwargs={"email": "fake@user.com"})
+        )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -119,22 +128,19 @@ class CustomTokenObtainPairViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Jusuarios.objects.create_user(
-            email='test@users.com', username='testuser', password='testpass'
+            email="test@users.com", username="testuser", password="testpass"
         )
 
     def test_user_login(self):
-        data = {
-            'email': 'test@users.com',
-            'password': 'testpass'
-        }
-        response = self.client.post(reverse('token_obtain_pair'), data, format='json')
+        data = {"email": "test@users.com", "password": "testpass"}
+        response = self.client.post(reverse("token_obtain_pair"), data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('access', response.data)
-        self.assertIn('refresh', response.data)
+        self.assertIn("access", response.data)
+        self.assertIn("refresh", response.data)
 
         # Retrieve the user instance again from the database to refresh the last_login field
-        user = Jusuarios.objects.get(email='test@users.com')
+        user = Jusuarios.objects.get(email="test@users.com")
         self.assertIsNotNone(user.last_login)
         # pdb.set_trace()
         self.assertTrue(
@@ -143,7 +149,6 @@ class CustomTokenObtainPairViewTest(APITestCase):
 
 
 class ExampleViewSetTestCase(APITestCase):
-
     def setUp(self):
         self.model2test = Jcargos
         self.model_name = self.model2test.__name__.lower()
@@ -158,11 +163,17 @@ class ExampleViewSetTestCase(APITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_retrieve(self):
-        url = reverse(f"{self.model_name}-detail", kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")})
+        url = reverse(
+            f"{self.model_name}-detail",
+            kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
+        )
         response = self.client.get(url)
         # pdb.set_trace()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[f"descripcion{self.field_name}"], getattr(self.created_model, f"descripcion{self.field_name}"))
+        self.assertEqual(
+            response.data[f"descripcion{self.field_name}"],
+            getattr(self.created_model, f"descripcion{self.field_name}"),
+        )
 
     def test_create(self):
         new_data = {f"descripcion{self.field_name}": "Other example"}
@@ -183,12 +194,13 @@ class ExampleViewSetTestCase(APITestCase):
         self.created_model.refresh_from_db()
         self.assertEqual(
             getattr(self.created_model, f"descripcion{self.field_name}"),
-            updated_data[f"descripcion{self.field_name}"])
+            updated_data[f"descripcion{self.field_name}"],
+        )
 
     def test_delete_tipopersona(self):
         url = reverse(
             f"{self.model_name}-detail",
-            kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")}
+            kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
         )
         # pdb.set_trace()
         response = self.client.delete(url)

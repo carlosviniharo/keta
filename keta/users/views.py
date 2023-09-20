@@ -45,10 +45,10 @@ class JusuariosViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         persona_serializer = JpersonasSerializer(
-            data=request.data["persona"], context={'request': request}
+            data=request.data["persona"], context={"request": request}
         )
         usuario_serializer = JusuariosSerializer(
-            data=request.data["usuario"], context={'request': request}
+            data=request.data["usuario"], context={"request": request}
         )
 
         # Extract the data from the serializer
@@ -62,7 +62,7 @@ class JusuariosViewSet(viewsets.ModelViewSet):
             # Create the user instance
             existing_persona, created = Jpersonas.objects.update_or_create(
                 identificacion=identificacion,
-                defaults=persona_serializer.validated_data
+                defaults=persona_serializer.validated_data,
             )
 
             usuario_data = usuario_serializer.validated_data
@@ -71,13 +71,15 @@ class JusuariosViewSet(viewsets.ModelViewSet):
             usuario_data["first_name"] = existing_persona.nombre
             user = Jusuarios.objects.create_user(**usuario_data)
             user_serializer = JusuariosSerializer(user, context={"request": request})
-            person_serializer = JpersonasSerializer(existing_persona, context={"request": request})
+            person_serializer = JpersonasSerializer(
+                existing_persona, context={"request": request}
+            )
         return Response(
             {
                 "persona": person_serializer.data,
                 "usuario": user_serializer.data,
             },
-            status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -86,14 +88,16 @@ class JpersonasViewSet(viewsets.ModelViewSet):
     serializer_class = JpersonasSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
-    
+
         persona, created = Jpersonas.objects.update_or_create(
             identificacion=serializer.validated_data["identificacion"],
             defaults=serializer.validated_data,
         )
-        person_serializer = JpersonasSerializer(persona, context={'request': request})
+        person_serializer = JpersonasSerializer(persona, context={"request": request})
 
         return Response(
             {"new person": f"{created}", "persona": person_serializer.data},
@@ -192,6 +196,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     """
     An endpoint to login users.
     """
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
@@ -238,4 +243,3 @@ class CustomLogoutView(APIView):
 class VusuariosReportView(ListAPIView):
     queryset = Vusuarios.objects.all()
     serializer_class = VusuariosSerializer
-

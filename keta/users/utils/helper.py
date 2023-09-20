@@ -5,7 +5,9 @@ import requests
 
 def get_mac_address():
     # Get the MAC address of the computer
-    mac_address = ':'.join(['{:02x}'.format((uuid.getnode() >> ele) & 0xff) for ele in range(0, 48, 8)])
+    mac_address = ":".join(
+        ["{:02x}".format((uuid.getnode() >> ele) & 0xFF) for ele in range(0, 48, 8)]
+    )
     return mac_address
 
 
@@ -15,7 +17,7 @@ def get_public_ip_address():
         response = requests.get("https://api64.ipify.org?format=json")
         if response.status_code == 200:
             data = response.json()
-            return data.get('ip')
+            return data.get("ip")
     except requests.RequestException:
         pass
 
