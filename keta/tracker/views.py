@@ -58,13 +58,11 @@ class JseguimientotareasListView(ListAPIView):
         for task in track_sub:
             tarea_id = task.idtarea.idtarea
             if tarea_id not in subtask_tracks:
-                subtask_tracks[tarea_id] = []
+                subtask_tracks[tarea_id] = {"subtask": tarea_id, "values": []}
+            subtask_data = JseguimientostareasSerializer(
+                task, context={"request": request}
+            ).data
+            subtask_tracks[tarea_id]["values"].append(subtask_data)
+        list_subtask = list(subtask_tracks.values())
 
-            subtask_tracks[tarea_id].append(
-                OrderedDict(
-                    JseguimientostareasSerializer(
-                        task, context={"request": request}
-                    ).data
-                )
-            )
-        return subtask_tracks
+        return list_subtask

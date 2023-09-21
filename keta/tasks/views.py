@@ -1,10 +1,7 @@
 import re
 from collections import OrderedDict
-import base64
-from binascii import Error as BinasciiError
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
 from django.db.models import F
@@ -12,7 +9,8 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.exceptions import APIException
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,6 +33,7 @@ from .models import (
     Vtareaestadocolor,
     Vtareas,
 )
+from .utils import helper
 
 FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
@@ -43,6 +42,7 @@ SUB_TASK_INDICATOR = "A"
 class JarchivosViewSet(viewsets.ModelViewSet):
     queryset = Jarchivos.objects.all()
     serializer_class = JarchivosSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
         file_serializer = JarchivosSerializer(
@@ -50,16 +50,17 @@ class JarchivosViewSet(viewsets.ModelViewSet):
         )
         file_serializer.is_valid(raise_exception=True)
         file = file_serializer.validated_data
-        base64_encoded_string = file["contenidoarchivo"]
-        try:
-            binary_data = base64.b64decode(base64_encoded_string)
-        except BinasciiError as e:
+        pdf_file = request.FILES.get("pdf_file")
+        if pdf_file:
+            base64_encoded_string = helper.convert_pdf_to_b64(pdf_file)
+        else:
             return Response(
-                {"detail": f"Invalid {e}"}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "No pdf file was provided or provided a corrupted one"},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         # Create a ContentFile from the binary data
-        file["descripcionarchivo"] = ContentFile(binary_data)
+        file["contenidoarchivo"] = base64_encoded_string
 
         task = file["idtarea"]
         if task.indicador == SUB_TASK_INDICATOR:
@@ -90,8 +91,21 @@ class JarchivosListView(ListAPIView):
         "mimetypearchivo",
     )
     serializer_class = JarchivoListSeriliazer
-    
 
+
+class JarchivoRetrieveView(RetrieveAPIView):
+    queryset = Jarchivos.objects.all()
+    serializer_class = JarchivosSerializer
+    
+    def retrieve(self, request, *args, **kwargs):
+        archivo = self.get_object()
+        pdf_string = archivo.contenidoarchivo
+        pdf_name = archivo.nombrearchivo
+        pdf_mimetype = archivo.mimetypearchivo
+        response = helper.convert_base64_to_pdf(pdf_string, pdf_name, pdf_mimetype)
+        return response
+    
+    
 # TODO Implement pagination as the number of registers in this model can grown rapidly.
 class JtareasticketViewSet(viewsets.ModelViewSet):
     queryset = Jtareasticket.objects.all()

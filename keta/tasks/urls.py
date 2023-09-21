@@ -10,6 +10,7 @@ from .views import (
     JarchivosViewSet,
     VtareasListView,
     JarchivosListView,
+    JarchivoRetrieveView,
 )
 
 router = DefaultRouter()
@@ -30,4 +31,5 @@ urlpatterns = [
     ),
     path("vtareas/", VtareasListView.as_view(), name="vtareas-list"),
     path("archivoslist/", JarchivosListView.as_view(), name="archivos-list"),
+    path("getarchivos/<int:pk>/", JarchivoRetrieveView.as_view(), name="archivos-files")
 ]
