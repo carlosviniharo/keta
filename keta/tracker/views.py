@@ -54,15 +54,19 @@ class JseguimientotareasListView(ListAPIView):
     @staticmethod
     def get_subtask_tracks(track_sub, request):
         subtask_tracks = {}
-
+   
         for task in track_sub:
-            tarea_id = task.idtarea.idtarea
-            if tarea_id not in subtask_tracks:
-                subtask_tracks[tarea_id] = {"subtask": tarea_id, "values": []}
+            task_id = task.idtarea.idtarea
+            task_name = task.idtarea.descripciontarea
+            if task_id not in subtask_tracks:
+                subtask_tracks[task_id] = {
+                    "subtask": f"{task_id} - {task_name}",
+                    "values": []
+                }
             subtask_data = JseguimientostareasSerializer(
                 task, context={"request": request}
             ).data
-            subtask_tracks[tarea_id]["values"].append(subtask_data)
+            subtask_tracks[task_id]["values"].append(subtask_data)
         list_subtask = list(subtask_tracks.values())
 
         return list_subtask
