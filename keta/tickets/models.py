@@ -245,7 +245,6 @@ class Jproblemas(models.Model):
     idsucursal = models.ForeignKey(
         Jsucursales, models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
     )
-    archivo = models.TextField(blank=True, null=True)
 
     fecharegistro = models.DateTimeField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True, default=True)

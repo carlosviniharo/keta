@@ -20,7 +20,6 @@ class Jestados(models.Model):
         return self.descripcionestado
 
 
-# TODO tests a example of store several base64 strings in archivo
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
@@ -29,7 +28,6 @@ class Jtareasticket(models.Model):
     )
     fechaasignacion = models.DateTimeField(auto_now_add=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
-    archivo = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     fkidtarea = models.ForeignKey(
         "self", models.DO_NOTHING, db_column="fkidtarea", blank=True, null=True

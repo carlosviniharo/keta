@@ -39,6 +39,7 @@ FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
 
 
+# TODO the store of archivos should be shitched to a cloud as the files can grown with time.
 class JarchivosViewSet(viewsets.ModelViewSet):
     queryset = Jarchivos.objects.all()
     serializer_class = JarchivosSerializer
