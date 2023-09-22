@@ -1,12 +1,12 @@
 import re
 
+from django.db.models import Q
 from django.http import StreamingHttpResponse
 from django.utils import timezone
+from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import viewsets, status
-from django.db.models import Q
-
 
 from lxml import etree
 
@@ -109,6 +109,8 @@ class VcobrosindebiosReportView(ListAPIView):
         match = re.search(pattern, date_str)
         if match:
             year, month, day = match.group("year", "month", "day")
+            if year == "0000":
+                return ""
             return f"{day}/{month}/{year}"
         else:
             raise ValueError("Invalid date format")

@@ -20,18 +20,6 @@ class Jcargos(models.Model):
         return self.descripcioncargo
 
 
-class Jclasificacionesresoluciones(models.Model):
-    idclasificacionresolucion = models.AutoField(primary_key=True)
-    codigoclasificacionresolucion = models.CharField(
-        max_length=4, blank=True, null=True
-    )
-    descripcionclasificacion = models.CharField(max_length=250, blank=True, null=True)
-    fecharegistro = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = "jclasificacionesresoluciones"
-
-
 class Jcorporaciones(models.Model):
     idcorporacion = models.AutoField(primary_key=True)
     idpais = models.ForeignKey(
@@ -211,16 +199,6 @@ class Jsucursales(models.Model):
 
     def __str__(self):
         return self.nombresucursal
-
-
-class Jtiporesoluciones(models.Model):
-    idtiporesolucion = models.AutoField(primary_key=True)
-    codigotiporesoulcion = models.CharField(max_length=4, blank=True, null=True)
-    descripciontiporesolucion = models.CharField(max_length=250, blank=True, null=True)
-    fecharegistro = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = "jtiporesoluciones"
 
 
 class Jtiposidentificaciones(models.Model):

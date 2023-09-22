@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     "users",
     "tickets",
     "tasks",
-    "tracker",
+    "trackers",
     "reports",
+    "resolvers",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -132,7 +133,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 5
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "keta_development",
+        "NAME": "keta_development_carlos",
         "USER": "postgres",
         "PASSWORD": "C0n310n3s81324ML",
         "HOST": "172.31.100.180",
