@@ -105,7 +105,7 @@ class Jarchivos(models.Model):
     fechacarga = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     fecharegistro = models.DateTimeField(auto_now=True, blank=True, null=True)
     descripcionarchivo = models.CharField(max_length=1000)
-    contenidoarchivo = models.TextField()
+    contenidoarchivo = models.TextField(null=True)
     mimetypearchivo = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
