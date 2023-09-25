@@ -3,8 +3,9 @@ from django.db import models
 
 # Create your models here.
 class Vcobrosindebios(models.Model):
+    ticket = models.IntegerField(primary_key=True)
     tipoidentificacionsujeto = models.CharField()
-    identificacionsujeto = models.CharField(primary_key=True)
+    identificacionsujeto = models.CharField()
     nomapellidonomrazonsocial = models.CharField()
     canalrecepcion = models.CharField()
     fecharecepcion = models.DateTimeField()

@@ -24,7 +24,7 @@ urlpatterns = [
     path("tickets/", include("tickets.urls")),
     path("tasks/", include("tasks.urls")),
     path("trackers/", include("trackers.urls")),
-    path("report/", include("reports.urls")),
+    path("reports/", include("reports.urls")),
     path("resolvers/", include("resolvers.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

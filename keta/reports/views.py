@@ -58,12 +58,9 @@ class VcobrosindebiosReportView(ListAPIView):
         else:
             raise APIException("Please provide proper fecha_inicio and fecha_final")
 
-        # Validate the XML content
-        if not self.validate_xml(
-            self.create_xml_streaming_response(fecha_inicio, fecha_final)
-        ):
-            raise APIException("Invalid XML document")
-
+        # Validate the XML conten
+        self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final))
+        
         response.streaming_content = self.create_xml_streaming_response(
             fecha_inicio, fecha_final
         )
@@ -94,24 +91,41 @@ class VcobrosindebiosReportView(ListAPIView):
         return data_generator()
 
     def process_report_data(self, report_dic):
+        # Create a copy of the report_dic to avoid modifying it during iteration.
+        report_copy = report_dic.copy()
         attributes = []
-        for key, value in report_dic.items():
+        
+        if report_copy.get("estadoreclamo") == "1":
+            del report_copy["fecharespuesta"]
+            del report_copy["fecharespuesta"]
+            
+        for key, value in report_copy.items():
             if isinstance(value, (int, float)):
                 value = "%.2f" % float(value)
+
             if key in ["fecharecepcion", "fecharespuesta"]:
-                value = self.format_date(value)
-            attributes.append(f'{DICTIONARY_NAMES_ENTRIES_REPORT[key]}="{value}"')
+                # Ensure that self.format_date is defined and works correctly.
+                value = self.format_date(value, report_dic.get("ticket"))
+
+            # Ensure that DICTIONARY_NAMES_ENTRIES_REPORT contains necessary mappings.
+            attribute_name = DICTIONARY_NAMES_ENTRIES_REPORT.get(key, key)
+            if key == "ticket":
+                pass
+            else:
+                attributes.append(f'{attribute_name}="{value}"')
         return " ".join(attributes)
 
     @staticmethod
-    def format_date(date_str):
+    def format_date(date_str, ticket=None):
         pattern = r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"
         match = re.search(pattern, date_str)
         if match:
             year, month, day = match.group("year", "month", "day")
-            if year == "0000":
-                return ""
+            if year == "0001":
+                raise APIException(f"There could not be generated the record as ticket {ticket} state is closed "
+                                   f", however not resolution record was found")
             return f"{day}/{month}/{year}"
+
         else:
             raise ValueError("Invalid date format")
 
@@ -130,8 +144,8 @@ class VcobrosindebiosReportView(ListAPIView):
                     xmlschema.assertValid(etree.fromstring(xml_content))
                 except etree.XMLSyntaxError:
                     continue
-                except etree.DocumentInvalid:
-                    return False
+                except etree.DocumentInvalid as er:
+                    raise er
         return True
 
 
