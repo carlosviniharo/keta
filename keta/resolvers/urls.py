@@ -5,6 +5,7 @@ from .views import (
     JtiporesolucionesViewSet,
     JresolucionesViewSet,
     JvaloresresolucionesViewSet,
+    JresolucionesListSet,
 )
 
 router = DefaultRouter()
@@ -15,4 +16,5 @@ router.register(r"valoresresoluciones", JvaloresresolucionesViewSet)
 
 urlpatterns = [
     path("api/", include(router.urls)),
+    path("resoluciones/", JresolucionesListSet.as_view(), name="resoluciones-lis")
 ]
