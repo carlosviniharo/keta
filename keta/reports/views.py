@@ -97,7 +97,7 @@ class VcobrosindebiosReportView(ListAPIView):
         
         if report_copy.get("estadoreclamo") == "1":
             del report_copy["fecharespuesta"]
-            del report_copy["fecharespuesta"]
+            del report_copy["tiporesolucion"]
             
         for key, value in report_copy.items():
             if isinstance(value, (int, float)):
