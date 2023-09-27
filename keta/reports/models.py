@@ -23,3 +23,6 @@ class Vcobrosindebios(models.Model):
         db_table = "vcobrosindebios"
 
     objects = models.Manager()
+    
+    def __str__(self):
+        return f"Ticket number {self.ticket}"

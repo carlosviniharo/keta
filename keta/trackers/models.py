@@ -19,3 +19,6 @@ class Jseguimientostareas(models.Model):
         db_table = "jseguimientostareas"
 
     objects = models.Manager()
+    
+    def __str__(self):
+        return self.tituloseguimientotarea

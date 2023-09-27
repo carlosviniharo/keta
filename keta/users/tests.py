@@ -125,10 +125,14 @@ class JususarioRegisterViewTestCase(APITestCase):
 
 
 class CustomTokenObtainPairViewTest(APITestCase):
+    fixtures = ["users_test.json"]
+    
     def setUp(self):
         self.client = APIClient()
         self.user = Jusuarios.objects.create_user(
-            email="test@users.com", username="testuser", password="testpass"
+            email="test@users.com",
+            password="testpass",
+            idrol=Jroles.objects.get(idrol=1),
         )
 
     def test_user_login(self):
@@ -142,7 +146,6 @@ class CustomTokenObtainPairViewTest(APITestCase):
         # Retrieve the user instance again from the database to refresh the last_login field
         user = Jusuarios.objects.get(email="test@users.com")
         self.assertIsNotNone(user.last_login)
-        # pdb.set_trace()
         self.assertTrue(
             user.last_login >= (timezone.now() - timezone.timedelta(minutes=1))
         )

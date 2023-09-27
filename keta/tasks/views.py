@@ -337,7 +337,7 @@ class VtareasListView(ListAPIView):
     queryset = Vtareas.objects.all()
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["tarea", "indicador"]
+    filterset_fields = ["tarea", "indicador", "estado"]
 
 
 class EmailNotificationView(APIView):

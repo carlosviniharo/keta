@@ -1,8 +1,15 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from .utils.helper import get_public_ip_address, get_mac_address
+
+dic_group_permissions = {
+    1: Group.objects.get(name='Supervisors'),
+    2: Group.objects.get(name='Assistants'),
+    3: Group.objects.get(name='Technicians'),
+    4: Group.objects.get(name='Operators'),
+}
 
 
 class Jcargos(models.Model):
@@ -32,7 +39,7 @@ class Jcorporaciones(models.Model):
     direccioncorporacion = models.CharField(max_length=200, blank=True, null=True)
     telefonocorporacion = models.CharField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
-    fechacreacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
@@ -58,7 +65,7 @@ class Jdepartamentos(models.Model):
     nombredepartamento = models.CharField(max_length=200, blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     descripciondepartamento = models.CharField(max_length=500, blank=True, null=True)
-    fechacreacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
@@ -99,7 +106,7 @@ class Jgeografia(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     nivel = models.BigIntegerField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
-    fechacreacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
@@ -149,8 +156,8 @@ class Jroles(models.Model):
     nombrerol = models.CharField(max_length=100, blank=True, null=True)
     descripcionrol = models.CharField(max_length=100, blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
-    fechacreacion = models.DateTimeField(blank=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
     )
@@ -184,7 +191,7 @@ class Jsucursales(models.Model):
     direccionsucursal = models.CharField(max_length=200, blank=True, null=True)
     telefonosucursal = models.CharField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
-    fechacreacion = models.DateTimeField(blank=True, null=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     fechamodificacion = models.DateTimeField(blank=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
@@ -242,6 +249,7 @@ class JusuariosManager(BaseUserManager):
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
+        user.groups.add(dic_group_permissions.get(user.idrol.idrol, 2))
         return user
 
     def create_user(self, email, password, **extra_fields):
