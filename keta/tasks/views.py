@@ -285,16 +285,16 @@ class VtareaestadocolorListView(ListAPIView):
         idtarea = self.request.query_params.get("idtarea", None)
         id_asignado = self.request.query_params.get("id_asignado", None)
 
-        queryset_main_task = Vtareaestadocolor.objects.all()
+        queryset_main_task = Vtareaestadocolor.objects.filter(now_state=True)
 
         if idtarea is not None:
             queryset_main_task = queryset_main_task.filter(
-                idtarea=idtarea, now_state=True
+                idtarea=idtarea
             )
 
         if id_asignado is not None:
             queryset_main_task = queryset_main_task.filter(
-                id_asignado=id_asignado, now_state=True
+                id_asignado=id_asignado
             )
 
         if not queryset_main_task.exists():
@@ -337,7 +337,7 @@ class VtareasListView(ListAPIView):
     queryset = Vtareas.objects.all()
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["tarea", "indicador", "estado"]
+    filterset_fields = ["tarea", "indicador", "estado",]
 
 
 class EmailNotificationView(APIView):
