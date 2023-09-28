@@ -156,6 +156,8 @@ class Vtareas(models.Model):
     titulo_tarea = models.CharField()
     fecha_asignacion = models.DateTimeField()
     sucursal = models.CharField()
+    idcreador = models.IntegerField()
+    creador = models.CharField()
     nombre_cliente = models.CharField()
     apellido_cliente = models.CharField()
     nombres_tecnico = models.CharField()
