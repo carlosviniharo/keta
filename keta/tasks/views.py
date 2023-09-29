@@ -129,18 +129,20 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         priority = ticket.idprioridad
         optimal_time, max_days_resolution = self.get_time_priority(priority)
         task_data["idprioridad"] = priority
-        task_data["fechaentrega"] = timezone.now() + timezone.timedelta(
-            days=int(optimal_time)
-        )
-
         try:
             with transaction.atomic():
-                task = Jtareasticket.objects.create(**task_data)
+                
                 if is_father:
+                    task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=int(optimal_time))
+                    task = Jtareasticket.objects.create(**task_data)
                     Jtareasticket.objects.filter(pk=task.pk).update(
                         tareaprincipal=F("pk")
                     )
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
+                else:
+                    task_data["fechaentrega"] = task_data["tareaprincipal"].fechaentrega
+                    task = Jtareasticket.objects.create(**task_data)
+                    
         except ValidationError as e:
             return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
 
