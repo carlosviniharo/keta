@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -142,12 +143,20 @@ class Jtarjetas(models.Model):
         blank=True,
         null=True,
     )
+    numeroTarjeta = models.CharField(max_length=100)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "jtarjetas"
 
     objects = models.Manager()
+    
+    def save(self, *args, **kwargs):
+        # Hash the sensitive data using make_password
+        self.numeroTarjeta = make_password(self.numeroTarjeta)
+
+        # Call the original save method to save the hashed data
+        super(Jtarjetas, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.idmarcatarjeta} - {self.idtipotarjeta} - {self.idclasetarjeta}"

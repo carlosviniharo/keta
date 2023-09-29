@@ -148,12 +148,12 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            tarjeta, created_tarjeta = self.create_tarjeta(
-                tarjeta_serializer.validated_data
-            )
+            tarjeta = Jtarjetas.objects.create(**tarjeta_serializer.validated_data)
             data_ticket["idtarjeta"] = tarjeta
+            tarjeta = JtarjetasSerializer(tarjeta, context={"request": request}).data
+            
         else:
-            created_tarjeta = False
+            tarjeta = {}
 
         with transaction.atomic():
             persona, created_persona = self.create_persona(
@@ -177,7 +177,7 @@ class JproblemasViewSet(viewsets.ModelViewSet):
         return Response(
             {
                 "nueva persona": f"{created_persona}",
-                "tarjeta": f"{created_tarjeta}",
+                "tarjeta": tarjeta,
                 "persona": person_serializer.data,
                 "ticket": ticket_serializer.data,
             },
