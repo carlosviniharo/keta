@@ -7,11 +7,9 @@ from django.db import transaction, IntegrityError
 from django.db.models import F
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponse
-from django.template.loader import get_template
 from rest_framework import viewsets, status
 from rest_framework.exceptions import APIException
-from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -97,6 +95,8 @@ class JarchivosListView(ListAPIView):
         "mimetypearchivo",
     )
     serializer_class = JarchivoListSeriliazer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["idtarea"]
 
 
 class JarchivoRetrieveView(RetrieveAPIView):
@@ -340,29 +340,6 @@ class VtareasListView(ListAPIView):
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["tarea", "indicador", "estado", "idcreador", "sucursal"]
-
-
-# TODO Finish the generation of the report as the format is incorrect
-#  and it does not contain the propre information.
-class GeneratePdfReport(GenericAPIView):
-    queryset = Vtareas.objects.get(tarea=1)
-    serializer_class = VtareasSerializer
-    
-    def get(self, request, *args, **kwargs):
-        template_path = r"html/cobrosIndebidos.html"
-        template = get_template(template_path)
-        data_ticket = VtareasSerializer(self.queryset)
-        context = data_ticket.data
-        html = template.render(context)
-        
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'filename="output.pdf'
-        
-        pdf = pisa.CreatePDF(BytesIO(html.encode('UTF-8')), dest=response)
-        
-        if pdf.err:
-            raise APIException(pdf.err)
-        return response
 
 
 class EmailNotificationView(APIView):

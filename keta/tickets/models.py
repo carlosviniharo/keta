@@ -141,9 +141,8 @@ class Jtarjetas(models.Model):
         blank=True,
         null=True,
     )
-    numerotarjeta = EncryptedField()
+    numerotarjeta = EncryptedField(hide_algorithm=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
-    
     
     class Meta:
         db_table = "jtarjetas"
@@ -248,6 +247,14 @@ class Jproblemas(models.Model):
     )
 
     fecharegistro = models.DateTimeField(blank=True, null=True)
+    idusuarioproblema = models.ForeignKey(
+        Jusuarios, models.DO_NOTHING,
+        db_column="idusuarioproblema",
+        related_name="jproblemas_idusuarioproblema_set",
+        blank=True,
+        null=True
+    )
+    servicio = models.CharField(max_length=1000, null=True)
     status = models.BooleanField(blank=True, null=True, default=True)
 
     class Meta:

@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import VcobrosindebiosReportView, VcobrosindebiosListView
+from .views import VcobrosindebiosReportView, VcobrosindebiosListView, GeneratePdfReport
 
 urlpatterns = [
     path(
@@ -12,5 +12,10 @@ urlpatterns = [
         "cobrosindebiostable/",
         VcobrosindebiosListView.as_view(),
         name="cobrosindebiostable-list",
+    ),
+    path(
+        "generate_pdf/<int:pk>/",
+        GeneratePdfReport.as_view(),
+        name="generatePDF"
     ),
 ]

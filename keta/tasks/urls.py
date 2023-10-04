@@ -11,7 +11,6 @@ from .views import (
     VtareasListView,
     JarchivosListView,
     JarchivoRetrieveView,
-    GeneratePdfReport,
 )
 
 router = DefaultRouter()
@@ -33,5 +32,4 @@ urlpatterns = [
     path("vtareas/", VtareasListView.as_view(), name="vtareas-list"),
     path("archivoslist/", JarchivosListView.as_view(), name="archivos-list"),
     path("getarchivos/<int:pk>/", JarchivoRetrieveView.as_view(), name="archivos-files"),
-    path("generate_pdf/", GeneratePdfReport.as_view(), name="generatePDF"),
 ]

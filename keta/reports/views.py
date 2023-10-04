@@ -1,17 +1,32 @@
 import re
-
+from collections import namedtuple
 from django.db.models import Q
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
+from django.template.loader import get_template
 from django.utils import timezone
 from rest_framework.exceptions import APIException
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 
 from lxml import etree
+import pdfkit
 
-from .models import Vcobrosindebios
-from .serializers import VcobrosindebiosSerilizer
+from .utils.helper import format_date
+from .models import (
+    Vcobrosindebios,
+    Vreportecobrosindebidos,
+    Vreportereclamostarjeta,
+    Vreportereclamosgenerales,
+)
+from .serializers import (
+    VcobrosindebiosSerilizer,
+    VreportecobrosindebidosSerializer,
+    VreportereclamostarjetaSerializer,
+    VreportereclamosgeneralesSerializer
+)
+
+from tasks.models import Jtareasticket
 
 DICTIONARY_HEADER_REPORT = {
     "xmlns": "http://www.seps.gob.ec/reclamoCI01",
@@ -38,6 +53,14 @@ DICTIONARY_NAMES_ENTRIES_REPORT = {
 }
 DATE_FORMAT = "%Y-%m-%d"
 
+# Tuple to mao the serializer, model to the html depending on the type of report
+Report = namedtuple("Report", "model serializer html")
+DIC_REPORTS = {
+    1: Report(Vreportecobrosindebidos, VreportecobrosindebidosSerializer, "html/cobrosIndebidos.html"),
+    2: Report(Vreportereclamostarjeta, VreportereclamostarjetaSerializer, "html/reclamosTarjeta.html"),
+    3: Report(Vreportereclamosgenerales, VreportereclamosgeneralesSerializer, "html/reclamosGenerales.html")
+}
+
 
 class VcobrosindebiosReportView(ListAPIView):
     serializer_class = VcobrosindebiosSerilizer
@@ -60,7 +83,7 @@ class VcobrosindebiosReportView(ListAPIView):
 
         # Validate the XML conten
         self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final))
-        
+
         response.streaming_content = self.create_xml_streaming_response(
             fecha_inicio, fecha_final
         )
@@ -76,7 +99,7 @@ class VcobrosindebiosReportView(ListAPIView):
 
             serializer = self.get_serializer(queryset, many=True)
             DICTIONARY_HEADER_REPORT["numRegistro"] = len(serializer.data)
-            DICTIONARY_HEADER_REPORT["fechaCorte"] = self.format_date(str(fecha_final))
+            DICTIONARY_HEADER_REPORT["fechaCorte"] = format_date(str(fecha_final))
             yield '<?xml version="1.0" encoding="UTF-8"?>\n'
             yield "<reclamosCI01 {}>\n".format(
                 " ".join([f'{k}="{v}"' for k, v in DICTIONARY_HEADER_REPORT.items()])
@@ -94,18 +117,18 @@ class VcobrosindebiosReportView(ListAPIView):
         # Create a copy of the report_dic to avoid modifying it during iteration.
         report_copy = report_dic.copy()
         attributes = []
-        
+
         if report_copy.get("estadoreclamo") == "1":
             del report_copy["fecharespuesta"]
             del report_copy["tiporesolucion"]
-            
+
         for key, value in report_copy.items():
             if isinstance(value, (int, float)):
                 value = "%.2f" % float(value)
 
             if key in ["fecharecepcion", "fecharespuesta"]:
                 # Ensure that self.format_date is defined and works correctly.
-                value = self.format_date(value, report_dic.get("ticket"))
+                value = format_date(value, report_dic.get("ticket"))
 
             # Ensure that DICTIONARY_NAMES_ENTRIES_REPORT contains necessary mappings.
             attribute_name = DICTIONARY_NAMES_ENTRIES_REPORT.get(key, key)
@@ -115,19 +138,6 @@ class VcobrosindebiosReportView(ListAPIView):
                 attributes.append(f'{attribute_name}="{value}"')
         return " ".join(attributes)
 
-    @staticmethod
-    def format_date(date_str, ticket=None):
-        pattern = r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"
-        match = re.search(pattern, date_str)
-        if match:
-            year, month, day = match.group("year", "month", "day")
-            if year == "0001":
-                raise APIException(f"There could not be generated the record as ticket {ticket} state is closed "
-                                   f", however not resolution record was found")
-            return f"{day}/{month}/{year}"
-
-        else:
-            raise ValueError("Invalid date format")
 
     @staticmethod
     def validate_xml(streaming_content):
@@ -178,3 +188,49 @@ class VcobrosindebiosListView(ListAPIView):
             )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# TODO Finish the generation of the report as the format is incorrect
+#  and it does not contain the propre information.
+class GeneratePdfReport(RetrieveAPIView):
+    serializer_class = None
+    report = None
+    
+    def get_queryset(self):
+        # Access kwargs from self.kwargs
+        pk = self.kwargs.get("pk")
+        
+        # Use pk to fetch ticket_type
+        ticket_type = Jtareasticket.objects.get(idtarea=pk).idproblema.idtipoticket
+        
+        # Get the report based on ticket_type from DIC_REPORTS
+        self.report = DIC_REPORTS.get(ticket_type.idtipoticket, "")
+        
+        # Check if a report was found
+        if self.report:
+            # Set the serializer class based on the report
+            self.serializer_class = self.report.serializer
+            return self.report.model.objects.get(ticket=pk)
+        else:
+            # Handle the case where no report was found
+            raise ValueError(f"Ticket type {ticket_type} does not support reports")
+
+    def retrieve(self, request, *args, **kwargs):
+        ticket = self.get_queryset()
+        template = get_template(self.report.html)
+        data_ticket = self.get_serializer(ticket)
+        data_report = data_ticket.data
+        data_report["date"] = format_date(data_ticket.data["date"])
+        html_content = template.render(data_report)
+
+        # Specify the options for PDF generation
+        options = {
+            "enable-local-file-access": "",
+        }
+
+        # Generate PDF from HTML using pdfkit
+        pdf = pdfkit.from_string(html_content, False, options=options)
+
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = 'filename="output.pdf"'
+        return response
