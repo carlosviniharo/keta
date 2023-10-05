@@ -13,6 +13,8 @@ from lxml import etree
 import pdfkit
 
 from .utils.helper import format_date
+from tasks.utils.helper import convert_pdf_to_b64
+from tasks.models import Jarchivos
 from .models import (
     Vcobrosindebios,
     Vreportecobrosindebidos,
@@ -53,12 +55,35 @@ DICTIONARY_NAMES_ENTRIES_REPORT = {
 }
 DATE_FORMAT = "%Y-%m-%d"
 
-# Tuple to mao the serializer, model to the html depending on the type of report
-Report = namedtuple("Report", "model serializer html")
+DICTIONARY_ARCHIVO_REPORT = {
+    "idtarea": 0,
+    "nombrearchivo": "",
+    "descripcionarchivo": "Reporte generado automaticamente al registrarse exitosamente el reclamo",
+    "contenidoarchivo": "",
+    "mimetypearchivo": "application/pdf",
+}
+
+# Tuple to map the serializer, model to the html depending on the type of report
+Report = namedtuple("Report", "type model serializer html")
 DIC_REPORTS = {
-    1: Report(Vreportecobrosindebidos, VreportecobrosindebidosSerializer, "html/cobrosIndebidos.html"),
-    2: Report(Vreportereclamostarjeta, VreportereclamostarjetaSerializer, "html/reclamosTarjeta.html"),
-    3: Report(Vreportereclamosgenerales, VreportereclamosgeneralesSerializer, "html/reclamosGenerales.html")
+    1: Report(
+        "Cobros Indebidos",
+        Vreportecobrosindebidos,
+        VreportecobrosindebidosSerializer,
+        "html/cobrosIndebidos.html"
+    ),
+    2: Report(
+        "Reclamos Tarjetas",
+        Vreportereclamostarjeta,
+        VreportereclamostarjetaSerializer,
+        "html/reclamosTarjeta.html"
+    ),
+    3: Report(
+        "Reclamos Generales",
+        Vreportereclamosgenerales,
+        VreportereclamosgeneralesSerializer,
+        "html/reclamosGenerales.html",
+    ),
 }
 
 
@@ -112,7 +137,8 @@ class VcobrosindebiosReportView(ListAPIView):
             yield "</reclamosCI01>"
 
         return data_generator()
-
+    
+    @staticmethod
     def process_report_data(self, report_dic):
         # Create a copy of the report_dic to avoid modifying it during iteration.
         report_copy = report_dic.copy()
@@ -137,7 +163,6 @@ class VcobrosindebiosReportView(ListAPIView):
             else:
                 attributes.append(f'{attribute_name}="{value}"')
         return " ".join(attributes)
-
 
     @staticmethod
     def validate_xml(streaming_content):
@@ -195,16 +220,17 @@ class VcobrosindebiosListView(ListAPIView):
 class GeneratePdfReport(RetrieveAPIView):
     serializer_class = None
     report = None
+    task = None
     
     def get_queryset(self):
         # Access kwargs from self.kwargs
         pk = self.kwargs.get("pk")
-        
+        self.task = Jtareasticket.objects.get(idtarea=pk)
         # Use pk to fetch ticket_type
-        ticket_type = Jtareasticket.objects.get(idtarea=pk).idproblema.idtipoticket
+        id_ticket_type = self.task.idproblema.idtipoticket.idtipoticket
         
         # Get the report based on ticket_type from DIC_REPORTS
-        self.report = DIC_REPORTS.get(ticket_type.idtipoticket, "")
+        self.report = DIC_REPORTS.get(id_ticket_type, "")
         
         # Check if a report was found
         if self.report:
@@ -227,10 +253,16 @@ class GeneratePdfReport(RetrieveAPIView):
         options = {
             "enable-local-file-access": "",
         }
-
+        
         # Generate PDF from HTML using pdfkit
         pdf = pdfkit.from_string(html_content, False, options=options)
-
+        # Populating the data for sending the file to the database
+        DICTIONARY_ARCHIVO_REPORT["idtarea"] = self.task
+        DICTIONARY_ARCHIVO_REPORT["nombrearchivo"] = f"{kwargs.get('pk')} {self.report.type}"
+        DICTIONARY_ARCHIVO_REPORT["contenidoarchivo"] = convert_pdf_to_b64(pdf)
+        
+        Jarchivos.objects.update_or_create(**DICTIONARY_ARCHIVO_REPORT)
+        
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = 'filename="output.pdf"'
         return response

@@ -8,20 +8,25 @@ from django.core.files.base import ContentFile
 
 
 def convert_pdf_to_b64(pdf_file):
-    # Save the PDF file to a temporary location on disk
-    temp_file_path = default_storage.save("temp_pdf.pdf", ContentFile(pdf_file.read()))
-
-    # Read the PDF file as binary data
-    with open(temp_file_path, "rb") as pdf_file:
-        pdf_binary_data = pdf_file.read()
+    
+    if not isinstance(pdf_file, bytes):
+        # Save the PDF file to a temporary location on disk
+        temp_file_path = default_storage.save("temp_pdf.pdf", ContentFile(pdf_file.read()))
+    
+        # Read the PDF file as binary data
+        with open(temp_file_path, "rb") as pdf_data:
+            pdf_binary_data = pdf_data.read()
+            
+        default_storage.delete(temp_file_path)
+    else:
+        pdf_binary_data = pdf_file
+        
     try:
         # Encode the binary data in base64
         base64_encoded_pdf = base64.b64encode(pdf_binary_data).decode("utf-8")
     except BinasciiError as e:
         raise f"Invalid {e}"
-    # Delete the temporary file
-    default_storage.delete(temp_file_path)
-
+    
     return base64_encoded_pdf
 
 
@@ -35,7 +40,7 @@ def convert_base64_to_pdf(base64_string, filename, mimetype):
 
         # Create an HTTP response with the PDF content
         response = HttpResponse(pdf_stream.read(), content_type=mimetype)
-        response["Content-Disposition"] = f'attachment; filename="{filename}.pdf"'
+        response["Content-Disposition"] = f'filename="{filename}.pdf"'
 
         return response
     except Exception as e:

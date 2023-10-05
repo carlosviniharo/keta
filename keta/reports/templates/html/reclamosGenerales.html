@@ -449,7 +449,7 @@
         }
 
         .checkbox-round:checked {
-            background-color: #333333;
+            background-color: #f79646;
         }
     </style>
 </head>
@@ -485,11 +485,14 @@
                 <p class="c6"><span class="c4"></span></p>
                 <p class="c8">
                     <span class="c4">Queja </span>
-                    <input type="checkbox" class="checkbox-round" id ="queja" style="margin-right: 85px;">
+                    <input type="checkbox" class="checkbox-round" id ="queja" style="margin-right: 85px;"
+                            {% if comentario == 'Quejas' %}checked{% endif %}>
                     <span class="c4">Sugerencia</span>
-                    <input type="checkbox" class="checkbox-round" id ="sugerencia" style="margin-right: 85px;">
+                    <input type="checkbox" class="checkbox-round" id ="sugerencia" style="margin-right: 85px;"
+                            {% if comentario == 'Sugerencia' %}checked{% endif %}>
                     <span class="c4">Felicitaciones</span>
-                    <input type="checkbox" class="checkbox-round" id ="felicitaciones" style="margin-right: 85px;">
+                    <input type="checkbox" class="checkbox-round" id ="felicitaciones" style="margin-right: 85px;"
+                           {% if comentario == 'Felicitaciones' %}checked{% endif %}>
                     <span class="c4">fecha: {{date}}</span>
                 </p>
                 <p class="c6"><span class="c4"></span></p>
@@ -527,5 +530,4 @@
     </table>
     <p class="c6"><span class="c21"></span></p>
 </body>
-
 </html>
