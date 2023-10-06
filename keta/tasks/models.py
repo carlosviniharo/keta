@@ -100,7 +100,19 @@ class Jestadotareas(models.Model):
 #  it can store a link to where the file is stored.
 class Jarchivos(models.Model):
     idarchivo = models.AutoField(primary_key=True)
-    idtarea = models.ForeignKey(Jtareasticket, models.DO_NOTHING, db_column="idtarea")
+    idtarea = models.ForeignKey(
+        Jtareasticket,
+        models.DO_NOTHING,
+        db_column="idtarea"
+    )
+    idsubtarea = models.ForeignKey(
+        Jtareasticket,
+        models.DO_NOTHING,
+        db_column="idsubtarea",
+        related_name="jarchivos_idsubtarea_set",
+        null=True,
+    )
+        
     nombrearchivo = models.CharField(max_length=500, blank=True, null=True)
     fechacarga = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     fecharegistro = models.DateTimeField(auto_now=True, blank=True, null=True)

@@ -3,6 +3,7 @@ from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import send_mail
+
 from django.db import transaction, IntegrityError
 from django.db.models import F
 from django.utils import timezone
@@ -87,6 +88,7 @@ class JarchivosViewSet(viewsets.ModelViewSet):
 class JarchivosListView(ListAPIView):
     queryset = Jarchivos.objects.only(
         "idarchivo",
+        "idsubtarea",
         "idtarea",
         "nombrearchivo",
         "fechacarga",
@@ -95,8 +97,25 @@ class JarchivosListView(ListAPIView):
         "mimetypearchivo",
     )
     serializer_class = JarchivoListSeriliazer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["idtarea"]
+    
+    def list(self, request, *args, **kwargs):
+        task = self.request.query_params.get("idtarea", None)
+        queryset = Jarchivos.objects.only(
+            "idarchivo",
+            "idsubtarea",
+            "idtarea",
+            "nombrearchivo",
+            "fechacarga",
+            "fecharegistro",
+            "descripcionarchivo",
+            "mimetypearchivo",
+        ).filter(idtarea=task)
+        
+        if not queryset:
+            raise APIException(f"There is not any file for task {task}")
+        
+        archivo_data = JarchivoListSeriliazer(queryset, many=True, context={"request": request})
+        return Response(archivo_data.data, status=status.HTTP_201_CREATED)
 
 
 class JarchivoRetrieveView(RetrieveAPIView):
