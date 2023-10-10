@@ -26,6 +26,7 @@ key_hex_string = config("DJANGO_ENCRYPTED_FIELD_KEY")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes.fromhex(key_hex_string)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DJANGO_ENCRYPTED_FIELD_ALGORITHM = config("DJANGO_ENCRYPTED_FIELD_ALGORITHM")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -104,8 +105,8 @@ INTERNAL_IPS = [
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = "587"
-EMAIL_HOST_USER = None
-EMAIL_HOST_PASSWORD = None
+EMAIL_HOST_USER = "ketahelpdesk@gmail.com"
+EMAIL_HOST_PASSWORD = "C@r1oS+2023="
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

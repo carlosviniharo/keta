@@ -1,4 +1,6 @@
 from django.db import models
+
+from users.models import Jusuarios
 from tasks.models import Jtareasticket
 
 
@@ -58,9 +60,17 @@ class Jresoluciones(models.Model):
         blank=True,
         null=True,
     )
+    idusuariosolucion = models.ForeignKey(
+        Jusuarios,
+        models.DO_NOTHING,
+        db_column="idusuariosolucion",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         db_table = "jresoluciones"
+        unique_together = ("idtarea",)
     
     objects = models.Manager()
 

@@ -1,9 +1,10 @@
 from django.db import transaction
 from rest_framework import viewsets, status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
+from .utils.helper import send_email
 from .models import (
     Jclasificacionesresoluciones,
     Jtiporesoluciones,
@@ -16,6 +17,16 @@ from .serializers import (
     JresolucionesSerializer,
     JvaloresresolucionesSerializer,
 )
+
+dictionary_example = {
+    "emailcliente": "carlosviniharo@outlook.com",
+    "fullname": "Vanessa",
+    "apellido": "Cabascango",
+    "date": "2023/10/10",
+    "agencia": "Otavalo",
+}
+
+
 
 
 class JclasificacionesresolucionesViewSet(viewsets.ModelViewSet):
@@ -39,8 +50,15 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         values_serializer = JvaloresresolucionesSerializer(
             data=request.data.get("values"), context={"request": request}
         )
-        resolution_serializer.is_valid(raise_exception=True)
-        values_serializer.is_valid(raise_exception=True)
+        email = send_email(dictionary_example)
+        print(email)
+        try:
+            resolution_serializer.is_valid(raise_exception=True)
+            values_serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            raise APIException("There is already a resolution for this ticket")
+    
+        ticket = resolution_serializer
         
         with transaction.atomic():
             try:
@@ -55,7 +73,7 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         
         return Response(
             {
-                "resoluion": resolution_res.data,
+                "resolution": resolution_res.data,
                 "values": values_res.data,
             },
             status=status.HTTP_201_CREATED,

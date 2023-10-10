@@ -172,6 +172,7 @@ class Vtareas(models.Model):
     creador = models.CharField()
     nombre_cliente = models.CharField()
     apellido_cliente = models.CharField()
+    idtecnico = models.IntegerField()
     nombres_tecnico = models.CharField()
     apellidos_tecnico = models.CharField()
     cargo = models.CharField()

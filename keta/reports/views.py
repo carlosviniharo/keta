@@ -126,7 +126,7 @@ class VcobrosindebiosReportView(ListAPIView):
             DICTIONARY_HEADER_REPORT["numRegistro"] = len(serializer.data)
             DICTIONARY_HEADER_REPORT["fechaCorte"] = format_date(str(fecha_final))
             yield '<?xml version="1.0" encoding="UTF-8"?>\n'
-            yield "<reclamosCI01 {}>\n".format(
+            yield "<reclamosCI01 {} />\n".format(
                 " ".join([f'{k}="{v}"' for k, v in DICTIONARY_HEADER_REPORT.items()])
             )
 
@@ -139,7 +139,7 @@ class VcobrosindebiosReportView(ListAPIView):
         return data_generator()
     
     @staticmethod
-    def process_report_data(self, report_dic):
+    def process_report_data(report_dic):
         # Create a copy of the report_dic to avoid modifying it during iteration.
         report_copy = report_dic.copy()
         attributes = []

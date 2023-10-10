@@ -86,33 +86,38 @@ class JarchivosViewSet(viewsets.ModelViewSet):
 
 
 class JarchivosListView(ListAPIView):
-    queryset = Jarchivos.objects.only(
-        "idarchivo",
-        "idsubtarea",
-        "idtarea",
-        "nombrearchivo",
-        "fechacarga",
-        "fecharegistro",
-        "descripcionarchivo",
-        "mimetypearchivo",
-    )
+    queryset = Jarchivos.objects.all()
     serializer_class = JarchivoListSeriliazer
     
     def list(self, request, *args, **kwargs):
-        task = self.request.query_params.get("idtarea", None)
-        queryset = Jarchivos.objects.only(
-            "idarchivo",
-            "idsubtarea",
-            "idtarea",
-            "nombrearchivo",
-            "fechacarga",
-            "fecharegistro",
-            "descripcionarchivo",
-            "mimetypearchivo",
-        ).filter(idtarea=task)
+        idtask = self.request.query_params.get("idtarea", None)
+        is_ticket = Jtareasticket.objects.get(idtarea=idtask)
+        
+        if is_ticket.indicador == "P":
+            queryset = Jarchivos.objects.only(
+                "idarchivo",
+                "idsubtarea",
+                "idtarea",
+                "nombrearchivo",
+                "fechacarga",
+                "fecharegistro",
+                "descripcionarchivo",
+                "mimetypearchivo",
+            ).filter(idtarea=idtask)
+        else:
+            queryset = Jarchivos.objects.only(
+                "idarchivo",
+                "idsubtarea",
+                "idtarea",
+                "nombrearchivo",
+                "fechacarga",
+                "fecharegistro",
+                "descripcionarchivo",
+                "mimetypearchivo",
+            ).filter(idsubtarea=idtask)
         
         if not queryset:
-            raise APIException(f"There is not any file for task {task}")
+            raise APIException(f"There is not any file for task {idtask}")
         
         archivo_data = JarchivoListSeriliazer(queryset, many=True, context={"request": request})
         return Response(archivo_data.data, status=status.HTTP_201_CREATED)
@@ -358,7 +363,7 @@ class VtareasListView(ListAPIView):
     queryset = Vtareas.objects.all()
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["tarea", "indicador", "estado", "idcreador", "sucursal"]
+    filterset_fields = ["tarea", "indicador", "estado", "idcreador", "sucursal", "idtecnico"]
 
 
 class EmailNotificationView(APIView):
