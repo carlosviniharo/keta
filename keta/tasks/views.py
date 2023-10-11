@@ -15,9 +15,6 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from xhtml2pdf import pisa
-from io import BytesIO
-
 from tickets.models import Jproblemas
 from .serializers import (
     JtareasticketSerializer,
@@ -267,14 +264,18 @@ class JestadotareasViewSet(viewsets.ModelViewSet):
     @staticmethod
     def _create_color_states(state, delta_time, fechaasignacion):
         prev_tiempoentrega = fechaasignacion
+        indefinite_time = timezone.datetime(9999, 12, 31)
         created_objects = []
 
-        for colour in ["green", "yellow", "red"]:
+        for colour in ["green", "yellow", "red", "grey"]:
             state_colour = state.copy()
             state_colour["color"] = colour
             state_colour["tiempoiniciocolor"] = prev_tiempoentrega
-            state_colour["tiempocolor"] = prev_tiempoentrega + delta_time
-            prev_tiempoentrega = state_colour["tiempocolor"]
+            if colour == "grey":
+                state_colour["tiempocolor"] = indefinite_time
+            else:
+                state_colour["tiempocolor"] = prev_tiempoentrega + delta_time
+                prev_tiempoentrega = state_colour["tiempocolor"]
 
             obj, create_new = Jestadotareas.objects.update_or_create(
                 color=state_colour.get("color"),

@@ -64,8 +64,7 @@ class Jresoluciones(models.Model):
         Jusuarios,
         models.DO_NOTHING,
         db_column="idusuariosolucion",
-        blank=True,
-        null=True,
+        null=False,
     )
 
     class Meta:
@@ -104,4 +103,29 @@ class Jvaloresresoluciones(models.Model):
 
     def __str__(self):
         return self.totalmonto
+
+
+class Vresoluciones(models.Model):
+    idtarea = models.IntegerField(primary_key=True)
+    idresolucion = models.IntegerField()
+    fullname = models.CharField()
+    emailcliente = models.CharField()
+    agency = models.CharField()
+    solver = models.CharField()
+    descripciontiporesolucion = models.CharField()
+    descripcionclasificacion = models.CharField()
+    descripcionresolucion = models.CharField()
+    date = models.DateTimeField()
+    
+    class Meta:
+        db_table = "vresoluciones"
+
+    objects = models.Manager()
+    
+    def __str__(self):
+        return self.idresolucion
+    
+    
+    
+    
 

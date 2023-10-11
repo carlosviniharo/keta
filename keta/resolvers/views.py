@@ -5,28 +5,21 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
 from .utils.helper import send_email
+from reports.utils.helper import format_date
 from .models import (
     Jclasificacionesresoluciones,
     Jtiporesoluciones,
     Jresoluciones,
     Jvaloresresoluciones,
+    Vresoluciones,
 )
 from .serializers import (
     JclasificacionesresolucionesSerializer,
     JtiporesolucionesSerializer,
     JresolucionesSerializer,
     JvaloresresolucionesSerializer,
+    VresolucionesSerializer,
 )
-
-dictionary_example = {
-    "emailcliente": "carlosviniharo@outlook.com",
-    "fullname": "Vanessa",
-    "apellido": "Cabascango",
-    "date": "2023/10/10",
-    "agencia": "Otavalo",
-}
-
-
 
 
 class JclasificacionesresolucionesViewSet(viewsets.ModelViewSet):
@@ -50,21 +43,26 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         values_serializer = JvaloresresolucionesSerializer(
             data=request.data.get("values"), context={"request": request}
         )
-        email = send_email(dictionary_example)
-        print(email)
+
         try:
             resolution_serializer.is_valid(raise_exception=True)
             values_serializer.is_valid(raise_exception=True)
         except ValidationError:
-            raise APIException("There is already a resolution for this ticket")
+            raise APIException("There is already a resolution for this ticket or the request data is wrong")
     
-        ticket = resolution_serializer
+        idticket = resolution_serializer.validated_data["idtarea"].idtarea
         
         with transaction.atomic():
             try:
                 resolution = Jresoluciones.objects.create(**resolution_serializer.validated_data)
                 values_serializer.validated_data["idresolucion"] = resolution
                 values = Jvaloresresoluciones.objects.create(**values_serializer.validated_data)
+                # Mapping and sending the data in an email notification.
+                data_resolution = Vresoluciones.objects.get(idtarea=idticket)
+                resolution_view = VresolucionesSerializer(data_resolution)
+                resolution_email = resolution_view.data
+                resolution_email["date"] = format_date(resolution_email["date"])
+                send = send_email(resolution_email)
             except Exception as e:
                 raise APIException(e)
             
@@ -73,6 +71,7 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         
         return Response(
             {
+                "email": send,
                 "resolution": resolution_res.data,
                 "values": values_res.data,
             },

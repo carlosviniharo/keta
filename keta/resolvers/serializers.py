@@ -5,6 +5,7 @@ from .models import (
     Jresoluciones,
     Jtiporesoluciones,
     Jvaloresresoluciones,
+    Vresoluciones,
 )
 
 
@@ -26,3 +27,11 @@ class JtiporesolucionesSerializer(serializers.HyperlinkedModelSerializer):
 @model_serializers(Jvaloresresoluciones)
 class JvaloresresolucionesSerializer(serializers.HyperlinkedModelSerializer):
     pass
+
+
+# Serializers for the views of the database
+class VresolucionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vresoluciones
+        fields = "__all__"
+        

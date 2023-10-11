@@ -1,7 +1,7 @@
 import requests
 import base64
 from decouple import config
-import json
+from rest_framework.exceptions import APIException
 
 
 def send_email(data):
@@ -70,6 +70,5 @@ def send_email(data):
             return True
     
     except Exception as e:
-        return False
-    
+        raise APIException(e)
     return False

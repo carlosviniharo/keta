@@ -9,8 +9,8 @@ def format_date(date_str, ticket=None):
         year, month, day = match.group("year", "month", "day")
         if year == "0001":
             raise APIException(
-                f"There could not be generated the record as ticket {ticket} state is closed "
-                f", however not resolution record was found"
+                f"There could not be generated the record as ticket {ticket} was closed "
+                f", without a resolution"
             )
         return f"{day}/{month}/{year}"
 
