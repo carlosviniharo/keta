@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tickets.models import Jproblemas
+from trackers.utils.helper import create_notification
+from trackers.serializers import JnotificacionesSerilaizer
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializer,
@@ -171,6 +173,12 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        create_notification(response, request)
+        return response
+    
+    
     @staticmethod
     def validate_task_data(task_data):
         check_indicator = task_data.get("indicador")
