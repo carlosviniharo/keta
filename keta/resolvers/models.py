@@ -115,6 +115,7 @@ class Vresoluciones(models.Model):
     descripciontiporesolucion = models.CharField()
     descripcionclasificacion = models.CharField()
     descripcionresolucion = models.CharField()
+    tickettype = models.CharField()
     date = models.DateTimeField()
     
     class Meta:

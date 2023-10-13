@@ -107,6 +107,11 @@ class JnotificacionesUpdatelListView(GenericAPIView):
     
     def get(self, request, *args, **kwargs):
         idusuario = self.request.query_params.get("idusuario", None)
+        idnotificacion = self.request.query_params.get("idnotificacion", None)
+        
+        if idnotificacion:
+            return Response()
+        
         notifications = Jnotificaciones.objects.filter(idusuario=idusuario)
         if notifications:
             notification_serializer = self.get_serializer(
@@ -115,6 +120,7 @@ class JnotificacionesUpdatelListView(GenericAPIView):
                 context={"request": request}
             )
             return Response(notification_serializer.data, status=status.HTTP_200_OK)
+        
         return Response(
             {"detail": f" There are no notifications for the user {idusuario}."},
             status=status.HTTP_404_NOT_FOUND
@@ -122,6 +128,7 @@ class JnotificacionesUpdatelListView(GenericAPIView):
     
     def patch(self, request, *args, **kwargs):
         idnotificacion = self.request.query_params.get("idnotificacion", None)
+        
         if idnotificacion:
             notification = Jnotificaciones.objects.get(idnotificacion=idnotificacion)
             partial = kwargs.get('partial', True)

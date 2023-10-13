@@ -27,14 +27,16 @@ def send_email(data):
             "Message": {
                 "Subject": "Cooperativa PilahuinTio notificaciones",
                 "Classification": "C",
-                "BasedOn": {"Id": "2", "Type": "Template"},
+                "BasedOn": {"Id": "7", "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",
                     "Variables": [
                         {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
+                        {"Name": "IDTICKET", "Value": data["idtarea"]},
                         {"Name": "FECHA", "Value": data["date"]},
-                        {"Name": "LUGAR", "Value": data["agency"]}
+                        {"Name": "AGENCIA", "Value": data["agency"]},
+                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
                     ]
                 },
                 # "Attachment": [
