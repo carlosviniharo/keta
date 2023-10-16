@@ -14,14 +14,14 @@ def create_notification(response, request):
 
     if int(match.group("estado")) == 3:
         notification_dic["notification_type"] = "Assignation Notification"
-        notification_dic["iduser"] = ticket_updated["idusuarioasignado"]
+        notification_dic["idusuario"] = ticket_updated["idusuarioasignado"]
         notification_dic["message"] = (
             f"The claim with ticket number {ticket_number} has been assigned to you"
         )
     
     elif int(match.group("estado")) == 6:
         notification_dic["notification_type"] = "Resolution Notification"
-        notification_dic["iduser"] = ticket_updated["idusuarioqasigno"]
+        notification_dic["idusuario"] = ticket_updated["idusuarioqasigno"]
         notification_dic["message"] = (
             f"The claim with ticket number {ticket_number} "
             f"has been solved"

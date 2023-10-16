@@ -29,10 +29,10 @@ class Jnotificaciones(models.Model):
     idnotificacion = models.AutoField(primary_key=True)
     idusuario = models.ForeignKey(Jusuarios, models.DO_NOTHING, db_column='idusuario', blank=True, null=True)
     idtarea = models.ForeignKey(Jtareasticket, models.DO_NOTHING, db_column='idtarea', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True, null=True)
     notification_type = models.CharField(max_length=200, blank=True, null=True)
-    status = models.BooleanField(blank=True, null=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'jnotificaciones'
