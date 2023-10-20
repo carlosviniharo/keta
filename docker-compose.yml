@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: keta
+    env_file:
+      - .env
+    volumes:
+      - ./keta:/var/www/html
+    ports:
+      - '8005:80'
+      - '3501:3500'
+      - '4701:81'

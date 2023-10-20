@@ -1,6 +1,7 @@
 import re
 from collections import namedtuple
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse, HttpResponse
 from django.template.loader import get_template
 from django.utils import timezone
@@ -215,8 +216,6 @@ class VcobrosindebiosListView(ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# TODO Finish the generation of the report as the format is incorrect
-#  and it does not contain the propre information.
 class GeneratePdfReport(RetrieveAPIView):
     serializer_class = None
     report = None
@@ -225,21 +224,30 @@ class GeneratePdfReport(RetrieveAPIView):
     def get_queryset(self):
         # Access kwargs from self.kwargs
         pk = self.kwargs.get("pk")
-        self.task = Jtareasticket.objects.get(idtarea=pk)
-        # Use pk to fetch ticket_type
+       
+        try:
+            self.task = Jtareasticket.objects.get(idtarea=pk)
+        except ObjectDoesNotExist:
+            raise APIException(f"Thew ticket number {pk} does not exist")
+        
         id_ticket_type = self.task.idproblema.idtipoticket.idtipoticket
         
         # Get the report based on ticket_type from DIC_REPORTS
         self.report = DIC_REPORTS.get(id_ticket_type, "")
-        
+    
         # Check if a report was found
         if self.report:
             # Set the serializer class based on the report
             self.serializer_class = self.report.serializer
-            return self.report.model.objects.get(ticket=pk)
+            try:
+                ticket_object = self.report.model.objects.get(ticket=pk)
+            except ObjectDoesNotExist:
+                raise APIException(f"Ticket number {pk} is not a main task")
+            return ticket_object
+        
         else:
             # Handle the case where no report was found
-            raise ValueError(f"Ticket type {ticket_type} does not support reports")
+            raise APIException(f"Ticket type {self.task.idproblema.idtipoticket} does not support reports")
 
     def retrieve(self, request, *args, **kwargs):
         ticket = self.get_queryset()
@@ -253,7 +261,6 @@ class GeneratePdfReport(RetrieveAPIView):
         options = {
             "enable-local-file-access": "",
         }
-        
         # Generate PDF from HTML using pdfkit
         pdf = pdfkit.from_string(html_content, False, options=options)
         # Populating the data for sending the file to the database
@@ -264,5 +271,5 @@ class GeneratePdfReport(RetrieveAPIView):
         Jarchivos.objects.update_or_create(**DICTIONARY_ARCHIVO_REPORT)
         
         response = HttpResponse(pdf, content_type="application/pdf")
-        response["Content-Disposition"] = 'filename="output.pdf"'
+        response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
         return response

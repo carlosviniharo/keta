@@ -25,7 +25,7 @@ SECRET_KEY = config("SECRET_KEY")
 key_hex_string = config("DJANGO_ENCRYPTED_FIELD_KEY")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes.fromhex(key_hex_string)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 DJANGO_ENCRYPTED_FIELD_ALGORITHM = config("DJANGO_ENCRYPTED_FIELD_ALGORITHM")
 
 ALLOWED_HOSTS = ["*"]
@@ -188,6 +188,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = f"{BASE_DIR}/static"
+STATICFILES_DIRS = [
+    BASE_DIR / "reports/static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
