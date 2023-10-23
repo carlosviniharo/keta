@@ -136,19 +136,19 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 5
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "keta_development_carlos",
-        "USER": "postgres",
-        "PASSWORD": "C0n310n3s81324ML",
-        "HOST": "172.31.100.180",
-        "PORT": "5432",
+        "NAME": config("NAME"),
+        "USER": config("USER"),
+        "PASSWORD": config("PASSWORD_DB"),
+        "HOST": config("HOST"),
+        "PORT": config("PORT"),
     },
     "test": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "keta_test",
-        "USER": "postgres",
-        "PASSWORD": "C0n310n3s81324ML",
-        "HOST": "172.31.100.180",
-        "PORT": "5432",
+        "NAME": config("NAME_TEST_DB"),
+        "USER": config("USER"),
+        "PASSWORD": config("PASSWORD_DB"),
+        "HOST": config("HOST"),
+        "PORT": config("PORT"),
     },
 }
 
