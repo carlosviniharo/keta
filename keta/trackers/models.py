@@ -36,6 +36,7 @@ class Jnotificaciones(models.Model):
 
     class Meta:
         db_table = 'jnotificaciones'
+        ordering = ['-created_at']
         
     objects = models.Manager()
 

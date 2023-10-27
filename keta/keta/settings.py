@@ -25,7 +25,7 @@ SECRET_KEY = config("SECRET_KEY")
 key_hex_string = config("DJANGO_ENCRYPTED_FIELD_KEY")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes.fromhex(key_hex_string)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
+DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 DJANGO_ENCRYPTED_FIELD_ALGORITHM = config("DJANGO_ENCRYPTED_FIELD_ALGORITHM")
 
 ALLOWED_HOSTS = ["*"]
@@ -141,15 +141,7 @@ DATABASES = {
         "PASSWORD": config("PASSWORD_DB"),
         "HOST": config("HOST"),
         "PORT": config("PORT"),
-    },
-    "test": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("NAME_TEST_DB"),
-        "USER": config("USER"),
-        "PASSWORD": config("PASSWORD_DB"),
-        "HOST": config("HOST"),
-        "PORT": config("PORT"),
-    },
+    }
 }
 
 

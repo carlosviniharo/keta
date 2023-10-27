@@ -3,7 +3,7 @@ version: "3"
 services:
   app:  # Service name
     build: .  # Build the Docker image using the Dockerfile in the current directory
-    container_name: keta  # Specify the container name as "keta"
+    container_name: keta_backend  # Specify the container name as "keta"
     env_file:
       - .env  # Load environment variables from the .env file
     volumes:

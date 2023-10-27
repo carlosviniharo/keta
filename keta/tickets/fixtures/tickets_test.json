@@ -15,7 +15,7 @@
     },
     {
         "model": "users.Jtipospersonas",
-        "pk": 2,
+        "pk": 1,
         "fields": {
             "descripciontipopersona": "Natural"
         }
@@ -29,25 +29,33 @@
     },
     {
         "model": "users.Jdepartamentos",
-        "pk": 2,
+        "pk": 1,
         "fields": {
             "nombredepartamento": "Inversiones"
         }
     },
     {
         "model": "users.Jcargos",
-        "pk": 2,
+        "pk": 1,
         "fields": {
             "descripcioncargo": "Gerente"
         }
     },
-        {
+    {
         "model": "users.Jusuarios",
         "pk": 1,
         "fields": {
             "email": "example@test.com"
         }
     },
+        {
+        "model": "users.Jusuarios",
+        "pk": 2,
+        "fields": {
+            "email": "problem@test.com"
+        }
+    },
+
     {
         "model": "tickets.Jcanalesrecepciones",
         "pk": 1,
@@ -91,7 +99,7 @@
         }
     },
         {
-        "model": "tickets.tipostarjetas",
+        "model": "tickets.Jtipostarjetas",
         "pk": 1,
         "fields": {
             "descripciontipotarjeta": "Tarjeta de Débito"
@@ -102,6 +110,41 @@
         "pk": 1,
         "fields": {
             "descripciontipocomentario": "Sugerencia"
+        }
+    },
+    {
+        "model": "tickets.Jtipostransacciones",
+        "pk": 1,
+        "fields": {
+            "descripciontipotransaccion": "Nacional"
+        }
+    },
+    {
+        "model": "tickets.Jtickettipos",
+        "pk": 1,
+        "fields": {
+            "descripciontipoticket": "COBROS INDEBIDOS"
+        }
+    },
+    {
+        "model": "tickets.Jtickettipos",
+        "pk": 2,
+        "fields": {
+            "descripciontipoticket": "RECLAMO TARJETAS"
+        }
+    },
+    {
+        "model": "tickets.Jtickettipos",
+        "pk": 3,
+        "fields": {
+            "descripciontipoticket": "RECLAMOS GENERALES"
+        }
+    },
+    {
+        "model": "users.Jsucursales",
+        "pk": 1,
+        "fields": {
+            "nombresucursal": "Agencia Otavalo"
         }
     }
 ]

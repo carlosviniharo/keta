@@ -141,10 +141,10 @@ class JproblemasViewSet(viewsets.ModelViewSet):
         if tipo_ticket.idtipoticket == CARD_TICKET_TYPE:
             try:
                 tarjeta_serializer.is_valid(raise_exception=True)
-            except serializers.ValidationError:
+            except serializers.ValidationError as er:
                 return Response(
                     {
-                        "detail": " Validation failed, please include tarjeta in the request"
+                        "detail": f" Validation failed, please include tarjeta in the request, verbose {er}"
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )

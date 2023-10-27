@@ -14,7 +14,14 @@ RUN apt-get update && apt-get install -y  \
     libxrender1  \
     xfonts-75dpi  \
     xfonts-base \
-    libjpeg-turbo8
+    libjpeg-turbo8 \
+    apt-utils  \
+    vim  \
+    curl  \
+    apache2  \
+    apache2-utils \
+    python3  \
+    libapache2-mod-wsgi-py3
 
 # Download wkhtmltopdf
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
@@ -24,9 +31,6 @@ RUN ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
 # Cleanup - remove the downloaded archive
 RUN rm wkhtmltox_0.12.6.1-2.jammy_amd64.deb
-
-RUN apt-get install -y apt-utils vim curl apache2 apache2-utils
-RUN apt-get -y install python3 libapache2-mod-wsgi-py3
 
 # Create a symlink for Python 3 if it doesn't exist
 RUN ln -s /usr/bin/python3 /usr/bin/python || true
