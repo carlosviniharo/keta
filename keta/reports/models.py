@@ -24,7 +24,7 @@ class Vcobrosindebios(models.Model):
         db_table = "vcobrosindebios"
 
     objects = models.Manager()
-    
+
     def __str__(self):
         return f"Ticket number {self.ticket}"
 
@@ -40,13 +40,13 @@ class Vreportecobrosindebidos(models.Model):
     descripcionasunto = models.CharField()
     first_name = models.CharField()
     last_name = models.CharField()
-    
+
     class Meta:
         managed = False
         db_table = 'vreportecobrosindebidos'
-        
+
     objects = models.Manager()
-    
+
     def __str__(self):
         return self.ticket
 
@@ -63,16 +63,15 @@ class Vreportereclamostarjeta(models.Model):
     address = models.CharField()
     phone = models.CharField()
     date = models.DateTimeField()
-    
+
     class Meta:
-        
         managed = False
         db_table = "vreportereclamostarjeta"
-        
+
     objects = models.Manager()
-    
+
     def __str__(self):
-        return self.ticket
+        return str(self.ticket)
 
 
 class Vreportereclamosgenerales(models.Model):
@@ -88,12 +87,12 @@ class Vreportereclamosgenerales(models.Model):
     email = models.EmailField()
     identification = models.CharField()
     date = models.DateTimeField()
-    
+
     class Meta:
         managed = False
         db_table = "vreportereclamosgenerales"
-    
+
     objects = models.Manager()
-    
+
     def __str__(self):
-        return self.ticket
+        return str(self.ticket)

@@ -1,5 +1,6 @@
-from users.serializers import model_serializers
 from rest_framework import serializers
+
+from users.serializers import model_serializers
 from .models import (
     Jclasificacionesresoluciones,
     Jresoluciones,

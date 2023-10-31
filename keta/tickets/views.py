@@ -1,9 +1,14 @@
 from django.db import transaction
+from django.core.exceptions import ValidationError
+
 from rest_framework import viewsets, status
+from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from django.core.exceptions import ValidationError
 from rest_framework import serializers
+
+from users.models import Jpersonas
+from users.serializers import JpersonasSerializer
 
 from .serializers import (
     JcanalesrecepcionesSerializer,
@@ -33,9 +38,6 @@ from .models import (
     Jtipostransacciones,
     Jproblemas,
 )
-
-from users.models import Jpersonas
-from users.serializers import JpersonasSerializer
 
 CARD_TICKET_TYPE = 2
 
@@ -101,14 +103,15 @@ class JtiposproductosJconceptosListView(ListAPIView):
     serializer_class = JconceptosSerializer
 
     def list(self, request, *args, **kwargs):
+        idtipoproducto = self.kwargs.get("idtipoproducto")
         queryset = Jconceptos.objects.filter(
-            idtipoproducto=self.kwargs.get("idtipoproducto")
+            idtipoproducto,
         )
         if not queryset.exists():
             return Response(
                 {
                     "detail": "idtipoproducto "
-                    + f"{self.idtipoproducto}"
+                    + f"{idtipoproducto}"
                     + " was not found in the records"
                 },
                 status=status.HTTP_404_NOT_FOUND,
@@ -141,10 +144,10 @@ class JproblemasViewSet(viewsets.ModelViewSet):
         if tipo_ticket.idtipoticket == CARD_TICKET_TYPE:
             try:
                 tarjeta_serializer.is_valid(raise_exception=True)
-            except serializers.ValidationError as er:
+            except serializers.ValidationError as exc:
                 return Response(
                     {
-                        "detail": f" Validation failed, please include tarjeta in the request, verbose {er}"
+                        "detail": f" Validation failed, please include tarjeta in the request, verbose {exc}"
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -167,8 +170,8 @@ class JproblemasViewSet(viewsets.ModelViewSet):
 
             try:
                 ticket = Jproblemas.objects.create(**data_ticket)
-            except ValidationError as e:
-                return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
+            except ValidationError as exc:
+                return Response({"detail": exc}, status=status.HTTP_403_FORBIDDEN)
 
             person_serializer = JpersonasSerializer(
                 persona, context={"request": request}

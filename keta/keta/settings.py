@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
@@ -102,13 +101,13 @@ INTERNAL_IPS = [
 ]
 
 # Email settings for Gmail
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = "587"
-EMAIL_HOST_USER = "ketahelpdesk@gmail.com"
-EMAIL_HOST_PASSWORD = "C@r1oS+2023="
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = "587"
+# EMAIL_HOST_USER = "ketahelpdesk@gmail.com"
+# EMAIL_HOST_PASSWORD = "C@r1oS+2023="
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
 
 # JWT configurations for REST framework
 # https://pypi.org/project/djangorestframework-simplejwt/
@@ -124,7 +123,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ),
     "USER_ID_FIELD": "idusuario",
 }
 # Use Temporary files in case of large files uploading.

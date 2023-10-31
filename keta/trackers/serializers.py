@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
-from .models import Jseguimientostareas, Jnotificaciones
 from users.serializers import model_serializers
+
+from .models import Jseguimientostareas, Jnotificaciones
+
 
 
 @model_serializers(Jseguimientostareas)

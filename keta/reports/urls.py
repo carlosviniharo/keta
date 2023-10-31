@@ -1,6 +1,10 @@
-from django.urls import path, include
+from django.urls import path
 
-from .views import VcobrosindebiosReportView, VcobrosindebiosListView, GeneratePdfReport
+from .views import (
+    VcobrosindebiosReportView,
+    VcobrosindebiosListView,
+    GeneratePdfReport
+)
 
 urlpatterns = [
     path(

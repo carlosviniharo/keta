@@ -6,7 +6,6 @@ from .models import (
     Vreportereclamostarjeta,
     Vreportereclamosgenerales,
 )
-from users.serializers import model_serializers
 
 
 class VcobrosindebiosSerilizer(serializers.ModelSerializer):
@@ -25,7 +24,7 @@ class VreportereclamostarjetaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vreportereclamostarjeta
         fields = "__all__"
-        
+
 
 class VreportereclamosgeneralesSerializer(serializers.ModelSerializer):
     class Meta:

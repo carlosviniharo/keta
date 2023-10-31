@@ -94,12 +94,12 @@ class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
             user.set_password(validated_data["password"])
             user.save()
             return user
-        except IntegrityError as e:
+        except IntegrityError as exc:
             # Handle the exception if the user creation fails due to integrity error
             # For example, you can log the error or take appropriate action
-            print("Error:", e)
+            print("Error:", exc)
             return None
-        except KeyError as e:
+        except KeyError as exc:
             # Handle the exception if a required key is missing in validate_data
             # For example, you can log the error or raise a custom exception
             print("Error: Required key is missing:", e)

@@ -4,8 +4,8 @@ from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
-from .utils.helper import send_email
 from reports.utils.helper import format_date
+from .utils.helper import send_email
 from .models import (
     Jclasificacionesresoluciones,
     Jtiporesoluciones,
@@ -47,8 +47,9 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         try:
             resolution_serializer.is_valid(raise_exception=True)
             values_serializer.is_valid(raise_exception=True)
-        except ValidationError:
-            raise APIException("There is already a resolution for this ticket or the request data is wrong")
+        except ValidationError as exc:
+            raise APIException("There is already a resolution for this "
+                               "ticket or the request data is wrong") from exc
     
         idticket = resolution_serializer.validated_data["idtarea"].idtarea
         
@@ -63,8 +64,8 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
                 resolution_email = resolution_view.data
                 resolution_email["date"] = format_date(resolution_email["date"])
                 send = send_email(resolution_email)
-            except Exception as e:
-                raise APIException(e)
+            except Exception as exc:
+                raise APIException(exc) from exc
             
         resolution_res = JresolucionesSerializer(resolution, context={"request": request})
         values_res = JvaloresresolucionesSerializer(values, context={"request": request})

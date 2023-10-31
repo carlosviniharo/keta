@@ -1,5 +1,5 @@
-import requests
 import base64
+import requests
 from decouple import config
 from rest_framework.exceptions import APIException
 
@@ -58,12 +58,14 @@ def send_email(data):
         }
 
         request_body = {"GeneralData": general_data}
+        timeout = 30
 
         # Make the API request
         response = requests.post(
             "https://api2019.masterbase.com/UniqueMail/v3/ALYGUTAY2MKTEC",
             headers=headers,
             json=request_body,
+            timeout=timeout,
         )
 
         # Process the response
@@ -71,6 +73,6 @@ def send_email(data):
             # Success in sending the email
             return True
     
-    except Exception as e:
-        raise APIException(e)
+    except Exception as exc:
+        raise APIException(exc) from exc
     return False

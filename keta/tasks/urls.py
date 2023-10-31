@@ -5,7 +5,6 @@ from .views import (
     JtareasticketViewSet,
     JestadotareasViewSet,
     FilteredTaskView,
-    EmailNotificationView,
     VtareaestadocolorListView,
     JarchivosViewSet,
     VtareasListView,
@@ -22,14 +21,29 @@ router.register(r"archivos", JarchivosViewSet)
 urlpatterns = [
     path("api/", include(router.urls)),
     # Not CRUD supported endpoints
-    path("filtered_tickets/", FilteredTaskView.as_view(), name="filtered_tickets-list"),
-    path("send_email/", EmailNotificationView.as_view(), name="emails"),
+    path(
+        "filtered_tickets/",
+         FilteredTaskView.as_view(),
+         name="filtered_tickets-list"
+    ),
     path(
         "vtareaestadocolor/",
         VtareaestadocolorListView.as_view(),
-        name="tareaestadocolor-list",
+        name="tareaestadocolor-list"
     ),
-    path("vtareas/", VtareasListView.as_view(), name="vtareas-list"),
-    path("archivoslist/", JarchivosListView.as_view(), name="archivos-list"),
-    path("getarchivos/<int:pk>/", JarchivoRetrieveView.as_view(), name="archivos-files"),
+    path(
+        "vtareas/",
+        VtareasListView.as_view(),
+        name="vtareas-list"
+    ),
+    path(
+        "archivoslist/",
+        JarchivosListView.as_view(),
+        name="archivos-list"
+    ),
+    path(
+        "getarchivos/<int:pk>/",
+        JarchivoRetrieveView.as_view(),
+        name="archivos-files"
+    ),
 ]

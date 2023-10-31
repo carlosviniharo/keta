@@ -126,7 +126,7 @@ class JususarioRegisterViewTestCase(APITestCase):
 
 class CustomTokenObtainPairViewTest(APITestCase):
     fixtures = ["users_test.json"]
-    
+
     def setUp(self):
         self.client = APIClient()
         self.user = Jusuarios.objects.create_user(

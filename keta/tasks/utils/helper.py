@@ -24,8 +24,8 @@ def convert_pdf_to_b64(pdf_file):
     try:
         # Encode the binary data in base64
         base64_encoded_pdf = base64.b64encode(pdf_binary_data).decode("utf-8")
-    except BinasciiError as e:
-        raise f"Invalid {e}"
+    except BinasciiError as exc:
+        raise f"Invalid {exc}"
     
     return base64_encoded_pdf
 
@@ -43,6 +43,6 @@ def convert_base64_to_pdf(base64_string, filename, mimetype):
         response["Content-Disposition"] = f'filename="{filename}.pdf"'
 
         return response
-    except Exception as e:
+    except Exception as exc:
         # Handle any decoding errors or other exceptions
-        raise ValidationError(f"Unable to decode Base64 string: {e}")
+        raise ValidationError("Unable to decode Base64 string") from exc

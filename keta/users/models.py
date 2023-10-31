@@ -272,8 +272,8 @@ class JusuariosManager(BaseUserManager):
         try:
             jroles_instance = Jroles.objects.get(pk=idrol)
 
-        except ObjectDoesNotExist:
-            raise ValueError(f"Invalid idrol {idrol} instance does not exist.")
+        except ObjectDoesNotExist as exc:
+            raise ValueError(f"Invalid idrol {idrol} instance does not exist.") from exc
 
         extra_fields["idrol"] = jroles_instance
 

@@ -86,7 +86,6 @@ class JproblemasViewSetTestCase(APITestCase):
         self.data_cobros_indebidos = {
                 "descripcionasunto": "Mal cobro indebido",
                 "monto": "1800.00",
-                "archivo": "+HilYtSEaJIZTqQaXtGyLmn82rDTp5Ex6b6CSeWbkuT2A+FqPfObQuT0R1PkiiNIRVHvDnvXfTHMySqtkgVBXdzZrgYLuRH5BBUQLT1vLF",
                 "idusuario": "http://127.0.0.1:8000/users/api/usuarios/1/",
                 "idtipotransaccion": "http://127.0.0.1:8000/tickets/api/tipostransacciones/1/",
                 "idtipoproducto": "http://127.0.0.1:8000/tickets/api/tiposproductos/1/",
@@ -111,7 +110,7 @@ class JproblemasViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
     def test_create_same_claim(self):
-        response = self.create_jproblemas({
+        self.create_jproblemas({
             "persona": self.new_persona,
             "ticket": self.data_reclamos_generales,
         })
@@ -131,7 +130,7 @@ class JproblemasViewSetTestCase(APITestCase):
             "ticket": self.data_cobros_indebidos,
         })
         self.assertEqual(response_new_person.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(response.data["persona"]["idpersona"], response_new_person.data["persona"]["idpersona"])
+        self.assertEqual(response.data["persona"]["idpersona"], response_new_person.data["persona"]["idpersona"])
         self.assertTrue(response.data["nueva persona"])
         self.assertFalse(response_new_person.data["nueva persona"])
 
@@ -175,8 +174,7 @@ class JproblemasViewSetTestCase(APITestCase):
             "ticket": self.data_cobros_indebidos,
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
-    
+
     class ExampleViewSetTestCase(APITestCase):
         def setUp(self):
             self.model2test = Jcanalesrecepciones
@@ -226,7 +224,7 @@ class JproblemasViewSetTestCase(APITestCase):
                 updated_data[f"descripcion{self.field_name}"],
             )
         
-        def test_delete_tipopersona(self):
+        def test_delete(self):
             url = reverse(
                 f"{self.model_name}-detail",
                 kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},

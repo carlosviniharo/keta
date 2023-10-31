@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
+
 from rest_framework import status, viewsets
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -220,7 +221,6 @@ class CustomLogoutView(APIView):
     """
     An endpoint to logout users.
     """
-
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -232,10 +232,9 @@ class CustomLogoutView(APIView):
                 {"detail": "Successfully logged out."},
                 status=status.HTTP_204_NO_CONTENT,
             )
-        except Exception as e:
-            print(e)
+        except Exception as exc:
             return Response(
-                {"error": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST
+                {"error": f"Invalid refresh token. verbose {exc}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 

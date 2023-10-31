@@ -8,14 +8,15 @@ from django.utils import timezone
 from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import status
 
 from lxml import etree
 import pdfkit
 
+from tasks.models import Jarchivos, Jtareasticket
 from .utils.helper import format_date
 from tasks.utils.helper import convert_pdf_to_b64
-from tasks.models import Jarchivos
+
 from .models import (
     Vcobrosindebios,
     Vreportecobrosindebidos,
@@ -29,7 +30,7 @@ from .serializers import (
     VreportereclamosgeneralesSerializer
 )
 
-from tasks.models import Jtareasticket
+
 
 DICTIONARY_HEADER_REPORT = {
     "xmlns": "http://www.seps.gob.ec/reclamoCI01",
@@ -59,7 +60,8 @@ DATE_FORMAT = "%Y-%m-%d"
 DICTIONARY_ARCHIVO_REPORT = {
     "idtarea": 0,
     "nombrearchivo": "",
-    "descripcionarchivo": "Reporte generado automaticamente al registrarse exitosamente el reclamo",
+    "descripcionarchivo": "Reporte generado automaticamente al "
+                          "registrarse exitosamente el reclamo",
     "contenidoarchivo": "",
     "mimetypearchivo": "application/pdf",
 }
@@ -108,10 +110,14 @@ class VcobrosindebiosReportView(ListAPIView):
             raise APIException("Please provide proper fecha_inicio and fecha_final")
 
         # Validate the XML conten
-        self.validate_xml(self.create_xml_streaming_response(fecha_inicio, fecha_final))
+        self.validate_xml(self.create_xml_streaming_response(
+            fecha_inicio,
+            fecha_final,
+        ))
 
         response.streaming_content = self.create_xml_streaming_response(
-            fecha_inicio, fecha_final
+            fecha_inicio,
+            fecha_final
         )
 
         return response
@@ -227,8 +233,8 @@ class GeneratePdfReport(RetrieveAPIView):
        
         try:
             self.task = Jtareasticket.objects.get(idtarea=pk)
-        except ObjectDoesNotExist:
-            raise APIException(f"Thew ticket number {pk} does not exist")
+        except ObjectDoesNotExist as exc:
+            raise APIException(f"Thew ticket number {pk} does not exist, verbose {exc}")
         
         id_ticket_type = self.task.idproblema.idtipoticket.idtipoticket
         
@@ -245,9 +251,8 @@ class GeneratePdfReport(RetrieveAPIView):
                 raise APIException(f"Ticket number {pk} is not a main task")
             return ticket_object
         
-        else:
-            # Handle the case where no report was found
-            raise APIException(f"Ticket type {self.task.idproblema.idtipoticket} does not support reports")
+        # Handle the case where no report was found
+        raise APIException(f"Ticket type {self.task.idproblema.idtipoticket} does not support reports")
 
     def retrieve(self, request, *args, **kwargs):
         ticket = self.get_queryset()

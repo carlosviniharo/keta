@@ -2,8 +2,6 @@ import re
 from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.mail import send_mail
-
 from django.db import transaction, IntegrityError
 from django.db.models import F
 from django.utils import timezone
@@ -13,16 +11,13 @@ from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from tickets.models import Jproblemas
 from trackers.utils.helper import create_notification
-from trackers.serializers import JnotificacionesSerilaizer
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializer,
     JestadosSerializer,
-    EmailNotificationSerializer,
     VtareaestadocolorSerializer,
     VtareasSerializer,
     JarchivosSerializer,
@@ -166,8 +161,8 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     task_data["fechaentrega"] = task_data["tareaprincipal"].fechaentrega
                     task = Jtareasticket.objects.create(**task_data)
                     
-        except ValidationError as e:
-            return Response({"detail": e}, status=status.HTTP_403_FORBIDDEN)
+        except ValidationError as exc:
+            return Response({"detail": exc}, status=status.HTTP_403_FORBIDDEN)
 
         task_resp = JtareasticketSerializer(task, context={"request": request})
 
@@ -195,13 +190,15 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 )
             return True, ticket
 
-        elif check_indicator == SUB_TASK_INDICATOR:
+        if check_indicator == SUB_TASK_INDICATOR:
             ticket = task_data.get("tareaprincipal")
             if not ticket:
                 raise APIException(
                     detail="Missing tareaprincipal",
                 )
-            return False, ticket
+        raise APIException("Invalid indicator")
+    
+        return None
 
     @staticmethod
     def get_time_priority(priority):
@@ -375,18 +372,18 @@ class VtareasListView(ListAPIView):
     filterset_fields = ["tarea", "indicador", "estado", "idcreador", "sucursal", "idtecnico"]
 
 
-class EmailNotificationView(APIView):
-    def post(self, request, format=None):
-        serializer = EmailNotificationSerializer(data=request.data)
-        if serializer.is_valid():
-            subject = serializer.validated_data["subject"]
-            message = serializer.validated_data["message"]
-            recipient = serializer.validated_data["recipient"]
-
-            # Send the email
-            send_mail(subject, message, "example@mail.com", recipient)
-
-            return Response(
-                {"message": "Email notification sent."}, status=status.HTTP_200_OK
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class EmailNotificationView(APIView):
+#     def post(self, request, format=None):
+#         serializer = EmailNotificationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             subject = serializer.validated_data["subject"]
+#             message = serializer.validated_data["message"]
+#             recipient = serializer.validated_data["recipient"]
+#
+#             # Send the email
+#             send_mail(subject, message, "example@mail.com", recipient)
+#
+#             return Response(
+#                 {"message": "Email notification sent."}, status=status.HTTP_200_OK
+#             )
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

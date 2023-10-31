@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, UpdateAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
@@ -45,15 +45,15 @@ class JseguimientotareasListView(ListAPIView):
                     },
                     status=status.HTTP_200_OK,
                 )
-            else:
-                assigned, serialized_track = self.serialize_track_data(tracks)
-                return Response(
-                    {
-                        "task": serialized_track.data,
-                        "assigned": assigned,
-                    },
-                    status=status.HTTP_200_OK,
-                )
+            
+            assigned, serialized_track = self.serialize_track_data(tracks)
+            return Response(
+                {
+                    "task": serialized_track.data,
+                    "assigned": assigned,
+                },
+                status=status.HTTP_200_OK,
+            )
     
         return Response(
             {"detail": f"The task {idtarea} does not have activities"},

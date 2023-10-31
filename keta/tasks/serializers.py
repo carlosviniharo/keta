@@ -51,7 +51,7 @@ class JarchivoListSeriliazer(serializers.HyperlinkedModelSerializer):
         exclude = ("contenidoarchivo",)
 
 
-class EmailNotificationSerializer(serializers.Serializer):
-    subject = serializers.CharField()
-    message = serializers.CharField()
-    recipient = serializers.ListField(child=serializers.EmailField())
+# class EmailNotificationSerializer(serializers.Serializer):
+#     subject = serializers.CharField()
+#     message = serializers.CharField()
+#     recipient = serializers.ListField(child=serializers.EmailField())
