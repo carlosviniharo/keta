@@ -148,12 +148,15 @@ class JproblemasViewSet(viewsets.ModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            tarjeta = Jtarjetas.objects.create(**tarjeta_serializer.validated_data)
+            tarjeta, created = self.create_tarjeta(tarjeta_serializer.validated_data)
             data_ticket["idtarjeta"] = tarjeta
-            tarjeta = JtarjetasSerializer(tarjeta, context={"request": request}).data
+            tarjeta = JtarjetasSerializer(
+                tarjeta, context={"request": request}
+            ).data
             
         else:
             tarjeta = {}
+            created = False
 
         with transaction.atomic():
             persona, created_persona = self.create_persona(
@@ -176,7 +179,8 @@ class JproblemasViewSet(viewsets.ModelViewSet):
 
         return Response(
             {
-                "nueva persona": f"{created_persona}",
+                "nueva persona": created_persona,
+                "nueva tarjeta": created,
                 "tarjeta": tarjeta,
                 "persona": person_serializer.data,
                 "ticket": ticket_serializer.data,
@@ -186,21 +190,31 @@ class JproblemasViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def create_persona(data):
-        persona, created = Jpersonas.objects.get_or_create(
-            identificacion=data["identificacion"], defaults={"idpersona": None, **data}
+        persona, created = Jpersonas.objects.update_or_create(
+            identificacion=data["identificacion"],
+            defaults=data
         )
-        if not created:
-            for attr, value in data.items():
-                setattr(persona, attr, value)
-            persona.save()
         return persona, created
 
     @staticmethod
     def create_tarjeta(data):
-        tarjeta, created = Jtarjetas.objects.get_or_create(
+        # Use the provided unencrypted numerotarjeta value
+        numerotarjeta = data["numerotarjeta"]
+        all_cards = Jtarjetas.objects.filter(
             idmarcatarjeta=data["idmarcatarjeta"],
             idtipotarjeta=data["idtipotarjeta"],
-            idclasetarjeta=data["idclasetarjeta"],
-            defaults=data,
+            idclasetarjeta=data["idclasetarjeta"]
         )
+        created = True
+        for card in all_cards:
+            if card.numerotarjeta == numerotarjeta:
+                created = False
+                return card, created
+            
+        tarjeta = Jtarjetas.objects.create(**data)
         return tarjeta, created
+
+
+        
+    
+    

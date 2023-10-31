@@ -4,7 +4,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '675c9dca-31ec-43aa-abdd-90c7f6495513', url: 'https://github.com/carlosviniharo/keta.git']])
+            checkout scm
+             script {
+                    sh 'git log HEAD^..HEAD --pretty="%h %an - %s" > GIT_CHANGES'
+                }
             }
         }
         stage('Build') {

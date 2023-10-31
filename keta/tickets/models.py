@@ -264,7 +264,6 @@ class Jproblemas(models.Model):
 
     def save(self, *args, **kwargs):
         existing_instances = Jproblemas.objects.filter(
-            idusuario=self.idusuario,
             idtipotransaccion=self.idtipotransaccion,
             idtipocomentario=self.idtipocomentario,
             idpersona=self.idpersona,
