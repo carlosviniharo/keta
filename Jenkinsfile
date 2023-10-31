@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'venv/bin/python3 ./keta/manage.py test users'
+                sh 'venv/bin/python3 ./keta/manage.py test'
             }
         }
         stage('Deploy') {
