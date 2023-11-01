@@ -2,7 +2,18 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from django.urls import reverse
 
-from .models import Jcanalesrecepciones
+from users.tests import ExampleViewSetTestCase
+
+from .models import (
+    Jcanalesrecepciones,
+    Jclasestarjetas,
+    Jconceptos,
+    Jmarcastarjetas,
+    Jprioridades,
+    Jtipostarjetas,
+    Jtarjetas,
+    Jtiposcomentarios, Jtickettipos, Jtipostransacciones,
+)
 
 
 class JproblemasViewSetTestCase(APITestCase):
@@ -175,61 +186,112 @@ class JproblemasViewSetTestCase(APITestCase):
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    class ExampleViewSetTestCase(APITestCase):
-        def setUp(self):
-            self.model2test = Jcanalesrecepciones
-            self.model_name = self.model2test.__name__.lower()
-            self.field_name = self.model_name[1:-1]
-            self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
-            self.created_model = self.model2test.objects.create(**self.model2test_data)
-        
-        def test_list(self):
-            url = reverse(f"{self.model_name}-list")
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertEqual(len(response.data), 1)
-        
-        def test_retrieve(self):
-            url = reverse(
-                f"{self.model_name}-detail",
-                kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
-            )
-            response = self.client.get(url)
-            # pdb.set_trace()
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertEqual(
-                response.data[f"descripcion{self.field_name}"],
-                getattr(self.created_model, f"descripcion{self.field_name}"),
-            )
-        
-        def test_create(self):
-            new_data = {f"descripcion{self.field_name}": "Other example"}
-            url = reverse(f"{self.model_name}-list")
-            response = self.client.post(url, new_data, format="json")
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-            self.assertEqual(self.model2test.objects.count(), 2)
-        
-        def test_update(self):
-            updated_data = {f"descripcion{self.field_name}": "updated example"}
-            
-            url = reverse(
-                f"{self.model_name}-detail",
-                kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
-            )
-            response = self.client.patch(url, updated_data, format="json")
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.created_model.refresh_from_db()
-            self.assertEqual(
-                getattr(self.created_model, f"descripcion{self.field_name}"),
-                updated_data[f"descripcion{self.field_name}"],
-            )
-        
-        def test_delete(self):
-            url = reverse(
-                f"{self.model_name}-detail",
-                kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
-            )
-            # pdb.set_trace()
-            response = self.client.delete(url)
-            self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-            self.assertEqual(self.model2test.objects.count(), 0)
+
+class JcanalesrecepcionesTestCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jcanalesrecepciones
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "canalrecepcion"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JclasestarjetasTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jclasestarjetas
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "clasetarjeta"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtiposproductosTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jconceptos
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = self.model_name[1:-1]
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JmarcastarjetasTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jmarcastarjetas
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "marcatarjeta"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JprioridadesTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jprioridades
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = self.model_name[1:-2]
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtipostarjetasTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jtipostarjetas
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "tipotarjeta"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtarjetasTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jtarjetas
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = self.model_name[1:-1]
+        self.data_field = f"numero{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtiposcomentariosTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jtiposcomentarios
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "tipocomentario"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtickettiposTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jtickettipos
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "tipoticket"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)
+
+
+class JtipostransaccionesTestsCase(ExampleViewSetTestCase):
+    def setUp(self):
+        super().setUp()
+        self.model2test = Jtipostransacciones
+        self.model_name = self.model2test.__name__.lower()
+        self.field_name = "tipotransaccion"
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
+        self.created_model = self.model2test.objects.create(**self.model2test_data)

@@ -156,7 +156,8 @@ class ExampleViewSetTestCase(APITestCase):
         self.model2test = Jcargos
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-1]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
     def test_list(self):
@@ -174,19 +175,19 @@ class ExampleViewSetTestCase(APITestCase):
         # pdb.set_trace()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data[f"descripcion{self.field_name}"],
-            getattr(self.created_model, f"descripcion{self.field_name}"),
+            response.data[self.data_field],
+            getattr(self.created_model, self.data_field),
         )
 
     def test_create(self):
-        new_data = {f"descripcion{self.field_name}": "Other example"}
+        new_data = {self.data_field: "Other example"}
         url = reverse(f"{self.model_name}-list")
         response = self.client.post(url, new_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.model2test.objects.count(), 2)
 
     def test_update(self):
-        updated_data = {f"descripcion{self.field_name}": "updated example"}
+        updated_data = {self.data_field: "updated example"}
 
         url = reverse(
             f"{self.model_name}-detail",
@@ -196,11 +197,11 @@ class ExampleViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.created_model.refresh_from_db()
         self.assertEqual(
-            getattr(self.created_model, f"descripcion{self.field_name}"),
-            updated_data[f"descripcion{self.field_name}"],
+            getattr(self.created_model, self.data_field),
+            updated_data[self.data_field],
         )
 
-    def test_delete_tipopersona(self):
+    def test_delete(self):
         url = reverse(
             f"{self.model_name}-detail",
             kwargs={"pk": getattr(self.created_model, f"id{self.field_name}")},
@@ -217,7 +218,8 @@ class JdepartamentosTestCase(ExampleViewSetTestCase):
         self.model2test = Jdepartamentos
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-1]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
         # pdb.set_trace()
 
@@ -228,7 +230,8 @@ class JcorporacionesTestCase(ExampleViewSetTestCase):
         self.model2test = Jcorporaciones
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-2]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
 
@@ -238,7 +241,8 @@ class JgenerosTestCase(ExampleViewSetTestCase):
         self.model2test = Jgeneros
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-1]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
 
@@ -248,7 +252,8 @@ class JrolesTestCase(ExampleViewSetTestCase):
         self.model2test = Jroles
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-2]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
 
@@ -258,7 +263,8 @@ class JsucursalesTestCase(ExampleViewSetTestCase):
         self.model2test = Jsucursales
         self.model_name = self.model2test.__name__.lower()
         self.field_name = self.model_name[1:-2]
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
 
@@ -269,7 +275,8 @@ class JtiposidentificacionesTestCase(ExampleViewSetTestCase):
         self.model_name = self.model2test.__name__.lower()
         # Due to inconsistencies in the database it is setup manually
         self.field_name = "tipoidentificacion"
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
 
 
@@ -280,5 +287,6 @@ class JtipospersonasTestCase(ExampleViewSetTestCase):
         self.model_name = self.model2test.__name__.lower()
         # Due to inconsistencies in the database it is set up manually
         self.field_name = "tipopersona"
-        self.model2test_data = {f"descripcion{self.field_name}": "Example string"}
+        self.data_field = f"descripcion{self.field_name}"
+        self.model2test_data = {self.data_field: "Example string"}
         self.created_model = self.model2test.objects.create(**self.model2test_data)
