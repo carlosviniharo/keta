@@ -198,7 +198,6 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 )
         raise APIException("Invalid indicator")
     
-        return None
 
     @staticmethod
     def get_time_priority(priority):
@@ -387,3 +386,4 @@ class VtareasListView(ListAPIView):
 #                 {"message": "Email notification sent."}, status=status.HTTP_200_OK
 #             )
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+str

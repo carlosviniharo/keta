@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = 'https://registry.hub.docker.com'
-        DOCKER_CREDENTIALS_ID = 'docker-credentials'
+        DOCKERHUB_CREDENTIALS = credentials('docker-credentials')
     }
 
     stages {
@@ -33,16 +32,18 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Authenticate with the Docker registry using Docker Plugin credentials
-                    docker.withRegistry(env.DOCKER_REGISTRY, env.DOCKER_CREDENTIALS_ID) {
                     // Use docker-compose to build the Docker image
                     sh 'docker-compose build'
 
                     // Optionally, tag the image
                     sh 'docker tag keta-app:latest carlosharo/keta-app:latest'
 
+                    // Login Docker Hub
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+
                     // Push the Docker image
                     sh 'docker push carlosharo/keta-app:latest'
+                    sh 'docker logout'
                     }
             }
         }
