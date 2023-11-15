@@ -33,6 +33,7 @@ pipeline {
             steps {
                 script {
                     // Use docker-compose to build the Docker image
+                    sh 'docker system prune -af'
                     sh 'docker-compose build'
 
                     // Optionally, tag the image
