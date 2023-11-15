@@ -1,12 +1,14 @@
 version: "3"
 
 services:
-  app:  # Service name
-    build: .  # Build the Docker image using the Dockerfile in the current directory
-    container_name: keta_backend  # Specify the container name as "keta"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: carlosharo/keta-app:latest
     env_file:
-      - .env  # Load environment variables from the .env file
+      - .env
     volumes:
-      - ./keta:/var/www/html  # Mount the ./keta directory in your project to /var/www/html in the container
+      - ./keta:/var/www/html
     ports:
-      - '8005:80'  # Map host port 8005 to container port 80
+      - '8005:80'

@@ -33,11 +33,11 @@ pipeline {
             steps {
                 script {
                     // Use docker-compose to build the Docker image
-                    sh 'docker system prune -af'
+                    sh 'docker image prune -a --force'
                     sh 'docker-compose build'
 
                     // Optionally, tag the image
-                    sh 'docker tag keta-app:latest carlosharo/keta-app:latest'
+                    //sh 'docker tag keta-app:latest carlosharo/keta-app:latest'
 
                     // Login Docker Hub
                     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
