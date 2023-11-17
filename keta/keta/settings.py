@@ -26,13 +26,16 @@ DJANGO_ENCRYPTED_FIELD_KEY = bytes.fromhex(key_hex_string)
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 DJANGO_ENCRYPTED_FIELD_ALGORITHM = config("DJANGO_ENCRYPTED_FIELD_ALGORITHM")
 
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SECURE_PROXY_SSL_HEADER = config('SECURE_PROXY_SSL_HEADER', default='HTTP_X_FORWARDED_PROTO,http', cast=Csv())
-
 ALLOWED_HOSTS = ["*"]
 
-# Application definition
+PRODUCTION = config("PRODUCTION", default=False, cast=bool)
 
+# SSL modification only for production
+if PRODUCTION:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
