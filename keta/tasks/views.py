@@ -196,6 +196,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 raise APIException(
                     detail="Missing tareaprincipal",
                 )
+            return False, ticket
         raise APIException("Invalid indicator")
     
 
