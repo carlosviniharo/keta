@@ -1,5 +1,7 @@
 import re
 from collections import namedtuple
+
+from django.db import transaction, IntegrityError
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse, HttpResponse
@@ -273,8 +275,17 @@ class GeneratePdfReport(RetrieveAPIView):
         DICTIONARY_ARCHIVO_REPORT["nombrearchivo"] = f"{kwargs.get('pk')} {self.report.type}"
         DICTIONARY_ARCHIVO_REPORT["contenidoarchivo"] = convert_pdf_to_b64(pdf)
         
-        Jarchivos.objects.update_or_create(**DICTIONARY_ARCHIVO_REPORT)
-        
+        try:
+            with transaction.atomic():
+                archivo = Jarchivos.objects.create(**DICTIONARY_ARCHIVO_REPORT)
+        except IntegrityError:
+            return Response(
+                {
+                    "detail": f"The file with the name "
+                              f"'{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
         return response

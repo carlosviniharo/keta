@@ -6,10 +6,11 @@ from .views import (
     JestadotareasViewSet,
     FilteredTaskView,
     VtareaestadocolorListView,
-    JarchivosViewSet,
     VtareasListView,
     JarchivosListView,
     JarchivoRetrieveView,
+    JarchivosCreateView,
+    JarchivosViewSet,
 )
 
 router = DefaultRouter()
@@ -45,5 +46,10 @@ urlpatterns = [
         "getarchivos/<int:pk>/",
         JarchivoRetrieveView.as_view(),
         name="archivos-files"
+    ),
+    path(
+        "createarchivos/",
+        JarchivosCreateView.as_view(),
+        name="archivos-create"
     ),
 ]

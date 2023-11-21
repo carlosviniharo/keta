@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.exceptions import APIException
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
@@ -39,6 +39,11 @@ SUB_TASK_INDICATOR = "A"
 
 # TODO the store of archivos should be switched to a cloud as the files can grown with time.
 class JarchivosViewSet(viewsets.ModelViewSet):
+    queryset = Jarchivos.objects.all()
+    serializer_class = JarchivosSerializer
+
+
+class JarchivosCreateView(CreateAPIView):
     queryset = Jarchivos.objects.all()
     serializer_class = JarchivosSerializer
     parser_classes = (MultiPartParser, FormParser)
@@ -387,4 +392,3 @@ class VtareasListView(ListAPIView):
 #                 {"message": "Email notification sent."}, status=status.HTTP_200_OK
 #             )
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-str
