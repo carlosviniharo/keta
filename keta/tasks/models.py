@@ -122,7 +122,7 @@ class Jarchivos(models.Model):
 
     class Meta:
         db_table = "jarchivos"
-        unique_together = ("idtarea", "nombrearchivo", "mimetypearchivo")
+        unique_together = ("idtarea", "descripcionarchivo", "mimetypearchivo")
 
     objects = models.Manager()
 
