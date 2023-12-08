@@ -8,12 +8,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Clean the working directory
+                deleteDir()
+
+                // Checkout the code
                 checkout scm
-                script {
-                        sh 'git log HEAD^..HEAD --pretty="%h %an - %s" > GIT_CHANGES'
-                    }
+
+                // Log changes if needed
+                sh 'git log HEAD^..HEAD --pretty="%h %an - %s" > GIT_CHANGES'
+                }
             }
-        }
         stage('Build') {
             steps {
                 sh 'python3 -m venv venv'

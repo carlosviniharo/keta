@@ -287,5 +287,5 @@ class GeneratePdfReport(RetrieveAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         response = HttpResponse(pdf, content_type="application/pdf")
-        response["Content-Disposition"] = 'attachment; filename="your_ticket.pdf"'
+        response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
         return response

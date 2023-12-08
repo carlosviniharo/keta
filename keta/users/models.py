@@ -136,7 +136,7 @@ class Jpersonas(models.Model):
     nombre = models.CharField(max_length=250, null=False)
     apellido = models.CharField(max_length=250, null=False)
     emailcliente = models.EmailField(max_length=100, null=True)
-    celular = models.CharField(max_length=10, null=False)
+    celular = models.CharField(max_length=10, blank=True, null=True)
     telefono = models.CharField(max_length=9, blank=True, null=True)
     direccion = models.CharField(max_length=500, null=False)
     fecharegistro = models.DateTimeField(blank=True, null=True)
