@@ -261,10 +261,8 @@ class GeneratePdfReport(RetrieveAPIView):
         html_content = self.render_html(data_report)
         pdf = self.generate_pdf(html_content)
         self.save_pdf_to_database(pdf)
-        return Response(
-            {"detail": "File successfully crested and saved"},
-            status=status.HTTP_201_CREATED
-        )
+        response = self.create_pdf_response(pdf)
+        return response
     
     def get_report_data(self, ticket):
         data_ticket = self.get_serializer(ticket)
@@ -293,3 +291,8 @@ class GeneratePdfReport(RetrieveAPIView):
             raise APIException(
                 f"The file with the name '{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
             )
+    
+    def create_pdf_response(self, pdf):
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
+        return response
