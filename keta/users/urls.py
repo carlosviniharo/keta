@@ -20,6 +20,7 @@ from .views import (
     JsucursalJdepartamentosListView,
     VusuariosReportView,
     JpersonasListView,
+    VusuariosAsignationView,
 )
 
 router = DefaultRouter()
@@ -51,5 +52,8 @@ urlpatterns = [
     ),
     path(
         "usuarios_reporte/", VusuariosReportView.as_view(), name="usuariosreporte-list"
+    ),
+    path(
+       "usuarios_asignacion/", VusuariosAsignationView.as_view(), name="usuariosasignacion-list"
     ),
 ]

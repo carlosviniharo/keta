@@ -242,3 +242,27 @@ class CustomLogoutView(APIView):
 class VusuariosReportView(ListAPIView):
     queryset = Vusuarios.objects.all()
     serializer_class = VusuariosSerializer
+
+
+class VusuariosAsignationView(ListAPIView):
+    
+    serializer_class = VusuariosSerializer
+    
+    def get_queryset(self):
+        return Vusuarios.objects.filter(rol__in=["Supervisor", "Tecnico"])
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return Response(
+                {
+                    "detail": "No users with role Supervisor or "
+                              "Tecnico was not found in the records"
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+        
+    
