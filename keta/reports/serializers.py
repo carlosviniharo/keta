@@ -21,9 +21,18 @@ class VreportecobrosindebidosSerializer(serializers.ModelSerializer):
 
 
 class VreportereclamostarjetaSerializer(serializers.ModelSerializer):
+    
+    masked_numerotarjeta = serializers.SerializerMethodField()
+    
     class Meta:
         model = Vreportereclamostarjeta
-        fields = "__all__"
+        fields = '__all__'
+    
+    def get_masked_numerotarjeta(self, obj):
+        # Implement your masking logic here
+        # For example, you can replace all but the last 4 digits with asterisks
+        masked_value = '*' * (len(str(obj.cardnumber)) - 4) + str(obj.cardnumber)[-4:]
+        return masked_value
 
 
 class VreportereclamosgeneralesSerializer(serializers.ModelSerializer):

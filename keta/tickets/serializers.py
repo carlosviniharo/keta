@@ -58,11 +58,6 @@ class JtipostarjetasSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
-@model_serializers(Jtarjetas)
-class JtarjetasSerializer(serializers.HyperlinkedModelSerializer):
-    pass
-
-
 @model_serializers(Jtiposcomentarios)
 class JtiposcomentariosSerializer(serializers.HyperlinkedModelSerializer):
     pass
@@ -81,3 +76,15 @@ class JtipostransaccionesSerializer(serializers.HyperlinkedModelSerializer):
 @model_serializers(Jproblemas)
 class JproblemasSerializer(serializers.HyperlinkedModelSerializer):
     pass
+
+
+class JtarjetasSerializer(serializers.HyperlinkedModelSerializer):
+    masked_numerotarjeta = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Jtarjetas
+        fields = tuple(f.name for f in Jtarjetas._meta.fields) + ("masked_numerotarjeta", "url")
+        
+    def get_masked_numerotarjeta(self, obj):
+        masked_value = '*' * (len(str(obj.numerotarjeta)) - 4) + str(obj.numerotarjeta)[-4:]
+        return masked_value
