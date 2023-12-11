@@ -230,62 +230,69 @@ class GeneratePdfReport(RetrieveAPIView):
     task = None
     
     def get_queryset(self):
-        # Access kwargs from self.kwargs
         pk = self.kwargs.get("pk")
-       
+        self.get_task(pk)
+        self.get_report()
+        return self.get_ticket_object(pk)
+    
+    def get_task(self, pk):
         try:
             self.task = Jtareasticket.objects.get(idtarea=pk)
         except ObjectDoesNotExist as exc:
-            raise APIException(f"Thew ticket number {pk} does not exist, verbose {exc}")
-        
-        id_ticket_type = self.task.idproblema.idtipoticket.idtipoticket
-        
-        # Get the report based on ticket_type from DIC_REPORTS
-        self.report = DIC_REPORTS.get(id_ticket_type, "")
+            raise APIException(f"The ticket number {pk} does not exist, verbose {exc}")
     
-        # Check if a report was found
-        if self.report:
-            # Set the serializer class based on the report
-            self.serializer_class = self.report.serializer
-            try:
-                ticket_object = self.report.model.objects.get(ticket=pk)
-            except ObjectDoesNotExist:
-                raise APIException(f"Ticket number {pk} is not a main task")
-            return ticket_object
-        
-        # Handle the case where no report was found
-        raise APIException(f"Ticket type {self.task.idproblema.idtipoticket} does not support reports")
-
+    def get_report(self):
+        id_ticket_type = self.task.idproblema.idtipoticket.idtipoticket
+        self.report = DIC_REPORTS.get(id_ticket_type, "")
+        if not self.report:
+            raise APIException(f"Ticket type {self.task.idproblema.idtipoticket} does not support reports")
+    
+    def get_ticket_object(self, pk):
+        self.serializer_class = self.report.serializer
+        try:
+            ticket_object = self.report.model.objects.get(ticket=pk)
+        except ObjectDoesNotExist:
+            raise APIException(f"Ticket number {pk} is not a main task")
+        return ticket_object
+    
     def retrieve(self, request, *args, **kwargs):
         ticket = self.get_queryset()
-        template = get_template(self.report.html)
+        data_report = self.get_report_data(ticket)
+        html_content = self.render_html(data_report)
+        pdf = self.generate_pdf(html_content)
+        self.save_pdf_to_database(pdf)
+        response = self.create_pdf_response(pdf)
+        return response
+    
+    def get_report_data(self, ticket):
         data_ticket = self.get_serializer(ticket)
         data_report = data_ticket.data
         data_report["date"] = format_date(data_ticket.data["date"])
-        html_content = template.render(data_report)
-
-        # Specify the options for PDF generation
+        return data_report
+    
+    def render_html(self, data_report):
+        template = get_template(self.report.html)
+        return template.render(data_report)
+    
+    def generate_pdf(self, html_content):
         options = {
             "enable-local-file-access": "",
         }
-        # Generate PDF from HTML using pdfkit
-        pdf = pdfkit.from_string(html_content, False, options=options)
-        # Populating the data for sending the file to the database
+        return pdfkit.from_string(html_content, False, options=options)
+    
+    def save_pdf_to_database(self, pdf):
         DICTIONARY_ARCHIVO_REPORT["idtarea"] = self.task
-        DICTIONARY_ARCHIVO_REPORT["nombrearchivo"] = f"{kwargs.get('pk')} {self.report.type}"
+        DICTIONARY_ARCHIVO_REPORT["nombrearchivo"] = f"{self.kwargs.get('pk')} {self.report.type}"
         DICTIONARY_ARCHIVO_REPORT["contenidoarchivo"] = convert_pdf_to_b64(pdf)
-        
         try:
             with transaction.atomic():
                 archivo = Jarchivos.objects.create(**DICTIONARY_ARCHIVO_REPORT)
         except IntegrityError:
-            return Response(
-                {
-                    "detail": f"The file with the name "
-                              f"'{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            raise APIException(
+                f"The file with the name '{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
             )
+    
+    def create_pdf_response(self, pdf):
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
         return response
