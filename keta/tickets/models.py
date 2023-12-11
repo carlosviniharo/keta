@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from encrypted_field.fields import EncryptedField
-from users.models import Jusuarios, Jpersonas, Jsucursales
+from users.models import Jusuarios, Jpersonas, Jsucursales, Jdepartamentos
 from .utils.helper import generate_ticket_id
 
 
@@ -247,6 +247,19 @@ class Jproblemas(models.Model):
     )
 
     fecharegistro = models.DateTimeField(blank=True, null=True)
+    idsucursalproblema = models.ForeignKey(
+        Jsucursales, models.DO_NOTHING,
+        db_column="idsucursalproblema",
+        related_name="jproblema_idsucursal_set",
+        blank=True,
+        null=True
+    )
+    iddepartamentoproblema = models.ForeignKey(
+        Jdepartamentos, models.DO_NOTHING,
+        db_column="iddepartamentoproblema",
+        blank=True,
+        null=True
+    )
     idusuarioproblema = models.ForeignKey(
         Jusuarios, models.DO_NOTHING,
         db_column="idusuarioproblema",
