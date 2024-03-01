@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED=1
 # Update package lists and install wget
 RUN apt-get update && apt-get install -y  \
     wget  \
+    netcat \
     fontconfig  \
     libfreetype6  \
     libx11-6  \
@@ -55,9 +56,11 @@ WORKDIR /var/www/html
 # Copy your project files
 COPY keta  .
 
-# Copy Apache configuration
-COPY site-config.conf /etc/apache2/sites-available/000-default.conf
+## Copy Apache configuration
+#COPY site-config.conf /etc/apache2/sites-available/000-default.conf
+
+EXPOSE 8000
 
 # Expose ports and start Apache
-EXPOSE 80 3500
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+#EXPOSE 80 3500
+#CMD ["apache2ctl", "-D", "FOREGROUND"]

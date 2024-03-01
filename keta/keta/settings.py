@@ -116,10 +116,11 @@ INTERNAL_IPS = [
 # JWT configurations for REST framework
 # https://pypi.org/project/djangorestframework-simplejwt/
 
-JWT_AUTH = {
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=30),  # Access token expiration time
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=1),  # Refresh token expiration time
-    # Other JWT settings...
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    "USER_ID_FIELD": "idusuario",
+    # Other configuration options...
 }
 
 REST_FRAMEWORK = {

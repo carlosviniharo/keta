@@ -119,6 +119,7 @@ class Vresoluciones(models.Model):
     date = models.DateTimeField()
     
     class Meta:
+        managed = False
         db_table = "vresoluciones"
 
     objects = models.Manager()

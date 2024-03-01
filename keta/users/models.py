@@ -4,12 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from .utils.helper import get_public_ip_address, get_mac_address
 
-dic_group_permissions = {
-    1: Group.objects.get(name='Supervisors'),
-    2: Group.objects.get(name='Assistants'),
-    3: Group.objects.get(name='Technicians'),
-    4: Group.objects.get(name='Operators'),
-}
+# dic_group_permissions = {
+#     1: Group.objects.get(name='Supervisors'),
+#     2: Group.objects.get(name='Assistants'),
+#     3: Group.objects.get(name='Technicians'),
+#     4: Group.objects.get(name='Operators'),
+# }
 
 
 class Jcargos(models.Model):
@@ -61,7 +61,7 @@ class Jdepartamentos(models.Model):
     idsucursal = models.ForeignKey(
         "Jsucursales", models.DO_NOTHING, db_column="idsucursal", blank=True, null=True
     )
-    codigodepartamento = models.CharField(max_length=2, blank=True, null=True)
+    codigodepartamento = models.CharField(max_length=10, blank=True, null=True)
     nombredepartamento = models.CharField(max_length=200, blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     descripciondepartamento = models.CharField(max_length=500, blank=True, null=True)
@@ -249,7 +249,7 @@ class JusuariosManager(BaseUserManager):
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
-        user.groups.add(dic_group_permissions.get(user.idrol.idrol, 2))
+        # user.groups.add(dic_group_permissions.get(user.idrol.idrol, 2))
         return user
 
     def create_user(self, email, password, **extra_fields):
