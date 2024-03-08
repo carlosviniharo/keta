@@ -24,8 +24,8 @@ urlpatterns = [
     # Not CRUD supported endpoints
     path(
         "filtered_tickets/",
-         FilteredTaskView.as_view(),
-         name="filtered_tickets-list"
+        FilteredTaskView.as_view(),
+        name="filtered_tickets-list"
     ),
     path(
         "vtareaestadocolor/",

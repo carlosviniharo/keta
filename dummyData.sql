@@ -641,7 +641,7 @@ INSERT INTO public.jtipostarjetas (codigotipotarjeta,descripciontipotarjeta,fech
 	 ('101','Tarjeta de Débito',NULL),
 	 ('102','Tarjeta de Crédito',NULL),
 	 ('103','Tarjeta Prepaga',NULL),
-	 ('104','Tarjetas Adiccionales Extencion del Principal',NULL)
+	 ('104','Tarjetas Adiccionales Extencion del Principal',NULL),
 	 ('105','Otro',NULL);
 
 --jtipostransacciones
@@ -840,7 +840,12 @@ CREATE OR REPLACE VIEW public.vtareas
 AS SELECT tsk.idtarea AS tarea,
     pro.numeroticket AS ticket_no,
     tsk.descripciontarea AS titulo_tarea,
-    pro.fechacreacion AS fecha_asignacion,
+        CASE
+            WHEN tsk.indicador::text = 'P'::text THEN pro.fechacreacion
+            WHEN tsk.indicador::text = 'A'::text THEN tsk.fechaasignacion
+            ELSE now()
+        END AS fecha_creacion,
+    tsk.fechaasignacion AS fecha_asignacion,
     sucr.nombresucursal AS sucursal,
     cre.idusuario AS idcreador,
     (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,

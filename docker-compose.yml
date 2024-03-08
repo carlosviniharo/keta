@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: carlosharo/keta-app:latest
+    restart: always
     env_file:
       - .env
     volumes:
@@ -19,6 +20,7 @@ services:
 
   db:
     image: postgres:16-alpine
+    restart: always
     environment:
         POSTGRES_PASSWORD: ${PASSWORD_DB}
         POSTGRES_USER: ${USER}

@@ -8,12 +8,15 @@ class Jseguimientostareas(models.Model):
     idseguimientotarea = models.AutoField(primary_key=True)
     tituloseguimientotarea = models.CharField(max_length=500, blank=True, null=True)
     detalleresolucion = models.CharField(max_length=1000, blank=True, null=True)
-    status = models.BooleanField(blank=True, null=True)
+    status = models.BooleanField(default=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     fecharegistro = models.DateTimeField(auto_now_add=True, null=True)
     idtarea = models.ForeignKey(
         Jtareasticket, models.DO_NOTHING, db_column="idtarea", blank=True, null=True
+    )
+    idusuario = models.ForeignKey(
+        Jusuarios, models.DO_NOTHING, db_column='idusuario', blank=True, null=True
     )
 
     class Meta:

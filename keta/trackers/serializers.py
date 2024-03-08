@@ -5,7 +5,6 @@ from users.serializers import model_serializers
 from .models import Jseguimientostareas, Jnotificaciones
 
 
-
 @model_serializers(Jseguimientostareas)
 class JseguimientostareasSerializer(serializers.HyperlinkedModelSerializer):
     pass

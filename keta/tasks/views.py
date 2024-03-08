@@ -162,14 +162,20 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                         tareaprincipal=F("pk")
                     )
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
+                    task_resp = JtareasticketSerializer(task, context={"request": request})
+                    create_notification(task_resp, request)
                 else:
-                    task_data["fechaentrega"] = task_data["tareaprincipal"].fechaentrega
+                    task_data["fechaentrega"] = (
+                        task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
+                    )
+                    if task_data.get('subtareatime', None):
+                        task_data["fechaentrega"] = task_data['subtareatime']
+
                     task = Jtareasticket.objects.create(**task_data)
+                    task_resp = JtareasticketSerializer(task, context={"request": request})
                     
         except ValidationError as exc:
             return Response({"detail": exc}, status=status.HTTP_403_FORBIDDEN)
-
-        task_resp = JtareasticketSerializer(task, context={"request": request})
 
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
