@@ -65,6 +65,20 @@ from users.models import Jusuarios
 #
 #         track.is_valid(raise_exception=True)
 #         track.save()
+def create_notification_new_claim(response, request):
+    ticket_updated = response.data
+    ticket_number = ticket_updated["idtarea"]
+
+    notification_dic = {
+        "idtarea": ticket_updated["url"],
+    }
+    tracker_dic = {
+        "idtarea": ticket_updated["url"],
+    }
+    handle_creation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
+    create_notification_entry(notification_dic, request)
+    create_tracker_entry(tracker_dic, request)
+
 
 def create_notification(response, request):
     ticket_updated = response.data
@@ -79,9 +93,7 @@ def create_notification(response, request):
 
     state = get_ticket_state(ticket_updated)
 
-    if state == 2:
-        handle_creation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
-    elif state == 3:
+    if state == 3:
         handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
     elif state == 6:
         handle_resolution_notification(notification_dic, ticket_updated, ticket_number)

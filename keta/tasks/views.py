@@ -13,7 +13,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from tickets.models import Jproblemas
-from trackers.utils.helper import create_notification
+from trackers.utils.helper import create_notification, create_notification_new_claim
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializer,
@@ -163,7 +163,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     )
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
                     task_resp = JtareasticketSerializer(task, context={"request": request})
-                    create_notification(task_resp, request)
+                    create_notification_new_claim(task_resp, request)
                 else:
                     task_data["fechaentrega"] = (
                         task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
