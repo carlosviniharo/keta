@@ -2,8 +2,9 @@ from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .models import Jseguimientostareas, Jnotificaciones
-from .serializers import JseguimientostareasSerializer, JnotificacionesSerilaizer
+from .models import Jseguimientostareas, Jnotificaciones, Vseguimientotareas
+from .serializers import JseguimientostareasSerializer, JnotificacionesSerilaizer, VseguimientotareasSerializer
+from tasks.models import Jtareasticket
 
 FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
@@ -14,26 +15,27 @@ class JseguimientostareasSetView(viewsets.ModelViewSet):
     queryset = Jseguimientostareas.objects.all()
 
 
-class JseguimientotareasListView(ListAPIView):
-    serializer_class = JseguimientostareasSerializer
-    queryset = Jseguimientostareas.objects.all()
+class VseguimientotareasListView(ListAPIView):
+    serializer_class = VseguimientotareasSerializer
+    queryset = Vseguimientotareas.objects.all()
     
     def list(self, request, *args, **kwargs):
+
         idtarea = request.query_params.get("idtarea", None)
-        
-        # Fetch all related tracks for the specified idtarea
-        tracks = self.queryset.filter(idtarea=idtarea).select_related(
-            'idtarea__tareaprincipal'
-        )
-    
-        tracks = Jseguimientostareas.objects.filter(idtarea=idtarea)
+        if not idtarea:
+            return Response(
+                {"detail": f"Please provide the idtarea"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        tracks = Vseguimientotareas.objects.filter(idtarea=idtarea)
     
         if tracks.exists():
-            main_track = tracks.filter(idtarea__indicador=FATHER_TASK_INDICATOR)
+            main_track = tracks.filter(indicador=FATHER_TASK_INDICATOR)
             if main_track:
                 assigned, serialized_track = self.serialize_track_data(main_track)
-                track_sub = Jseguimientostareas.objects.filter(
-                    idtarea__tareaprincipal=idtarea, idtarea__indicador=SUB_TASK_INDICATOR
+                track_sub = Vseguimientotareas.objects.filter(
+                    tareaprincipal=idtarea, indicador=SUB_TASK_INDICATOR
                 )
                 subtask_tracks = self.get_subtask_tracks(track_sub, request)
     
@@ -61,9 +63,10 @@ class JseguimientotareasListView(ListAPIView):
         )
    
     def serialize_track_data(self, track):
+        object_task = Jtareasticket.objects.get(idtarea=track[0].idtarea)
         assigned = (
-            f"{track[0].idtarea.idusuarioasignado.first_name}"
-            f" {track[0].idtarea.idusuarioasignado.last_name}"
+            f"{object_task.idusuarioasignado.first_name}"
+            f" {object_task.idusuarioasignado.last_name}"
         )
         serialized_track = self.get_serializer(track, many=True)
         
@@ -74,21 +77,17 @@ class JseguimientotareasListView(ListAPIView):
         subtask_tracks = {}
    
         for track in track_sub:
-            task_id = track.idtarea.idtarea
-            task_name = track.idtarea.descripciontarea
-            task_author = (
-                f"{track.idtarea.idusuarioasignado.first_name}"
-                f" {track.idtarea.idusuarioasignado.last_name}"
-            )
-    
+            task_id = track.idtarea
+            task_name = track.descripciontarea
+            task_author = track.usuario
             if task_id not in subtask_tracks:
                 subtask_tracks[task_id] = {
                     "subtask": f"{task_id} - {task_name}",
                     "assigned": task_author,
                     "values": []
                 }
-            subtask_data = JseguimientostareasSerializer(
-                track, context={"request": request}
+            subtask_data = VseguimientotareasSerializer(
+                track
             ).data
             subtask_tracks[task_id]["values"].append(subtask_data)
         list_subtask = list(subtask_tracks.values())

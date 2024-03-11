@@ -4,7 +4,7 @@ from decouple import config
 from rest_framework.exceptions import APIException
 
 
-def send_email(data):
+def send_email(data, idtemplate):
     
     try:
         # Define authentication credentials
@@ -27,7 +27,7 @@ def send_email(data):
             "Message": {
                 "Subject": "Cooperativa PilahuinTio notificaciones",
                 "Classification": "C",
-                "BasedOn": {"Id": "7", "Type": "Template"},
+                "BasedOn": {"Id": idtemplate, "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",

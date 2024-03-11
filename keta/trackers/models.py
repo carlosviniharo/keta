@@ -45,3 +45,27 @@ class Jnotificaciones(models.Model):
 
     def __str__(self):
         return f"{self.idtarea} - {self.notification_type} - {self.created_at}"
+
+
+# Database views  models for the app
+
+class Vseguimientotareas(models.Model):
+    idseguimientotarea = models.IntegerField(primary_key=True)
+    tituloseguimientotarea = models.CharField()
+    detalleresolucion = models.TextField()
+    status = models.BooleanField()
+    fechacreacion = models.DateTimeField()
+    fechamodificacion = models.DateTimeField()
+    fecharegistro = models.DateTimeField()
+    idtarea = models.IntegerField()
+    indicador = models.CharField()
+    descripciontarea = models.CharField()
+    tareaprincipal = models.IntegerField()
+    idusuario = models.IntegerField()
+    usuario = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'vseguimientotareas'
+
+    objects = models.Manager()

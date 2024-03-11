@@ -666,7 +666,7 @@ INSERT INTO public.jusuarios (first_name,last_name,is_active,direccionmac,date_j
 
 --views
 
--- public.vcobrosindebios source
+-- public.vcobrosindebios
 
 CREATE OR REPLACE VIEW public.vcobrosindebios
 AS SELECT tck.idtarea AS ticket,
@@ -699,7 +699,7 @@ AS SELECT tck.idtarea AS ticket,
      LEFT JOIN jtiporesoluciones tr ON tr.idtiporesolucion = res.idtiporesolucion
   WHERE tck.indicador::text = 'P'::text;
 
--- public.vreportecobrosindebidos source
+-- public.vreportecobrosindebidos
 
 CREATE OR REPLACE VIEW public.vreportecobrosindebidos
 AS SELECT tck.idtarea AS ticket,
@@ -719,7 +719,7 @@ AS SELECT tck.idtarea AS ticket,
      JOIN jusuarios us ON us.idusuario = pro.idusuario
   WHERE tck.indicador::text = 'P'::text AND pro.idtipoticket = 1;
 
--- public.vreportereclamosgenerales source
+-- public.vreportereclamosgenerales
 
 CREATE OR REPLACE VIEW public.vreportereclamosgenerales
 AS SELECT tck.idtarea AS ticket,
@@ -745,7 +745,7 @@ AS SELECT tck.idtarea AS ticket,
      LEFT JOIN jusuarios us ON us.idusuario = pro.idusuario
   WHERE tck.indicador::text = 'P'::text AND pro.idtipoticket = 3;
 
--- public.vreportereclamostarjeta source
+-- public.vreportereclamostarjeta
 
 CREATE OR REPLACE VIEW public.vreportereclamostarjeta
 AS SELECT tck.idtarea AS ticket,
@@ -768,7 +768,7 @@ AS SELECT tck.idtarea AS ticket,
   WHERE tck.indicador::text = 'P'::text AND pro.idtipoticket = 2;
 
 
--- public.vresoluciones source
+-- public.vresoluciones
 
 CREATE OR REPLACE VIEW public.vresoluciones
 AS SELECT t.idtarea,
@@ -793,7 +793,7 @@ AS SELECT t.idtarea,
      LEFT JOIN jtiporesoluciones tr ON tr.idtiporesolucion = r.idtiporesolucion
      LEFT JOIN jclasificacionesresoluciones c ON c.idclasificacionresolucion = r.idclasificacionresolucion;
 
--- public.vtareaestadocolor source
+-- public.vtareaestadocolor
 
 CREATE OR REPLACE VIEW public.vtareaestadocolor
 AS SELECT tr1.idtarea AS tarea,
@@ -834,7 +834,7 @@ AS SELECT tr1.idtarea AS tarea,
      JOIN jestados et ON tr1.idestado = et.idestado
   WHERE tr1.idestado <> 7;
 
--- public.vtareas source
+-- public.vtareas
 
 CREATE OR REPLACE VIEW public.vtareas
 AS SELECT tsk.idtarea AS tarea,
@@ -896,7 +896,7 @@ AS SELECT users.idusuario,
      LEFT JOIN jsucursales sucr ON sucr.idsucursal = dep.idsucursal
      LEFT JOIN jcargos car ON car.idcargo = users.idcargo;
 
--- public.vvaloresresoluciones source
+-- public.vvaloresresoluciones
 
 CREATE OR REPLACE VIEW public.vvaloresresoluciones
 AS SELECT v.idvaloresresoluciones,
@@ -913,3 +913,22 @@ AS SELECT v.idvaloresresoluciones,
      LEFT JOIN jtareasticket t ON r.idtarea = t.idtarea
      LEFT JOIN jproblemas p ON t.idproblema = p.idproblema
      LEFT JOIN jtiporesoluciones tr ON tr.idtiporesolucion = r.idtiporesolucion;
+
+-- public.vseguimientotareas
+
+CREATE OR REPLACE VIEW public.vseguimientotareas
+AS SELECT seg.idseguimientotarea,
+    seg.tituloseguimientotarea,
+    seg.detalleresolucion,
+    seg.status,
+    seg.fechacreacion,
+    seg.fechamodificacion,
+    seg.fecharegistro,
+    seg.idtarea,
+    task.indicador,
+    task.tareaprincipal,
+    seg.idusuario,
+    (us.first_name::text || ' '::text) || us.last_name::text AS usuario
+   FROM jseguimientostareas seg
+     LEFT JOIN jusuarios us ON us.idusuario = seg.idusuario
+     LEFT JOIN jtareasticket task ON task.idtarea = seg.idtarea;

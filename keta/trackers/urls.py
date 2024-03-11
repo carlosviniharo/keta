@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     JseguimientostareasSetView,
-    JseguimientotareasListView,
+    VseguimientotareasListView,
     JnotificacionesUpdatelListView,
     JnotificacionesSetView,
 )
@@ -16,7 +16,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path(
         "seguimientotareaslist/",
-        JseguimientotareasListView.as_view(),
+        VseguimientotareasListView.as_view(),
         name="seguimientotareas-list",
     ),
     path(
