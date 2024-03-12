@@ -193,3 +193,18 @@ class Vtareas(models.Model):
         db_table = "vtareas"
 
     objects = models.Manager()
+
+
+class Vtareasemail(models.Model):
+    idtarea = models.IntegerField(primary_key=True)
+    fullname = models.CharField(max_length=255)
+    emailcliente = models.EmailField()
+    agency = models.CharField(max_length=255)
+    tickettype = models.CharField(max_length=255)
+    date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'vtareasemail'
+
+    objects = models.Manager()

@@ -143,6 +143,9 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
     serializer_class = JtareasticketSerializer
 
     def create(self, request, *args, **kwargs):
+
+        subtareatime = request.data.get("subtareatime")
+
         task_serializer = JtareasticketSerializer(
             data=request.data, context={"request": request}
         )
@@ -154,6 +157,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         priority = ticket.idprioridad
         optimal_time, max_days_resolution = self.get_time_priority(priority)
         task_data["idprioridad"] = priority
+
         try:
             with transaction.atomic():
                 
@@ -165,14 +169,14 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     )
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
                     task_resp = JtareasticketSerializer(task, context={"request": request})
-                    send = send_email(task_resp.data, "7")
+                    # send = send_email(task_resp.data, "create_ticket_email")
                     create_notification_new_claim(task_resp, request)
                 else:
                     task_data["fechaentrega"] = (
                         task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
                     )
-                    if task_data.get('subtareatime', None):
-                        task_data["fechaentrega"] = task_data['subtareatime']
+                    if subtareatime:
+                        task_data["fechaentrega"] = subtareatime
 
                     task = Jtareasticket.objects.create(**task_data)
                     task_resp = JtareasticketSerializer(task, context={"request": request})

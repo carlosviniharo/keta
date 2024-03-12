@@ -926,9 +926,30 @@ AS SELECT seg.idseguimientotarea,
     seg.fecharegistro,
     seg.idtarea,
     task.indicador,
+    task.descripciontarea,
     task.tareaprincipal,
     seg.idusuario,
     (us.first_name::text || ' '::text) || us.last_name::text AS usuario
    FROM jseguimientostareas seg
      LEFT JOIN jusuarios us ON us.idusuario = seg.idusuario
      LEFT JOIN jtareasticket task ON task.idtarea = seg.idtarea;
+
+ -- public.vtareasemail
+
+CREATE OR REPLACE VIEW public.vtareasemail
+AS SELECT t.idtarea,
+    (cli.nombre::text || ' '::text) || cli.apellido::text AS fullname,
+    cli.emailcliente,
+    suc.nombresucursal AS agency,
+    tptck.descripciontipoticket AS tickettype,
+    r.fecharesolucion AS date
+   FROM jtareasticket t
+     LEFT JOIN jproblemas p ON t.idproblema = p.idproblema
+     LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = p.idtipoticket
+     LEFT JOIN jpersonas cli ON cli.idpersona = p.idpersona
+     LEFT JOIN jresoluciones r ON t.idtarea = r.idtarea
+     LEFT JOIN jusuarios sol ON sol.idusuario = r.idusuariosolucion
+     LEFT JOIN jdepartamentos dep ON dep.iddepartamento = sol.iddepartamento
+     LEFT JOIN jsucursales suc ON suc.idsucursal = dep.idsucursal
+     LEFT JOIN jtiporesoluciones tr ON tr.idtiporesolucion = r.idtiporesolucion
+     LEFT JOIN jclasificacionesresoluciones c ON c.idclasificacionresolucion = r.idclasificacionresolucion;

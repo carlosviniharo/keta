@@ -63,7 +63,7 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
                 resolution_view = VresolucionesSerializer(data_resolution)
                 resolution_email = resolution_view.data
                 resolution_email["date"] = format_date(resolution_email["date"])
-                send = send_email(resolution_email, "7")
+                # send = send_email(resolution_email, "ticket_data_resolutino")
             except Exception as exc:
                 raise APIException(exc) from exc
             
@@ -72,7 +72,7 @@ class JresolucionesViewSet(viewsets.ModelViewSet):
         
         return Response(
             {
-                "email": send,
+                # "email": send,
                 "resolution": resolution_res.data,
                 "values": values_res.data,
             },

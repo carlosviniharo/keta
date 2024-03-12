@@ -8,6 +8,7 @@ from .models import (
     Jarchivos,
     Vtareaestadocolor,
     Vtareas,
+    Vtareasemail,
 )
 
 
@@ -42,6 +43,12 @@ class VtareaestadocolorSerializer(serializers.ModelSerializer):
 class VtareasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vtareas
+        fields = "__all__"
+
+
+class VtareasemailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vtareasemail
         fields = "__all__"
 
 

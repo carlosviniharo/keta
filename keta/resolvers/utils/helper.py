@@ -4,7 +4,7 @@ from decouple import config
 from rest_framework.exceptions import APIException
 
 
-def send_email(data, idtemplate):
+def send_email(data, typeemial):
     
     try:
         # Define authentication credentials
@@ -19,15 +19,14 @@ def send_email(data, idtemplate):
             "Content-Type": "application/json",
         }
 
-        # Construct the request body with dynamic data
-        general_data = {
+        ticket_data_creation = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
             "To": {"Email": [data["emailcliente"]]},
             "Message": {
-                "Subject": "Cooperativa PilahuinTio notificaciones",
+                "Subject": "Cooperativa PalanquinTio notificaciones",
                 "Classification": "C",
-                "BasedOn": {"Id": idtemplate, "Type": "Template"},
+                "BasedOn": {"Id": "7", "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",
@@ -57,15 +56,54 @@ def send_email(data, idtemplate):
             },
         }
 
-        request_body = {"GeneralData": general_data}
-        timeout = 30
+        ticket_data_resolutino = {
+            "FromName": "Cooperativa PilahuinTio",
+            "From": "notificaciones@pilahuintio.fin.ec",
+            "To": {"Email": [data["emailcliente"]]},
+            "Message": {
+                "Subject": "Cooperativa PilahuinTio notificaciones",
+                "Classification": "C",
+                "BasedOn": {"Id": "7", "Type": "Template"},
+                "Body": {
+                    "Format": "html",
+                    "Value": "obligatorio",
+                    "Variables": [
+                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
+                        {"Name": "IDTICKET", "Value": data["idtarea"]},
+                        {"Name": "FECHA", "Value": data["date"]},
+                        {"Name": "AGENCIA", "Value": data["agency"]},
+                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                    ]
+                },
+                # "Attachment": [
+                #     {
+                #         "FileName": "Boletos Participantes.pdf",
+                #         "Encode": "Base64",
+                #         "Size": "178",
+                #         "Value": data["Mpdf"],
+                #     }
+                # ],
+            },
+            "Options": {
+                "OpenTracking": "true",
+                "ClickTracking": "false",
+                "TextHtmlTracking": "true",
+                "AutoTextBody": "false",
+                "Personalization": "true",
+            },
+        }
+
+        if typeemial is "create_ticket_email":
+            request_body = {"GeneralData": ticket_data_creation}
+        else:
+            request_body = {"GeneralData": ticket_data_resolutino}
 
         # Make the API request
         response = requests.post(
             "https://api2019.masterbase.com/UniqueMail/v3/ALYGUTAY2MKTEC",
             headers=headers,
             json=request_body,
-            timeout=timeout,
+            timeout=30,
         )
 
         # Process the response
