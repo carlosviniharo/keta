@@ -93,7 +93,7 @@ def send_email(data, typeemial):
             },
         }
 
-        if typeemial is "create_ticket_email":
+        if typeemial == "create_ticket_email":
             request_body = {"GeneralData": ticket_data_creation}
         else:
             request_body = {"GeneralData": ticket_data_resolutino}

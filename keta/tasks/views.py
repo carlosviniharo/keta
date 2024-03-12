@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from tickets.models import Jproblemas
 from trackers.utils.helper import create_notification, create_notification_new_claim
 from resolvers.utils.helper import send_email
+from reports.utils.helper import format_date
 
 from .serializers import (
     JtareasticketSerializer,
@@ -24,6 +25,7 @@ from .serializers import (
     VtareasSerializer,
     JarchivosSerializer,
     JarchivoListSeriliazer,
+    VtareasemailSerializer,
 )
 from .models import (
     Jarchivos,
@@ -32,8 +34,10 @@ from .models import (
     Jestados,
     Vtareaestadocolor,
     Vtareas,
+    Vtareasemail,
 )
 from .utils import helper
+
 
 FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
@@ -169,7 +173,14 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     )
                     Jproblemas.objects.filter(pk=ticket.pk).update(status=False)
                     task_resp = JtareasticketSerializer(task, context={"request": request})
-                    # send = send_email(task_resp.data, "create_ticket_email")
+
+                    # Giving format to the data and sending the email after create a claim
+                    tarea_email = Vtareasemail.objects.get(idtarea=task_resp.data.get("idtarea"))
+                    tarea_email = VtareasemailSerializer(tarea_email)
+                    tarea_email_data = tarea_email.data
+                    tarea_email_data["date"] = format_date(tarea_email_data["date"])
+                    send = send_email(tarea_email_data, "create_ticket_email")
+
                     create_notification_new_claim(task_resp, request)
                 else:
                     task_data["fechaentrega"] = (
