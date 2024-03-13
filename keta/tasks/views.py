@@ -159,14 +159,18 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         is_father, ticket = self.validate_task_data(task_data)
 
         priority = ticket.idprioridad
-        optimal_time, max_days_resolution = self.get_time_priority(priority)
         task_data["idprioridad"] = priority
+        create_date = ticket.fechacreacion
+
+        optimal_time, max_days_resolution = self.get_time_priority(priority)
+        optimal_date, extended_date = helper.calculate_weekends(create_date, optimal_time, max_days_resolution)
 
         try:
             with transaction.atomic():
                 
                 if is_father:
-                    task_data["fechaentrega"] = timezone.now() + timezone.timedelta(days=int(optimal_time))
+                    task_data["fechaentrega"] = optimal_date
+                    task_data["fechaextension"] = extended_date
                     task = Jtareasticket.objects.create(**task_data)
                     Jtareasticket.objects.filter(pk=task.pk).update(
                         tareaprincipal=F("pk")
@@ -178,6 +182,10 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     tarea_email = Vtareasemail.objects.get(idtarea=task_resp.data.get("idtarea"))
                     tarea_email = VtareasemailSerializer(tarea_email)
                     tarea_email_data = tarea_email.data
+
+                    if not tarea_email_data["date"]:
+                        raise APIException("There is not date in the view for the email.")
+
                     tarea_email_data["date"] = format_date(tarea_email_data["date"])
                     send = send_email(tarea_email_data, "create_ticket_email")
 
@@ -399,7 +407,6 @@ class VtareasListView(ListAPIView):
     serializer_class = VtareasSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["tarea", "indicador", "estado", "idcreador", "sucursal", "idtecnico"]
-
 
 # class EmailNotificationView(APIView):
 #     def post(self, request, format=None):

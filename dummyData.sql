@@ -846,6 +846,7 @@ AS SELECT tsk.idtarea AS tarea,
             ELSE now()
         END AS fecha_creacion,
     tsk.fechaasignacion AS fecha_asignacion,
+    tsk.fechaextension AS fecha_extension,
     sucr.nombresucursal AS sucursal,
     cre.idusuario AS idcreador,
     (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,
@@ -942,7 +943,7 @@ AS SELECT t.idtarea,
     cli.emailcliente,
     suc.nombresucursal AS agency,
     tptck.descripciontipoticket AS tickettype,
-    r.fecharesolucion AS date
+    t.fechaasignacion AS date
    FROM jtareasticket t
      LEFT JOIN jproblemas p ON t.idproblema = p.idproblema
      LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = p.idtipoticket

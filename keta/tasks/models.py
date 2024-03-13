@@ -28,6 +28,7 @@ class Jtareasticket(models.Model):
     )
     fechaasignacion = models.DateTimeField(auto_now_add=True, null=True)
     fechaentrega = models.DateTimeField(blank=True, null=True)
+    fechaextension = models.DateTimeField(blank=True, null=True)
     fecharegistro = models.DateTimeField(auto_now_add=True, null=True)
     fkidtarea = models.ForeignKey(
         "self", models.DO_NOTHING, db_column="fkidtarea", blank=True, null=True
@@ -168,6 +169,7 @@ class Vtareas(models.Model):
     titulo_tarea = models.CharField()
     fecha_creacion = models.DateTimeField()
     fecha_asignacion = models.DateTimeField()
+    fecha_extension = models.DateTimeField()
     sucursal = models.CharField()
     idcreador = models.IntegerField()
     creador = models.CharField()
