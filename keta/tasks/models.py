@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
 
@@ -26,7 +27,7 @@ class Jtareasticket(models.Model):
     indicador = models.CharField(
         max_length=2, choices=[value for value in indicators], blank=True, null=True
     )
-    fechaasignacion = models.DateTimeField(auto_now_add=True, null=True)
+    fechaasignacion = models.DateTimeField(default=timezone.now())
     fechaentrega = models.DateTimeField(blank=True, null=True)
     fechaextension = models.DateTimeField(blank=True, null=True)
     fecharegistro = models.DateTimeField(auto_now_add=True, null=True)

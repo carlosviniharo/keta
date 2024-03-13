@@ -1,6 +1,8 @@
 import uuid
 import socket
 import requests
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 
 
 def get_mac_address():
@@ -32,3 +34,16 @@ def get_public_ip_address():
         pass
 
     return None
+
+
+class BaseViewSet(viewsets.ModelViewSet):
+    """
+    Base class for set views.
+    """
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.status = False
+        instance.save()
+        instance_data = self.get_serializer(instance)
+        return Response(instance_data.data, status=status.HTTP_202_ACCEPTED)

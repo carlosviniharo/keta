@@ -9,11 +9,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
+from .utils.helper import BaseViewSet
+
 from .serializers import (
     JusuariosSerializer,
     JpersonasSerializer,
     JcargosSerializer,
     JdepartamentosSerializer,
+    JdiasfestivosSerializer,
     JcorporacionesSerializer,
     JgenerosSerializer,
     JgeografiaSerializer,
@@ -22,12 +25,14 @@ from .serializers import (
     JtiposidentificacionesSerializer,
     JtipospersonasSerializer,
     VusuariosSerializer,
+
 )
 from .models import (
     Jusuarios,
     Jpersonas,
     Jcargos,
     Jdepartamentos,
+    Jdiasfestivos,
     Jcorporaciones,
     Jgeneros,
     Jgeografia,
@@ -117,6 +122,16 @@ class JcargosViewSet(viewsets.ModelViewSet):
 class JdepartamentosViewSet(viewsets.ModelViewSet):
     queryset = Jdepartamentos.objects.all()
     serializer_class = JdepartamentosSerializer
+
+
+class JdiasfestivosViewSet(BaseViewSet):
+    queryset = Jdiasfestivos.objects.all()
+    serializer_class = JdiasfestivosSerializer
+
+
+class JdiasfestivosActiveView(ListAPIView):
+    serializer_class = JdiasfestivosSerializer
+    queryset = Jdiasfestivos.objects.filter(status=True)
 
 
 class JcorporacionesViewSet(viewsets.ModelViewSet):

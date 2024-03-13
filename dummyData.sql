@@ -498,10 +498,10 @@ INSERT INTO public.jestados (codigoestado,descripcionestado,fecharegistro) VALUE
 
 --jgeneros
 
-INSERT INTO public.jgeneros (codigogenero,descripciongenero,fecharegistro) VALUES
-	 ('M','Masculino',NULL),
-	 ('F','Femenino',NULL),
-	 ('N','No aplica',NULL);
+INSERT INTO public.jgeneros (codigogenero,descripciongenero,fecharegistro, status) VALUES
+	 ('M','Masculino',NULL, TRUE),
+	 ('F','Femenino',NULL, TRUE),
+	 ('N','No aplica',NULL, TRUE);
 
 --jgeografia
 

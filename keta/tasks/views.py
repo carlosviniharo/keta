@@ -158,11 +158,11 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         is_father, ticket = self.validate_task_data(task_data)
 
-        priority = ticket.idprioridad
-        task_data["idprioridad"] = priority
-        create_date = ticket.fechacreacion
+        object_priority = ticket.idprioridad
+        task_data["idprioridad"] = object_priority
+        create_date = timezone.now()
 
-        optimal_time, max_days_resolution = self.get_time_priority(priority)
+        optimal_time, max_days_resolution = self.get_time_priority(object_priority)
         optimal_date, extended_date = helper.calculate_weekends(create_date, optimal_time, max_days_resolution)
 
         try:
@@ -206,9 +206,33 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
-        response = super().update(request, *args, **kwargs)
-        create_notification(response, request)
-        return response
+        partial = True
+        instance = self.get_object()
+        data_task = request.data
+        update_assignment = int(data_task.get("idestado").split('/')[-2])
+        indicator = instance.indicador
+        object_priority = instance.idprioridad
+
+        if update_assignment == 3 and indicator == FATHER_TASK_INDICATOR:
+            create_date = timezone.now()
+            optimal_time, max_days_resolution = self.get_time_priority(object_priority)
+            optimal_date, extended_date = helper.calculate_weekends(create_date, optimal_time, max_days_resolution)
+            data_task["fechaentrega"] = optimal_date
+            data_task["fechaextension"] = extended_date
+
+        serializer = self.get_serializer(instance, data=data_task, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        create_notification(serializer, request)
+
+        return Response(serializer.data)
     
     
     @staticmethod

@@ -40,7 +40,7 @@ class Jcorporaciones(models.Model):
     telefonocorporacion = models.CharField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
     )
@@ -66,7 +66,7 @@ class Jdepartamentos(models.Model):
     status = models.BooleanField(blank=True, null=True)
     descripciondepartamento = models.CharField(max_length=500, blank=True, null=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
     )
@@ -82,10 +82,25 @@ class Jdepartamentos(models.Model):
         return self.nombredepartamento
 
 
+class Jdiasfestivos(models.Model):
+    iddiasfestivos = models.AutoField(primary_key=True)
+    descripciondiasfestivos = models.CharField(max_length=500, blank=True, null=True)
+    fecha = models.DateTimeField(blank=True, null=True)
+    status = models.BooleanField(default=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        db_table = "jdiasfestivos"
+
+    objects = models.Manager()
+
+
 class Jgeneros(models.Model):
     idgenero = models.AutoField(primary_key=True)
     codigogenero = models.CharField(max_length=2, blank=True, null=True)
     descripciongenero = models.CharField(max_length=50, blank=True, null=True)
+    status = models.BooleanField(default=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -107,7 +122,7 @@ class Jgeografia(models.Model):
     nivel = models.BigIntegerField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
     )
@@ -192,7 +207,7 @@ class Jsucursales(models.Model):
     telefonosucursal = models.CharField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
-    fechamodificacion = models.DateTimeField(blank=True, null=True)
+    fechamodificacion = models.DateTimeField(auto_now=True, null=True)
     ipcreacion = models.CharField(
         max_length=50, default=get_public_ip_address, null=True
     )

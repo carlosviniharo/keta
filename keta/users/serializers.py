@@ -6,6 +6,7 @@ from .models import (
     Jpersonas,
     Jcargos,
     Jdepartamentos,
+    Jdiasfestivos,
     Jcorporaciones,
     Jgeneros,
     Jgeografia,
@@ -42,6 +43,11 @@ class JcorporacionesSerializer(serializers.HyperlinkedModelSerializer):
 
 @model_serializers(Jdepartamentos)
 class JdepartamentosSerializer(serializers.HyperlinkedModelSerializer):
+    pass
+
+
+@model_serializers(Jdiasfestivos)
+class JdiasfestivosSerializer(serializers.HyperlinkedModelSerializer):
     pass
 
 
@@ -102,7 +108,7 @@ class JusuariosSerializer(serializers.HyperlinkedModelSerializer):
         except KeyError as exc:
             # Handle the exception if a required key is missing in validate_data
             # For example, you can log the error or raise a custom exception
-            print("Error: Required key is missing:", e)
+            print("Error: Required key is missing:", exc)
             return None
 
 

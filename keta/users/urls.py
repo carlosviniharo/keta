@@ -20,12 +20,13 @@ from .views import (
     JsucursalJdepartamentosListView,
     VusuariosReportView,
     JpersonasListView,
-    VusuariosAsignationView,
+    VusuariosAsignationView, JdiasfestivosViewSet, JdiasfestivosActiveView,
 )
 
 router = DefaultRouter()
 router.register(r"cargos", JcargosViewSet)
 router.register(r"departamentos", JdepartamentosViewSet)
+router.register(r"diasfestivos", JdiasfestivosViewSet)
 router.register(r"corporaciones", JcorporacionesViewSet)
 router.register(r"generos", JgenerosViewSet)
 router.register(r"geografia", JgeografiaViewSet)
@@ -55,5 +56,10 @@ urlpatterns = [
     ),
     path(
        "usuarios_asignacion/", VusuariosAsignationView.as_view(), name="usuariosasignacion-list"
+    ),
+
+    # Jdiasfestivos especial endpoints
+    path(
+        "activeDiasFestivos/", JdiasfestivosActiveView.as_view(), name="activediasfestivos-list"
     ),
 ]
