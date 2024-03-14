@@ -9,6 +9,7 @@ from .models import (
     Vtareaestadocolor,
     Vtareas,
     Vtareasemail,
+    Vtareasrechazadas,
 )
 
 
@@ -52,7 +53,13 @@ class VtareasemailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class JarchivoListSeriliazer(serializers.HyperlinkedModelSerializer):
+class VtareasrechazadasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vtareasrechazadas
+        fields = "__all__"
+
+
+class JarchivoListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Jarchivos
         exclude = ("contenidoarchivo",)
@@ -62,3 +69,4 @@ class JarchivoListSeriliazer(serializers.HyperlinkedModelSerializer):
 #     subject = serializers.CharField()
 #     message = serializers.CharField()
 #     recipient = serializers.ListField(child=serializers.EmailField())
+

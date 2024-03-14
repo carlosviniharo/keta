@@ -11,6 +11,7 @@ from .views import (
     JarchivoRetrieveView,
     JarchivosCreateView,
     JarchivosViewSet,
+    VtareasrechazadasListView,
 )
 
 router = DefaultRouter()
@@ -31,6 +32,11 @@ urlpatterns = [
         "vtareaestadocolor/",
         VtareaestadocolorListView.as_view(),
         name="tareaestadocolor-list"
+    ),
+    path(
+        "rejectedTasksByUser/",
+        VtareasrechazadasListView.as_view(),
+        name="rejectedtasksbyuser-list"
     ),
     path(
         "vtareas/",

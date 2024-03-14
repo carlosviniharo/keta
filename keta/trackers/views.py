@@ -64,12 +64,17 @@ class VseguimientotareasListView(ListAPIView):
    
     def serialize_track_data(self, track):
         object_task = Jtareasticket.objects.get(idtarea=track[0].idtarea)
-        assigned = (
-            f"{object_task.idusuarioasignado.first_name}"
-            f" {object_task.idusuarioasignado.last_name}"
-        )
+
+        try:
+            assigned = (
+                f"{object_task.idusuarioasignado.first_name}"
+                f" {object_task.idusuarioasignado.last_name}"
+            )
+        except AttributeError:
+            assigned = "Unassigned"
+
         serialized_track = self.get_serializer(track, many=True)
-        
+
         return assigned, serialized_track
 
     @staticmethod

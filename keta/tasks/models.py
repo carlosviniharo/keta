@@ -211,3 +211,33 @@ class Vtareasemail(models.Model):
         db_table = 'vtareasemail'
 
     objects = models.Manager()
+
+
+class Vtareasrechazadas(models.Model):
+    tarea = models.IntegerField(primary_key=True)  # Assuming this is the primary key
+    ticket_no = models.CharField()
+    titulo_tarea = models.CharField()
+    fecha_asignacion = models.DateTimeField()
+    fecha_entrega = models.DateTimeField()
+    sucursal = models.CharField()
+    cedula = models.CharField()
+    nombre_cliente = models.CharField()
+    idasignador = models.IntegerField()
+    nombre_asignador = models.CharField()
+    idasignado = models.IntegerField()
+    nombre_asignado = models.CharField()
+    cargo = models.CharField()
+    departamento_usuario_asignado = models.CharField()
+    sucursal_usuario_asignado = models.CharField()
+    tipo_reclamo = models.CharField()
+    tipo_comentario = models.CharField()
+    prioridad = models.CharField()
+    estado = models.CharField()
+    indicador = models.CharField()
+    tareaprincipal = models.IntegerField
+
+    class Meta:
+        managed = False
+        db_table = 'vtareasrechazadas'
+
+    objects = models.Manager()

@@ -487,14 +487,15 @@ INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,
 
 --jestados
 
-INSERT INTO public.jestados (codigoestado,descripcionestado,fecharegistro) VALUES
-	 (0,'Abierto',NULL),
-	 (1,'Pendiente','2023-08-30 15:59:41.960954-05'),
-	 (2,'Asignado','2023-08-30 15:59:59.586382-05'),
-	 (3,'En Trámite','2023-08-30 16:00:17.430145-05'),
-	 (4,'En espera','2023-08-30 16:00:45.360879-05'),
-	 (5,'Resuelto','2023-08-30 16:01:02.147234-05'),
-	 (6,'Cerrado - Cancelado','2023-08-30 16:01:39.384783-05');
+INSERT INTO public.jestados (codigoestado,descripcionestado) VALUES
+	 (0,'Abierto'),
+	 (1,'Pendiente'),
+	 (2,'Asignado'),
+	 (3,'En Trámite'),
+	 (4,'En espera'),
+	 (5,'Resuelto'),
+	 (6,'Cerrado - Cancelado'),
+	 (7, 'Rechazado');
 
 --jgeneros
 
@@ -954,3 +955,43 @@ AS SELECT t.idtarea,
      LEFT JOIN jsucursales suc ON suc.idsucursal = dep.idsucursal
      LEFT JOIN jtiporesoluciones tr ON tr.idtiporesolucion = r.idtiporesolucion
      LEFT JOIN jclasificacionesresoluciones c ON c.idclasificacionresolucion = r.idclasificacionresolucion;
+
+-- public.vtareasrechazadas
+
+CREATE OR REPLACE VIEW public.vtareasrechazadas
+AS SELECT tsk.idtarea AS tarea,
+    pro.numeroticket AS ticket_no,
+    tsk.descripciontarea AS titulo_tarea,
+    tsk.fechaasignacion AS fecha_asignacion,
+    tsk.fechaentrega AS fecha_entrega,
+    sucr.nombresucursal AS sucursal,
+    per.identificacion AS cedula,
+    (per.nombre::text || ' '::text) || per.apellido::text AS nombre_cliente,
+    tsk.idusuarioqasigno AS idasignador,
+    (userasign.first_name::text || ' '::text) || userasign.last_name::text AS nombre_asignador,
+    users.idusuario AS idasignado,
+    (users.first_name::text || ' '::text) || users.last_name::text AS nombre_asignado,
+    car.descripcioncargo AS cargo,
+    dep.nombredepartamento AS departamento_usuario_asignado,
+    sucr_u.nombresucursal AS sucursal_usuario_asignado,
+    tptck.descripciontipoticket AS tipo_reclamo,
+    tpcomm.descripciontipocomentario AS tipo_comentario,
+    prio.descripcionprioridad AS prioridad,
+    est.descripcionestado AS estado,
+    tsk.fechaentrega,
+    tsk.indicador,
+    tsk.tareaprincipal
+   FROM jtareasticket tsk
+     LEFT JOIN jproblemas pro ON pro.idproblema = tsk.idproblema
+     LEFT JOIN jsucursales sucr ON sucr.idsucursal = pro.idsucursal
+     LEFT JOIN jpersonas per ON per.idpersona = pro.idpersona
+     LEFT JOIN jusuarios userasign ON userasign.idusuario = tsk.idusuarioqasigno
+     LEFT JOIN jusuarios users ON users.idusuario = tsk.idusuarioasignado
+     LEFT JOIN jcargos car ON car.idcargo = users.idcargo
+     LEFT JOIN jdepartamentos dep ON dep.iddepartamento = users.iddepartamento
+     LEFT JOIN jsucursales sucr_u ON sucr_u.idsucursal = dep.idsucursal
+     LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = pro.idtipoticket
+     LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
+     LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
+     LEFT JOIN jestados est ON est.idestado = tsk.idestado
+  WHERE tsk.indicador::text = 'A'::text AND tsk.idestado = 8;
