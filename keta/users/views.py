@@ -1,7 +1,8 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.utils import timezone
 
 from rest_framework import status, viewsets
+from rest_framework.exceptions import APIException
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -127,6 +128,27 @@ class JdepartamentosViewSet(viewsets.ModelViewSet):
 class JdiasfestivosViewSet(BaseViewSet):
     queryset = Jdiasfestivos.objects.all()
     serializer_class = JdiasfestivosSerializer
+
+    def create(self, request, *args, **kwargs):
+        hollidays_data = request.data
+        instances = []
+        for index, date in enumerate(hollidays_data["fecha"]):
+            if index == 0:
+                index = ""
+            instances.append(
+                Jdiasfestivos(
+                    descripciondiasfestivos=f"{hollidays_data['descripciondiasfestivos']} {index}",
+                    fecha=date
+                )
+            )
+
+        try:
+            created_instances = Jdiasfestivos.objects.bulk_create(instances)
+        except IntegrityError as e:
+            # Handle the IntegrityError here
+            raise APIException(f"Repeated record, details:{e}")
+
+        return Response({"Number of records created": len(created_instances)})
 
 
 class JdiasfestivosActiveView(ListAPIView):

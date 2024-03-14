@@ -267,8 +267,8 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         try:
             time_values = re.findall(r"\d+", priority.duracionprioridad)
             if len(time_values) == 2:
-                optimal_time = time_values[0]
-                deadline = time_values[1]
+                optimal_time = int(time_values[0]) - 1
+                deadline = int(time_values[1]) - 1
             else:
                 raise ValueError(
                     "Not enough time values extracted from duracionprioridad"

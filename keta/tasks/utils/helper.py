@@ -7,6 +7,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
+from users.models import Jdiasfestivos
+
 
 def convert_pdf_to_b64(pdf_file):
     
@@ -50,42 +52,62 @@ def convert_base64_to_pdf(base64_string, filename, mimetype):
 
 
 def calculate_weekends(create_time, optimal_time, extended_time):
+
     end_optimal_date = create_time + timezone.timedelta(days=int(optimal_time))
     end_extended_date = create_time + timezone.timedelta(days=int(extended_time))
+
     optimal_weekends = count_weekends(create_time, end_optimal_date)
     extended_weekends = count_weekends(create_time, end_extended_date)
 
     optimal_date = (
             create_time + timezone.timedelta(days=int(optimal_time)) + timezone.timedelta(days=int(optimal_weekends))
     )
+
+    optimal_date += timezone.timedelta(days=calculate_holidays(create_time, optimal_date))
+
     extended_date = (
             create_time + timezone.timedelta(days=int(extended_time)) + timezone.timedelta(days=int(extended_weekends))
     )
+
+    extended_date += timezone.timedelta(days=calculate_holidays(create_time, extended_date))
+
     if optimal_date.weekday() > 4:
         optimal_date += timezone.timedelta(7 - optimal_date.weekday())
-
     if extended_date.weekday() > 4:
         extended_date += timezone.timedelta(7 - extended_date.weekday())
 
     return optimal_date, extended_date
 
 
-def count_weekends(start_date, end_date):
+def count_weekends(start_date, end_date) -> int:
+    """
+    Count the number of weekends (Saturdays and Sundays) between two dates, inclusive.
+
+    Args:
+        start_date (datetime): The start date.
+        end_date (datetime): The end date.
+
+    Returns:
+        int: The count of weekends between the two dates.
+    """
     # Calculate total days (inclusive)
-    total_days = (end_date - start_date).days + 1
+    total_days: int = (end_date - start_date).days + 1
 
     # Calculate complete weeks
-    complete_weeks = total_days // 7
+    complete_weeks: int = total_days // 7
 
     # Multiply by 2 for weekends in complete weeks
-    weekend_count = complete_weeks * 2
+    weekend_count: int = complete_weeks * 2
 
     # Check remaining days
-    remaining_days = total_days % 7
+    remaining_days: int = total_days % 7
 
+    # Check if the start date is on a weekday
     if start_date.weekday() <= 4:
+        # Add the minimum of remaining days and 2 for weekends
         weekend_count += min(remaining_days, 2)
 
+    # Check if there are any remaining days after complete weeks
     if remaining_days > 0:
         # Check if start_date or end_date is Saturday or Sunday
         if start_date.weekday() == 5 or end_date.weekday() == 5:  # Saturday
@@ -95,3 +117,7 @@ def count_weekends(start_date, end_date):
 
     return weekend_count
 
+
+def calculate_holidays(start_date, end_date):
+    holidays = Jdiasfestivos.objects.filter(fecha__date__range=(start_date, end_date), status=True)
+    return len(holidays) if holidays else 0

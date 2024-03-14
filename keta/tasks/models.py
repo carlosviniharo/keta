@@ -234,7 +234,7 @@ class Vtareasrechazadas(models.Model):
     prioridad = models.CharField()
     estado = models.CharField()
     indicador = models.CharField()
-    tareaprincipal = models.IntegerField
+    tareaprincipal = models.IntegerField()
 
     class Meta:
         managed = False

@@ -85,7 +85,7 @@ class Jdepartamentos(models.Model):
 class Jdiasfestivos(models.Model):
     iddiasfestivos = models.AutoField(primary_key=True)
     descripciondiasfestivos = models.CharField(max_length=500, blank=True, null=True)
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(blank=True, null=True, unique=True)
     status = models.BooleanField(default=True)
     fechacreacion = models.DateTimeField(auto_now_add=True, null=True)
     fechamodificacion = models.DateTimeField(auto_now=True, null=True)
