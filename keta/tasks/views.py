@@ -151,7 +151,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         subtareatime = request.data.get("subtareatime")
 
-        task_serializer = JtareasticketSerializer(
+        task_serializer = self.get_serializer(
             data=request.data, context={"request": request}
         )
         task_serializer.is_valid(raise_exception=True)
@@ -161,15 +161,15 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         object_priority = ticket.idprioridad
         task_data["idprioridad"] = object_priority
-        create_date = timezone.now()
-
-        optimal_time, max_days_resolution = self.get_time_priority(object_priority)
-        optimal_date, extended_date = helper.calculate_weekends(create_date, optimal_time, max_days_resolution)
 
         try:
             with transaction.atomic():
                 
                 if is_father:
+                    create_date = timezone.now()
+                    optimal_time, max_days_resolution = self.get_time_priority(object_priority)
+                    optimal_date, extended_date = helper.calculate_weekends(create_date, optimal_time,
+                                                                            max_days_resolution)
                     task_data["fechaentrega"] = optimal_date
                     task_data["fechaextension"] = extended_date
                     task = Jtareasticket.objects.create(**task_data)
@@ -192,9 +192,13 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
                     create_notification_new_claim(task_resp, request)
                 else:
-                    task_data["fechaentrega"] = (
-                        task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
-                    )
+                    fechaentrega_subtarea = task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
+
+                    if fechaentrega_subtarea.weekday() > 4:
+                        fechaentrega_subtarea += timezone.timedelta(7 - fechaentrega_subtarea.weekday())
+
+                    task_data["fechaentrega"] = fechaentrega_subtarea
+
                     if subtareatime:
                         task_data["fechaentrega"] = subtareatime
 
