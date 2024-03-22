@@ -18,8 +18,8 @@ initialize_django() {
 # Wait for the Database to be ready
 #wait_for_postgresql
 
-# Permissions for temp files in the docker
-chmod 703 /var/www/html
+## Permissions for temp files in the docker
+#chmod 703 /var/www/html
 
 # Initialize Django
 initialize_django
