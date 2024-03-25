@@ -40,12 +40,12 @@ pipeline {
                     sh 'docker image prune -a --force'
                     sh 'docker-compose build'
 
-                    // Login Docker Hub
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-
-                    // Push the Docker image
-                    sh 'docker push carlosharo/keta-app:latest'
-                    sh 'docker logout'
+//                     // Login Docker Hub
+//                     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+//
+//                     // Push the Docker image
+//                     sh 'docker push carlosharo/keta-app:latest'
+//                     sh 'docker logout'
                     }
             }
         }
