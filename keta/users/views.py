@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
-from .utils.helper import BaseViewSet
+from .utils.helper import BaseViewSet, BaseRetrieveView
 
 from .serializers import (
     JusuariosSerializer,
@@ -322,5 +322,10 @@ class VusuariosAsignationView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-        
+
+
+class VusersIdView(BaseRetrieveView):
+    serializer_class = VusuariosSerializer
+    queryset = Vusuarios.objects.all()
+    # permission_classes = (IsAuthenticated,)
     

@@ -24,6 +24,7 @@ from .views import (
     JdiasfestivosViewSet,
     JdiasfestivosActiveView,
     VusuariosActiveView,
+    VusersIdView,
 )
 
 router = DefaultRouter()
@@ -63,6 +64,8 @@ urlpatterns = [
     path(
         "activeUsers/", VusuariosActiveView.as_view(), name="activeusers-list"
     ),
+    path("idUsers/<int:pk>/", VusersIdView.as_view(), name="id-users"),
+
     # Jdiasfestivos especial endpoints
     path(
         "activeDiasFestivos/", JdiasfestivosActiveView.as_view(), name="activediasfestivos-list"

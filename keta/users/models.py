@@ -378,5 +378,7 @@ class Vusuarios(models.Model):
         managed = False
         db_table = "vusers"
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.nombres

@@ -2,6 +2,7 @@ import uuid
 import socket
 import requests
 from rest_framework import viewsets, status
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 
 
@@ -50,3 +51,18 @@ class BaseViewSet(viewsets.ModelViewSet):
         instance.save()
         instance_data = self.get_serializer(instance)
         return Response(instance_data.data, status=status.HTTP_202_ACCEPTED)
+
+
+class BaseRetrieveView(RetrieveAPIView):
+    """
+    Base class for retrieval views.
+    """
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        return Response(
+            {
+                "message": "success",
+                "data": response.data
+            },
+            status=status.HTTP_200_OK
+        )
