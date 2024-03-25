@@ -545,17 +545,17 @@ INSERT INTO public.jmarcastarjetas (codigomarcatarjeta,descripcionmarcatarjeta,f
 
 --jpersonas
 
-INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension") VALUES
-	 ('0000000000','admin','jakaysa','admin@jakaysa.com','','','OTAVALO','2023-11-22 10:31:49.00421-05',2,1,1,NULL),
-	 ('1600862096','ELVIA YOLANDA','CAMUENDO CASTAÑEDA','ecamuendo@pilahuintio.ec','0991481542','062999040','CALLE MODESTO JARAMILLO','2023-11-20 09:31:24.093006-05',2,1,1,NULL),
-	 ('1720588621','LEYDI YULEIMY','ALBARRAN IPIALES','albarranleydi586@gmail.com','0968966009','062999040','SAN JUAN DE ILUMAN CALLE PRINCIPAL 12','2023-11-20 09:36:27.787237-05',2,1,1,NULL),
-	 ('1004418875','CYNTHIA SUSANA','CALAPI FLORES','cynthi190197@hotmail.com','0959794956','062999040','COMUNIDAD DE SAN IGNACIO','2023-11-20 09:41:25.367425-05',2,1,1,NULL),
-	 ('1004131270','SAMIA YUYARINA','BURGA SANTELLAN','samiaburga@gmail.com','0999840148','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 09:44:53.538166-05',2,1,1,NULL),
-	 ('1003573282','LUCIO TARQUINO','PILLAJO CHIZA','tpillajo10@gmail.com','0994010008','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 10:11:48.122831-05',1,1,1,NULL),
-	 ('1709825978','JAIRO ALFREDO','SANCHEZ MORA','jairo.sanchez@pilahuintio.ec','0999840148','062999040','CDLA. IMABAYA CALLE GENERAL RAMON VOZ MEDIANO','2023-11-20 10:16:55.059344-05',1,1,1,NULL),
-	 ('1600710576','CHRISTIAN BLADIMIR','SISA MALIZA','csisa@pilahuintio.ec','0995268263','062999040','OTAVALO, CALLE 5','2023-11-22 10:31:49.00421-05',1,1,1,NULL);
-INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension") VALUES
-	 ('1005173776','KATERIN VANESA','GRANDA CABASCANGO','katerin286_@hotmail.com','0968776032','062999040','CALLE PRINCIPAL SUCRE Y MEJIA','2023-11-22 10:31:49.00421-05',2,1,1,NULL);
+INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension", status) VALUES
+	 ('0000000000','admin','jakaysa','admin@jakaysa.com','','','OTAVALO','2023-11-22 10:31:49.00421-05',2,1,1,NULL, True),
+	 ('1600862096','ELVIA YOLANDA','CAMUENDO CASTAÑEDA','ecamuendo@pilahuintio.ec','0991481542','062999040','CALLE MODESTO JARAMILLO','2023-11-20 09:31:24.093006-05',2,1,1,NULL, True),
+	 ('1720588621','LEYDI YULEIMY','ALBARRAN IPIALES','albarranleydi586@gmail.com','0968966009','062999040','SAN JUAN DE ILUMAN CALLE PRINCIPAL 12','2023-11-20 09:36:27.787237-05',2,1,1,NULL, True),
+	 ('1004418875','CYNTHIA SUSANA','CALAPI FLORES','cynthi190197@hotmail.com','0959794956','062999040','COMUNIDAD DE SAN IGNACIO','2023-11-20 09:41:25.367425-05',2,1,1,NULL, True),
+	 ('1004131270','SAMIA YUYARINA','BURGA SANTELLAN','samiaburga@gmail.com','0999840148','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 09:44:53.538166-05',2,1,1,NULL, True),
+	 ('1003573282','LUCIO TARQUINO','PILLAJO CHIZA','tpillajo10@gmail.com','0994010008','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 10:11:48.122831-05',1,1,1,NULL, True),
+	 ('1709825978','JAIRO ALFREDO','SANCHEZ MORA','jairo.sanchez@pilahuintio.ec','0999840148','062999040','CDLA. IMABAYA CALLE GENERAL RAMON VOZ MEDIANO','2023-11-20 10:16:55.059344-05',1,1,1,NULL, True),
+	 ('1600710576','CHRISTIAN BLADIMIR','SISA MALIZA','csisa@pilahuintio.ec','0995268263','062999040','OTAVALO, CALLE 5','2023-11-22 10:31:49.00421-05',1,1,1,NULL, True);
+INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension", status) VALUES
+	 ('1005173776','KATERIN VANESA','GRANDA CABASCANGO','katerin286_@hotmail.com','0968776032','062999040','CALLE PRINCIPAL SUCRE Y MEJIA','2023-11-22 10:31:49.00421-05',2,1,1,NULL, True);
 
 --jprioridades
 

@@ -43,7 +43,10 @@ class BaseViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.is_active = False
+        if hasattr(instance, 'is_active'):
+            instance.is_active = False
+        else:
+            instance.status = False
         instance.save()
         instance_data = self.get_serializer(instance)
         return Response(instance_data.data, status=status.HTTP_202_ACCEPTED)

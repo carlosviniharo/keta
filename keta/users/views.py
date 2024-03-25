@@ -49,6 +49,7 @@ from .models import (
 class JusuariosViewSet(BaseViewSet):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         persona_serializer = JpersonasSerializer(
@@ -109,9 +110,10 @@ class JusuariosViewSet(BaseViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class JpersonasViewSet(viewsets.ModelViewSet):
+class JpersonasViewSet(BaseViewSet):
     queryset = Jpersonas.objects.all()
     serializer_class = JpersonasSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -266,13 +268,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
 
 
-# TODO: Implement token pruning mechanism to clean up the blacklist. Tokens
-#  from logged-out users are added to the blacklist, which can grow large
-#  over time.To prevent performance issues and optimize database usage,
-#  periodically remove expired tokens.Use a scheduled task to run at
-#  regular intervals for this cleanup.
-
-
+# TODO: Implement token pruning mechanism to clean up the blacklist.
 class CustomLogoutView(APIView):
     """
     An endpoint to logout users.

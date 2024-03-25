@@ -156,6 +156,7 @@ class Jpersonas(models.Model):
     direccion = models.CharField(max_length=500, null=False)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     extension = models.CharField(max_length=10, blank=True, null=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         db_table = "jpersonas"
