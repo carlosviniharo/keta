@@ -16,16 +16,13 @@ initialize_django() {
 }
 
 # Wait for the Database to be ready
-#wait_for_postgresql
-
-## Permissions for temp files in the docker
-#chmod 703 /var/www/html
+wait_for_postgresql
 
 # Initialize Django
 initialize_django
 
 # Start Django
-# Uncomment the appropriate line based on your preference
- apache2ctl -D FOREGROUND
+## Uncomment the appropriate line based on your preference
+# apache2ctl -D FOREGROUND
 # OR
-#python manage.py runserver 0.0.0.0:8001
+python manage.py runserver 0.0.0.0:8000

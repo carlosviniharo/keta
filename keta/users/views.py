@@ -46,7 +46,7 @@ from .models import (
 
 
 # Views for registering users and persons
-class JusuariosViewSet(viewsets.ModelViewSet):
+class JusuariosViewSet(BaseViewSet):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
 
@@ -88,6 +88,25 @@ class JusuariosViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_201_CREATED,
         )
+
+    def update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        newpassword = serializer.validated_data.pop("password", None)
+
+        if newpassword:
+            instance.set_password(newpassword)
+            instance.save()
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class JpersonasViewSet(viewsets.ModelViewSet):
@@ -281,8 +300,14 @@ class VusuariosReportView(ListAPIView):
     serializer_class = VusuariosSerializer
 
 
+class VusuariosActiveView(ListAPIView):
+    serializer_class = VusuariosSerializer
+
+    def get_queryset(self):
+        return Vusuarios.objects.filter(is_active=True)
+
+
 class VusuariosAsignationView(ListAPIView):
-    
     serializer_class = VusuariosSerializer
     
     def get_queryset(self):

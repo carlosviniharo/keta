@@ -887,16 +887,41 @@ CREATE OR REPLACE VIEW public.vusers
 AS SELECT users.idusuario,
     users.first_name AS nombres,
     users.last_name AS apellidos,
+    users.is_active,
+    users.date_joined,
+    users.fechamodificacion,
     users.email,
-    rol.nombrerol AS rol,
-    sucr.nombresucursal AS sucursal,
+    users.username,
+    users.last_login,
+    car.idcargo,
+    car.descripcioncargo AS cargo,
+    dep.iddepartamento,
     dep.nombredepartamento AS departamento,
-    car.descripcioncargo AS cargo
+    sucr.idsucursal,
+    sucr.nombresucursal AS sucursal,
+    per.idpersona,
+    per.identificacion,
+    per.celular,
+    per.telefono,
+    per.extension,
+    per.direccion,
+    gen.idgenero,
+    gen.descripciongenero,
+    typeid.idtipoidentificacion,
+    typeid.descripciontipoidentificacion,
+    typeper.idtipopersona,
+    typeper.descripciontipopersona,
+    rol.idrol,
+    rol.nombrerol AS rol
    FROM jusuarios users
-     LEFT JOIN jroles rol ON rol.idrol = users.idrol
+     LEFT JOIN jcargos car ON car.idcargo = users.idcargo
      LEFT JOIN jdepartamentos dep ON dep.iddepartamento = users.iddepartamento
      LEFT JOIN jsucursales sucr ON sucr.idsucursal = dep.idsucursal
-     LEFT JOIN jcargos car ON car.idcargo = users.idcargo;
+     LEFT JOIN jpersonas per ON per.idpersona = users.idpersona
+     LEFT JOIN jgeneros gen ON gen.idgenero = per.idgenero
+     LEFT JOIN jtiposidentificaciones typeid ON typeid.idtipoidentificacion = per.idtipoidentificacion
+     LEFT JOIN jtipospersonas typeper ON typeper.idtipopersona = per.idtipopersona
+     LEFT JOIN jroles rol ON rol.idrol = users.idrol;
 
 -- public.vvaloresresoluciones
 

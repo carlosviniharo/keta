@@ -20,7 +20,10 @@ from .views import (
     JsucursalJdepartamentosListView,
     VusuariosReportView,
     JpersonasListView,
-    VusuariosAsignationView, JdiasfestivosViewSet, JdiasfestivosActiveView,
+    VusuariosAsignationView,
+    JdiasfestivosViewSet,
+    JdiasfestivosActiveView,
+    VusuariosActiveView,
 )
 
 router = DefaultRouter()
@@ -57,7 +60,9 @@ urlpatterns = [
     path(
        "usuarios_asignacion/", VusuariosAsignationView.as_view(), name="usuariosasignacion-list"
     ),
-
+    path(
+        "activeUsers/", VusuariosActiveView.as_view(), name="activeusers-list"
+    ),
     # Jdiasfestivos especial endpoints
     path(
         "activeDiasFestivos/", JdiasfestivosActiveView.as_view(), name="activediasfestivos-list"
