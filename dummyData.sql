@@ -671,6 +671,7 @@ INSERT INTO public.jusuarios (first_name,last_name,is_active,direccionmac,date_j
 
 CREATE OR REPLACE VIEW public.vcobrosindebios
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     cod.codigotipoidentificacion AS tipoidentificacionsujeto,
     cli.identificacion AS identificacionsujeto,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS nomapellidonomrazonsocial,
@@ -704,6 +705,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportecobrosindebidos
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     suc.nombresucursal AS nombredepartamento,
     cli.nombre,
     cli.apellido,
@@ -724,6 +726,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportereclamosgenerales
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     com.descripciontipocomentario AS comentario,
     COALESCE(suc_q.nombresucursal, ' '::character varying) AS agencia,
     COALESCE(dep_q.nombredepartamento, ' '::character varying) AS departamento,
@@ -750,6 +753,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportereclamostarjeta
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     cli.nombre AS name,
     cli.apellido AS lastname,
     cd.numerotarjeta AS cardnumber,
@@ -773,6 +777,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vresoluciones
 AS SELECT t.idtarea,
+	t.codigo,
     r.idresolucion,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS fullname,
     cli.emailcliente,
@@ -799,6 +804,7 @@ AS SELECT t.idtarea,
 CREATE OR REPLACE VIEW public.vtareaestadocolor
 AS SELECT tr1.idtarea AS tarea,
     pro.numeroticket AS no_ticket,
+    tr1.codigo,
     col.color,
     col.tiempoiniciocolor AS tiempo_inicial_del_color,
     col.tiempocolor AS tiempo_final_del_color,
@@ -839,6 +845,7 @@ AS SELECT tr1.idtarea AS tarea,
 
 CREATE OR REPLACE VIEW public.vtareas
 AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
     pro.numeroticket AS ticket_no,
     tsk.descripciontarea AS titulo_tarea,
         CASE
@@ -853,7 +860,7 @@ AS SELECT tsk.idtarea AS tarea,
     (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,
     per.nombre AS nombre_cliente,
     per.apellido AS apellido_cliente,
-	per.identificacion AS cedula,
+    per.identificacion AS cedula,
     users.idusuario AS idtecnico,
     users.first_name AS nombres_tecnico,
     users.last_name AS apellidos_tecnico,
@@ -881,7 +888,7 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
      LEFT JOIN jestados est ON est.idestado = tsk.idestado;
 
--- public.vusers source
+-- public.vusers
 
 CREATE OR REPLACE VIEW public.vusers
 AS SELECT users.idusuario,
@@ -929,6 +936,7 @@ CREATE OR REPLACE VIEW public.vvaloresresoluciones
 AS SELECT v.idvaloresresoluciones,
     r.idresolucion,
     r.numeroresolucion,
+    t.codigo,
     p.numeroticket,
     tr.descripciontiporesolucion,
     v.monto,
@@ -952,6 +960,7 @@ AS SELECT seg.idseguimientotarea,
     seg.fechamodificacion,
     seg.fecharegistro,
     seg.idtarea,
+    task.codigo,
     task.indicador,
     task.descripciontarea,
     task.tareaprincipal,
@@ -965,6 +974,7 @@ AS SELECT seg.idseguimientotarea,
 
 CREATE OR REPLACE VIEW public.vtareasemail
 AS SELECT t.idtarea,
+    t.codigo,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS fullname,
     cli.emailcliente,
     suc.nombresucursal AS agency,
@@ -985,6 +995,7 @@ AS SELECT t.idtarea,
 
 CREATE OR REPLACE VIEW public.vtareasrechazadas
 AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
     pro.numeroticket AS ticket_no,
     tsk.descripciontarea AS titulo_tarea,
     tsk.fechaasignacion AS fecha_asignacion,

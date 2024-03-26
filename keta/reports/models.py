@@ -5,6 +5,7 @@ from encrypted_field import EncryptedField
 # Create your models here.
 class Vcobrosindebios(models.Model):
     ticket = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
     tipoidentificacionsujeto = models.CharField()
     identificacionsujeto = models.CharField()
     nomapellidonomrazonsocial = models.CharField()
@@ -31,6 +32,7 @@ class Vcobrosindebios(models.Model):
 
 class Vreportecobrosindebidos(models.Model):
     ticket = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
     nombredepartamento = models.CharField()
     nombre = models.CharField()
     apellido = models.CharField()
@@ -53,6 +55,7 @@ class Vreportecobrosindebidos(models.Model):
 
 class Vreportereclamostarjeta(models.Model):
     ticket = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
     name = models.CharField()
     lastname = models.CharField()
     cardnumber = EncryptedField(hide_algorithm=True)
@@ -76,6 +79,7 @@ class Vreportereclamostarjeta(models.Model):
 
 class Vreportereclamosgenerales(models.Model):
     ticket = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
     comentario = models.CharField()
     agencia = models.CharField()
     departamento = models.CharField()
