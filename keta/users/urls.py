@@ -25,6 +25,7 @@ from .views import (
     JdiasfestivosActiveView,
     VusuariosActiveView,
     VusersIdView,
+    BranchesByCorporationView,
 )
 
 router = DefaultRouter()
@@ -45,26 +46,37 @@ router.register(r"usuarios", JusuariosViewSet)
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    # Not CRUD supported endpoints
+
+    # Login endpoints
     path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("login/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     path("logout/", CustomLogoutView.as_view(), name="logout_user"),
+
+    # User endpoitns.
     path("user_profile/<str:email>/", JusuarioListView.as_view(), name="profile"),
-    path(
-        "sucursaldepartamentos/",
-        JsucursalJdepartamentosListView.as_view(),
-        name="jsucursal_jdepartamentos",
-    ),
     path(
         "usuarios_reporte/", VusuariosReportView.as_view(), name="usuariosreporte-list"
     ),
     path(
-       "usuarios_asignacion/", VusuariosAsignationView.as_view(), name="usuariosasignacion-list"
+        "usuarios_asignacion/", VusuariosAsignationView.as_view(), name="usuariosasignacion-list"
     ),
     path(
         "activeUsers/", VusuariosActiveView.as_view(), name="activeusers-list"
     ),
     path("idUsers/<int:pk>/", VusersIdView.as_view(), name="id-users"),
+
+    # Departments endpoints
+    path(
+        "sucursaldepartamentos/",
+        JsucursalJdepartamentosListView.as_view(),
+        name="jsucursal_jdepartamentos",
+    ),
+
+    # Branches endpoints
+    path(
+        "branchesByCorporation/", BranchesByCorporationView.as_view(), name="branchesbycorporation-list"
+    ),
+
 
     # Jdiasfestivos especial endpoints
     path(

@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
-from .utils.helper import BaseViewSet, BaseRetrieveView
+from .utils.helper import BaseViewSet, BaseRetrieveView, get_query_by_id
 
 from .serializers import (
     JusuariosSerializer,
@@ -200,6 +200,14 @@ class JrolesListViewSet(viewsets.ModelViewSet):
 class JsucursalesViewSet(viewsets.ModelViewSet):
     queryset = Jsucursales.objects.all()
     serializer_class = JsucursalesSerializer
+
+
+class BranchesByCorporationView(ListAPIView):
+    serializer_class = JsucursalesSerializer
+
+    def get_queryset(self):
+        idcorporacion = self.request.query_params.get("idcorporacion")
+        return get_query_by_id("idcorporacion", idcorporacion, Jsucursales)
 
 
 class JtiposidentificacionesViewSet(viewsets.ModelViewSet):
