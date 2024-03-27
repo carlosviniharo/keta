@@ -33,7 +33,6 @@ from .serializers import (
 )
 
 
-
 DICTIONARY_HEADER_REPORT = {
     "xmlns": "http://www.seps.gob.ec/reclamoCI01",
     "estructura": "CI01",
@@ -291,7 +290,7 @@ class GeneratePdfReport(RetrieveAPIView):
             raise APIException(
                 f"The file with the name '{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
             )
-    
+
     def create_pdf_response(self, pdf):
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'

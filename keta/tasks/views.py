@@ -17,6 +17,7 @@ from trackers.utils.helper import create_notification, create_notification_new_c
 from resolvers.utils.helper import send_email
 from reports.utils.helper import format_date
 
+from .utils.helper import create_excel_file
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializer,
@@ -372,6 +373,52 @@ class FilteredTaskView(ListAPIView):
         "idestado__idestado",
         "indicador",
     ]
+
+
+class VtaskListView(ListAPIView):
+    queryset = Vtareas.objects.all()
+    serializer_class = VtareasSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        "tarea",
+        "titulo_tarea",
+        "cedula",
+        "sucursal",
+        "tipo_reclamo",
+        "tipo_comentario",
+        "fechaentrega",
+        "prioridad",
+        "nombre_cliente",
+        "apellido_cliente",
+        "estado",
+    ]
+
+    def get_queryset(self):
+        queryset = Vtareas.objects.all()
+
+        # Apply any filters specified in the request
+        queryset = self.filter_queryset(queryset)
+
+        # Apply custom date range filtering
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date and end_date:
+            queryset = queryset.filter(fecha_asignacion__range=(start_date, end_date))
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class GenerateExcelView(VtaskListView):
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        response = create_excel_file(serializer.data)
+        return response
 
 
 # Endpoints for the database views.

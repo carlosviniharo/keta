@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import timezone
+from openpyxl.workbook import Workbook
+import pandas as pd
 
 from users.models import Jdiasfestivos
 
@@ -121,3 +123,25 @@ def count_weekends(start_date, end_date) -> int:
 def calculate_holidays(start_date, end_date):
     holidays = Jdiasfestivos.objects.filter(fecha__date__range=(start_date, end_date), status=True)
     return len(holidays) if holidays else 0
+
+
+def create_excel_file(data_object_dict):
+
+    df_tickets = pd.DataFrame(data_object_dict)
+
+    # Create the BytesIO object
+    excel_object = io.BytesIO()
+
+    # Create an Excel writer
+    with pd.ExcelWriter(excel_object, engine='xlsxwriter') as writer:
+        df_tickets.to_excel(writer, sheet_name='Tickets', index=False)
+
+    excel_object.seek(0)
+
+    response = HttpResponse(
+        excel_object,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=your_excel_file.xlsx'
+
+    return response
