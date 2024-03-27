@@ -12,6 +12,28 @@ import pandas as pd
 from users.models import Jdiasfestivos
 
 
+DICTIONARY_NAMES_EXCEL = {
+    "codigo": "Código",
+    "titulo_tarea": "Título del Ticket",
+    "fecha_creacion": "Fecha de Creación",
+    "fecha_asignacion": "Fecha de Asignación",
+    "sucursal": "Sucursal",
+    "creador": "Asistente Receptor",
+    "cedula": "Número de Cédula del Cliente",
+    "nombre_cliente": "Nombre del Cliente",
+    "nombres_tecnico": "Usuario Asignado al Ticket",
+    "cargo": "Cargo",
+    "departamento_usuario_asignado": "Departamento del Usuario Asignado",
+    "sucursal_usuario_asignado": "Sucursal del Usuario Asignado",
+    "tipo_reclamo": "Tipo de Reclamo",
+    "tipo_comentario": "Tipo de Comentario",
+    "prioridad": "Prioridad",
+    "estado": "Estado",
+    "fechaentrega": "Fecha de Entrega Estimada",
+    "fecharesolucion": "Fecha de Resolución",
+}
+
+
 def convert_pdf_to_b64(pdf_file):
     
     if not isinstance(pdf_file, bytes):
@@ -127,14 +149,22 @@ def calculate_holidays(start_date, end_date):
 
 def create_excel_file(data_object_dict):
 
-    df_tickets = pd.DataFrame(data_object_dict)
-
+    df_tickets = pd.DataFrame(
+        data_object_dict,
+        columns=list(DICTIONARY_NAMES_EXCEL.keys())
+    )
+    # Formatting the data
+    df_tickets["fecha_creacion"] = pd.to_datetime(df_tickets['fecha_creacion']).dt.strftime('%Y-%m-%d')
+    df_tickets["fecha_asignacion"] = pd.to_datetime(df_tickets['fecha_asignacion']).dt.strftime('%Y-%m-%d')
+    df_tickets["fechaentrega"] = pd.to_datetime(df_tickets['fechaentrega']).dt.strftime('%Y-%m-%d')
+    df_tickets["fecharesolucion"] = pd.to_datetime(df_tickets['fecharesolucion']).dt.strftime('%Y-%m-%d')
+    df_tickets.fillna(value="Información pendiente", inplace=True)
     # Create the BytesIO object
     excel_object = io.BytesIO()
 
     # Create an Excel writer
     with pd.ExcelWriter(excel_object, engine='xlsxwriter') as writer:
-        df_tickets.to_excel(writer, sheet_name='Tickets', index=False)
+        df_tickets.to_excel(writer, sheet_name='Tickets', index=False, header=list(DICTIONARY_NAMES_EXCEL.values()))
 
     excel_object.seek(0)
 

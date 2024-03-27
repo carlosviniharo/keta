@@ -43,6 +43,7 @@ from .utils import helper
 
 FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
+DATE_FORMAT = "%d-%m-%Y"
 
 
 # TODO the store of archivos should be switched to a cloud as the files can grown with time.
@@ -381,15 +382,12 @@ class VtaskListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         "tarea",
-        "titulo_tarea",
         "cedula",
         "sucursal",
         "tipo_reclamo",
         "tipo_comentario",
         "fechaentrega",
         "prioridad",
-        "nombre_cliente",
-        "apellido_cliente",
         "estado",
     ]
 
@@ -403,6 +401,8 @@ class VtaskListView(ListAPIView):
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
         if start_date and end_date:
+            start_date = timezone.datetime.strptime(start_date, DATE_FORMAT)
+            end_date = timezone.datetime.strptime(end_date, DATE_FORMAT) + timezone.timedelta(hours=23, minutes=59)
             queryset = queryset.filter(fecha_asignacion__range=(start_date, end_date))
         return queryset
 
@@ -416,6 +416,7 @@ class GenerateExcelView(VtaskListView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        queryset = queryset.filter(indicador=FATHER_TASK_INDICATOR)
         serializer = self.get_serializer(queryset, many=True)
         response = create_excel_file(serializer.data)
         return response

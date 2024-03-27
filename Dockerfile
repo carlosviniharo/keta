@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu
+FROM ubuntu:latest
 
 # Set environment variable to prevent buffering of Python's standard output
 ENV PYTHONUNBUFFERED=1

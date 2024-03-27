@@ -857,13 +857,11 @@ AS SELECT tsk.idtarea AS tarea,
     tsk.fechaextension AS fecha_extension,
     sucr.nombresucursal AS sucursal,
     cre.idusuario AS idcreador,
-    (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,
-    per.nombre AS nombre_cliente,
-    per.apellido AS apellido_cliente,
     per.identificacion AS cedula,
+    (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,
+    (per.nombre::text || ' '::text) || per.apellido::text AS nombre_cliente,
     users.idusuario AS idtecnico,
-    users.first_name AS nombres_tecnico,
-    users.last_name AS apellidos_tecnico,
+    (users.first_name::text || ' '::text) || users.last_name::text  AS nombres_tecnico,
     car.descripcioncargo AS cargo,
     dep.nombredepartamento AS departamento_usuario_asignado,
     sucr_u.nombresucursal AS sucursal_usuario_asignado,
@@ -872,6 +870,7 @@ AS SELECT tsk.idtarea AS tarea,
     prio.descripcionprioridad AS prioridad,
     est.descripcionestado AS estado,
     tsk.fechaentrega,
+    res.fecharesolucion,
     tsk.indicador,
     tsk.tareaprincipal
    FROM jtareasticket tsk
@@ -886,7 +885,8 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = pro.idtipoticket
      LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
-     LEFT JOIN jestados est ON est.idestado = tsk.idestado;
+     LEFT JOIN jestados est ON est.idestado = tsk.idestado
+     LEFT JOIN jresoluciones res ON res.idtarea = tsk.idtarea;
 
 -- public.vusers
 
