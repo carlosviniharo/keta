@@ -56,7 +56,81 @@ def send_email(data, typeemial):
             },
         }
 
-        ticket_data_resolutino = {
+        ticket_data_assigment = {
+            "FromName": "Cooperativa PilahuinTio",
+            "From": "notificaciones@pilahuintio.fin.ec",
+            "To": {"Email": [data["emailcliente"]]},
+            "Message": {
+                "Subject": "Cooperativa PilahuinTio notificaciones",
+                "Classification": "C",
+                "BasedOn": {"Id": "7", "Type": "Template"},
+                "Body": {
+                    "Format": "html",
+                    "Value": "obligatorio",
+                    "Variables": [
+                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
+                        {"Name": "IDTICKET", "Value": data["idtarea"]},
+                        {"Name": "FECHA", "Value": data["date"]},
+                        {"Name": "AGENCIA", "Value": data["agency"]},
+                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                    ]
+                },
+                # "Attachment": [
+                #     {
+                #         "FileName": "Boletos Participantes.pdf",
+                #         "Encode": "Base64",
+                #         "Size": "178",
+                #         "Value": data["Mpdf"],
+                #     }
+                # ],
+            },
+            "Options": {
+                "OpenTracking": "true",
+                "ClickTracking": "false",
+                "TextHtmlTracking": "true",
+                "AutoTextBody": "false",
+                "Personalization": "true",
+            },
+        }
+
+        ticket_data_rejection = {
+            "FromName": "Cooperativa PilahuinTio",
+            "From": "notificaciones@pilahuintio.fin.ec",
+            "To": {"Email": [data["emailcliente"]]},
+            "Message": {
+                "Subject": "Cooperativa PalanquinTio notificaciones",
+                "Classification": "C",
+                "BasedOn": {"Id": "7", "Type": "Template"},
+                "Body": {
+                    "Format": "html",
+                    "Value": "obligatorio",
+                    "Variables": [
+                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
+                        {"Name": "IDTICKET", "Value": data["idtarea"]},
+                        {"Name": "FECHA", "Value": data["date"]},
+                        {"Name": "AGENCIA", "Value": data["agency"]},
+                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                    ]
+                },
+                # "Attachment": [
+                #     {
+                #         "FileName": "Boletos Participantes.pdf",
+                #         "Encode": "Base64",
+                #         "Size": "178",
+                #         "Value": data["Mpdf"],
+                #     }
+                # ],
+            },
+            "Options": {
+                "OpenTracking": "true",
+                "ClickTracking": "false",
+                "TextHtmlTracking": "true",
+                "AutoTextBody": "false",
+                "Personalization": "true",
+            },
+        }
+
+        ticket_data_resolution = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
             "To": {"Email": [data["emailcliente"]]},
@@ -95,8 +169,12 @@ def send_email(data, typeemial):
 
         if typeemial == "create_ticket_email":
             request_body = {"GeneralData": ticket_data_creation}
+        elif typeemial == "assign_ticket_email":
+            request_body = {"GeneralData": ticket_data_assigment}
+        elif typeemial == "rejection_ticket_email":
+            request_body = {"GeneralData": ticket_data_rejection}
         else:
-            request_body = {"GeneralData": ticket_data_resolutino}
+            request_body = {"GeneralData": ticket_data_resolution}
 
         # Make the API request
         response = requests.post(

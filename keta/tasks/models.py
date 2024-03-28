@@ -47,7 +47,7 @@ class JtareasticketManager(models.Manager):
 
 class Jtareasticket(models.Model):
     idtarea = models.AutoField(primary_key=True)
-    codigo = models.CharField(blank=True, null=True)
+    codigo = models.CharField(blank=True, null=True, unique=True)
     descripciontarea = models.CharField(max_length=500, blank=True, null=True)
     indicador = models.CharField(
         max_length=2, choices=[value for value in indicators], blank=True, null=True

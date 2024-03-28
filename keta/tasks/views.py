@@ -190,7 +190,10 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                         raise APIException("There is not date in the view for the email.")
 
                     tarea_email_data["date"] = format_date(tarea_email_data["date"])
-                    send = send_email(tarea_email_data, "create_ticket_email")
+                    try:
+                        send_email(tarea_email_data, "create_ticket_email")
+                    except Exception as e:
+                        raise APIException(f"The following error occurred, {e}")
 
                     create_notification_new_claim(task_resp, request)
                 else:
@@ -206,6 +209,16 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
                     task = Jtareasticket.objects.create(**task_data)
                     task_resp = JtareasticketSerializer(task, context={"request": request})
+
+                    # Giving format to the data and sending the email after create a claim
+                    tarea_email = Vtareasemail.objects.get(idtarea=task_resp.data.get("idtarea"))
+                    tarea_email = VtareasemailSerializer(tarea_email)
+                    tarea_email_data = tarea_email.data
+
+                    try:
+                        send_email(tarea_email_data, "ticket_data_assigment")
+                    except Exception as e:
+                        raise APIException(f"The following error occurred, {e}")
                     
         except ValidationError as exc:
             return Response({"detail": exc}, status=status.HTTP_403_FORBIDDEN)
@@ -240,8 +253,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         create_notification(serializer, request)
 
         return Response(serializer.data)
-    
-    
+
     @staticmethod
     def validate_task_data(task_data):
         check_indicator = task_data.get("indicador")

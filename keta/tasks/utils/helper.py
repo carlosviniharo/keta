@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from openpyxl.workbook import Workbook
 import pandas as pd
 
 from users.models import Jdiasfestivos
@@ -77,28 +76,24 @@ def convert_base64_to_pdf(base64_string, filename, mimetype):
 
 def calculate_weekends(create_time, optimal_time, extended_time):
 
+    # Calculate end dates based on optimal and extended times
     end_optimal_date = create_time + timezone.timedelta(days=int(optimal_time))
     end_extended_date = create_time + timezone.timedelta(days=int(extended_time))
 
+    # Count weekends between create time and end dates
     optimal_weekends = count_weekends(create_time, end_optimal_date)
     extended_weekends = count_weekends(create_time, end_extended_date)
 
-    optimal_date = (
-            create_time + timezone.timedelta(days=int(optimal_time)) + timezone.timedelta(days=int(optimal_weekends))
-    )
-
+    # Calculate optimal and extended dates considering weekends and holidays
+    optimal_date = create_time + timezone.timedelta(days=int(optimal_time) + int(optimal_weekends))
     optimal_date += timezone.timedelta(days=calculate_holidays(create_time, optimal_date))
 
-    extended_date = (
-            create_time + timezone.timedelta(days=int(extended_time)) + timezone.timedelta(days=int(extended_weekends))
-    )
-
+    extended_date = create_time + timezone.timedelta(days=int(extended_time) + int(extended_weekends))
     extended_date += timezone.timedelta(days=calculate_holidays(create_time, extended_date))
 
-    if optimal_date.weekday() > 4:
-        optimal_date += timezone.timedelta(7 - optimal_date.weekday())
-    if extended_date.weekday() > 4:
-        extended_date += timezone.timedelta(7 - extended_date.weekday())
+    # Ensure that the resulting dates does not fall on weekdays
+    optimal_date = adjust_weekday(optimal_date)
+    extended_date = adjust_weekday(extended_date)
 
     return optimal_date, extended_date
 
@@ -145,6 +140,13 @@ def count_weekends(start_date, end_date) -> int:
 def calculate_holidays(start_date, end_date):
     holidays = Jdiasfestivos.objects.filter(fecha__date__range=(start_date, end_date), status=True)
     return len(holidays) if holidays else 0
+
+
+def adjust_weekday(date):
+    # If date falls on a weekend (Saturday or Sunday), adjust to next Monday
+    if date.weekday() > 4:
+        date += timezone.timedelta(7 - date.weekday())
+    return date
 
 
 def create_excel_file(data_object_dict):

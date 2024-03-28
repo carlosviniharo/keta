@@ -829,16 +829,16 @@ AS SELECT tr1.idtarea AS tarea,
             ELSE false
         END AS now_state
    FROM jestadotareas col
-     JOIN jtareasticket tr1 ON col.idtarea = tr1.idtarea
-     JOIN jproblemas pro ON tr1.idproblema = pro.idproblema
-     JOIN jusuarios u ON tr1.idusuarioqasigno = u.idusuario
-     JOIN jusuarios ua ON tr1.idusuarioasignado = ua.idusuario
-     JOIN jprioridades pri ON tr1.idprioridad = pri.idprioridad
-     JOIN jsucursales suc ON pro.idsucursal = suc.idsucursal
-     JOIN jpersonas cli ON pro.idpersona = cli.idpersona
-     JOIN jtickettipos tptr1 ON pro.idtipoticket = tptr1.idtipoticket
-     JOIN jtiposcomentarios com ON pro.idtipocomentario = com.idtipocomentario
-     JOIN jestados et ON tr1.idestado = et.idestado
+     LEFT JOIN jtareasticket tr1 ON col.idtarea = tr1.idtarea
+     LEFT JOIN jproblemas pro ON tr1.idproblema = pro.idproblema
+     LEFT JOIN jusuarios u ON tr1.idusuarioqasigno = u.idusuario
+     LEFT JOIN jusuarios ua ON tr1.idusuarioasignado = ua.idusuario
+     LEFT JOIN jprioridades pri ON tr1.idprioridad = pri.idprioridad
+     LEFT JOIN jsucursales suc ON pro.idsucursal = suc.idsucursal
+     LEFT JOIN jpersonas cli ON pro.idpersona = cli.idpersona
+     LEFT JOIN jtickettipos tptr1 ON pro.idtipoticket = tptr1.idtipoticket
+     LEFT JOIN jtiposcomentarios com ON pro.idtipocomentario = com.idtipocomentario
+     LEFT JOIN jestados et ON tr1.idestado = et.idestado
   WHERE tr1.idestado <> 7;
 
 -- public.vtareas

@@ -1,10 +1,14 @@
 import re
 
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from trackers.serializers import JnotificacionesSerilaizer, JseguimientostareasSerializer
+from rest_framework.exceptions import APIException
 
+from trackers.serializers import JseguimientostareasSerializer, JnotificacionesSerilaizer
 from users.models import Jusuarios
+
+from tasks.models import Vtareasemail
+from tasks.serializers import VtareasemailSerializer
+from resolvers.utils.helper import send_email
 
 
 def create_notification_new_claim(response, request):
@@ -37,8 +41,24 @@ def create_notification(response, request):
 
     if state == 3:
         handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
+        # Giving format to the data and sending the email after create a claim
+        tarea_email = Vtareasemail.objects.get(idtarea=ticket_number)
+        tarea_email = VtareasemailSerializer(tarea_email)
+        tarea_email_data = tarea_email.data
+
+        try:
+            send_email(tarea_email_data, "ticket_data_assigment")
+        except Exception as e:
+            raise APIException(f"The following error occurred, {e}")
+
     elif state == 6:
         handle_resolution_notification(notification_dic, ticket_updated, ticket_number)
+
+    elif state == 8:
+        tarea_email = Vtareasemail.objects.get(idtarea=ticket_number)
+        tarea_email = VtareasemailSerializer(tarea_email)
+        tarea_email_data = tarea_email.data
+        send_email(tarea_email_data, "rejection_ticket_email")
 
     create_notification_entry(notification_dic, request)
     if len(tracker_dic) > 1:
