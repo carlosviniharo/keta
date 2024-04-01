@@ -1031,3 +1031,53 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
      LEFT JOIN jestados est ON est.idestado = tsk.idestado
   WHERE tsk.indicador::text = 'A'::text AND tsk.idestado = 8;
+
+-- public.vemailnotificaciones
+
+CREATE OR REPLACE VIEW public.vemailnotificaciones
+AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
+    tsk.descripciontarea AS titulo_tarea,
+    tsk.fechaasignacion AS fecha_asignacion,
+    tsk.fechaentrega,
+    sucr.nombresucursal AS sucursal_ticket,
+    users.idusuario AS idtecnico,
+    (users.first_name::text || ' '::text) || users.last_name::text AS nombres_tecnico,
+    users.email AS email_asignado,
+    car.descripcioncargo AS cargo_asignado,
+    dep.nombredepartamento AS departamento_usuario_asignado,
+    sucr_u.nombresucursal AS sucursal_usuario_asignado,
+    u.idusuario AS id_asignador,
+    (u.first_name::text || ' '::text) || u.last_name::text AS nombres_asignador,
+    u.email AS email_asignador,
+    car_u.descripcioncargo AS cargo_asignador,
+    tptck.descripciontipoticket AS tipo_reclamo,
+    tpcomm.descripciontipocomentario AS tipo_comentario,
+    prio.descripcionprioridad AS prioridad,
+    est.descripcionestado AS estado,
+    tsk.indicador,
+    tsk.tareaprincipal,
+    latest.detalleresolucion AS detalles_rechazo,
+    latest.max_fechacreacion
+   FROM jtareasticket tsk
+     LEFT JOIN jproblemas pro ON pro.idproblema = tsk.idproblema
+     LEFT JOIN jsucursales sucr ON sucr.idsucursal = pro.idsucursal
+     LEFT JOIN jpersonas per ON per.idpersona = pro.idpersona
+     LEFT JOIN jusuarios users ON users.idusuario = tsk.idusuarioasignado
+     LEFT JOIN jcargos car ON car.idcargo = users.idcargo
+     LEFT JOIN jdepartamentos dep ON dep.iddepartamento = users.iddepartamento
+     LEFT JOIN jsucursales sucr_u ON sucr_u.idsucursal = dep.idsucursal
+     LEFT JOIN jusuarios u ON u.idusuario = tsk.idusuarioqasigno
+     LEFT JOIN jcargos car_u ON car_u.idcargo = u.idcargo
+     LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = pro.idtipoticket
+     LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
+     LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
+     LEFT JOIN jestados est ON est.idestado = tsk.idestado
+     RIGHT JOIN ( SELECT t.idtarea,
+            ( SELECT jseguimientostareas.detalleresolucion
+                   FROM jseguimientostareas
+                  WHERE jseguimientostareas.idtarea = t.idtarea AND jseguimientostareas.fechacreacion = max(t.fechacreacion) AND jseguimientostareas.tituloseguimientotarea::text = 'Tarea rechazada'::text) AS detalleresolucion,
+            max(t.fechacreacion) AS max_fechacreacion
+           FROM jseguimientostareas t
+          WHERE t.tituloseguimientotarea::text = 'Tarea rechazada'::text
+          GROUP BY t.idtarea) latest ON latest.idtarea = tsk.idtarea;

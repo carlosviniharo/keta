@@ -39,7 +39,7 @@ class JtareasticketManager(models.Manager):
                 tareaprincipal=main_task.idtarea
             ).aggregate(Max('codigo'))['codigo__max']
             main_ticket_code = main_task.codigo if main_task else ""
-            sub_ticket_number = int(latest_sub_ticket_code.split('-')[1]) + 1 if latest_sub_ticket_code else 1
+            sub_ticket_number = int(latest_sub_ticket_code.split('.')[1]) + 1 if latest_sub_ticket_code else 1
             kwargs['codigo'] = f"{main_ticket_code}-{sub_ticket_number}"
 
         return super().create(**kwargs)

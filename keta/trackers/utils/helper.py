@@ -6,7 +6,7 @@ from rest_framework.exceptions import APIException
 from trackers.serializers import JseguimientostareasSerializer, JnotificacionesSerilaizer
 from users.models import Jusuarios
 
-from tasks.models import Vtareasemail
+from tasks.models import Vtareasemail, Vtareas
 from tasks.serializers import VtareasemailSerializer
 from resolvers.utils.helper import send_email
 
@@ -42,12 +42,10 @@ def create_notification(response, request):
     if state == 3:
         handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
         # Giving format to the data and sending the email after create a claim
-        tarea_email = Vtareasemail.objects.get(idtarea=ticket_number)
-        tarea_email = VtareasemailSerializer(tarea_email)
-        tarea_email_data = tarea_email.data
+        tarea_email = Vtareas.objects.get(tarea=ticket_number)
 
         try:
-            send_email(tarea_email_data, "ticket_data_assigment")
+            send_email(tarea_email, "ticket_data_assigment")
         except Exception as e:
             raise APIException(f"The following error occurred, {e}")
 

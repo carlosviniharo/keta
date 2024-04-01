@@ -22,7 +22,7 @@ def send_email(data, typeemial):
         ticket_data_creation = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["emailcliente"]]},
+            "To": {"Email": ["carlosviniharo@outlook.com"]},
             "Message": {
                 "Subject": "Cooperativa PalanquinTio notificaciones",
                 "Classification": "C",
@@ -59,20 +59,20 @@ def send_email(data, typeemial):
         ticket_data_assigment = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["emailcliente"]]},
+            "To": {"Email": [data["email_asignado"]]},
             "Message": {
-                "Subject": "Cooperativa PilahuinTio notificaciones",
+                "Subject": "Nuevo Ticket Asignado",
                 "Classification": "C",
                 "BasedOn": {"Id": "7", "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",
                     "Variables": [
-                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
-                        {"Name": "IDTICKET", "Value": data["idtarea"]},
-                        {"Name": "FECHA", "Value": data["date"]},
-                        {"Name": "AGENCIA", "Value": data["agency"]},
-                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                        {"Name": "NOMBRE", "Value": "Ejemplo"},
+                        {"Name": "IDTICKET", "Value":  "Ejemplo"},
+                        {"Name": "FECHA", "Value":  "Ejemplo"},
+                        {"Name": "AGENCIA", "Value": "Ejemplo"},
+                        {"Name": "TIPORECLAMO", "Value":  "Ejemplo"}
                     ]
                 },
                 # "Attachment": [
@@ -96,20 +96,20 @@ def send_email(data, typeemial):
         ticket_data_rejection = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["emailcliente"]]},
+            "To": {"Email": [data["email_asignador"]]},
             "Message": {
-                "Subject": "Cooperativa PalanquinTio notificaciones",
+                "Subject": "Ticket Rechazado",
                 "Classification": "C",
                 "BasedOn": {"Id": "7", "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",
                     "Variables": [
-                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
-                        {"Name": "IDTICKET", "Value": data["idtarea"]},
-                        {"Name": "FECHA", "Value": data["date"]},
-                        {"Name": "AGENCIA", "Value": data["agency"]},
-                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                        {"Name": "NOMBRE", "Value": "Ejemplo"},
+                        {"Name": "IDTICKET", "Value": "Ejemplo"},
+                        {"Name": "FECHA", "Value": "Ejemplo"},
+                        {"Name": "AGENCIA", "Value": "Ejemplo"},
+                        {"Name": "TIPORECLAMO", "Value": "Ejemplo"}
                     ]
                 },
                 # "Attachment": [

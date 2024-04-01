@@ -211,12 +211,10 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     task_resp = JtareasticketSerializer(task, context={"request": request})
 
                     # Giving format to the data and sending the email after create a claim
-                    tarea_email = Vtareasemail.objects.get(idtarea=task_resp.data.get("idtarea"))
-                    tarea_email = VtareasemailSerializer(tarea_email)
-                    tarea_email_data = tarea_email.data
+                    tarea_email = Vtareas.objects.get(tarea=task_resp.data.get("idtarea"))
 
                     try:
-                        send_email(tarea_email_data, "ticket_data_assigment")
+                        send_email(tarea_email, "ticket_data_assigment")
                     except Exception as e:
                         raise APIException(f"The following error occurred, {e}")
                     
