@@ -22,11 +22,11 @@ def send_email(data, typeemial):
         ticket_data_creation = {
             "FromName": "Cooperativa PilahuinTio",
             "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": ["carlosviniharo@outlook.com"]},
+            "To": {"Email": [data["emailcliente"]]},
             "Message": {
                 "Subject": "Cooperativa PalanquinTio notificaciones",
                 "Classification": "C",
-                "BasedOn": {"Id": "7", "Type": "Template"},
+                "BasedOn": {"Id": "7    ", "Type": "Template"},
                 "Body": {
                     "Format": "html",
                     "Value": "obligatorio",
@@ -55,130 +55,130 @@ def send_email(data, typeemial):
                 "Personalization": "true",
             },
         }
-
-        ticket_data_assigment = {
-            "FromName": "Cooperativa PilahuinTio",
-            "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["email_asignado"]]},
-            "Message": {
-                "Subject": "Nuevo Ticket Asignado",
-                "Classification": "C",
-                "BasedOn": {"Id": "7", "Type": "Template"},
-                "Body": {
-                    "Format": "html",
-                    "Value": "obligatorio",
-                    "Variables": [
-                        {"Name": "NOMBRE", "Value": "Ejemplo"},
-                        {"Name": "IDTICKET", "Value":  "Ejemplo"},
-                        {"Name": "FECHA", "Value":  "Ejemplo"},
-                        {"Name": "AGENCIA", "Value": "Ejemplo"},
-                        {"Name": "TIPORECLAMO", "Value":  "Ejemplo"}
-                    ]
-                },
-                # "Attachment": [
-                #     {
-                #         "FileName": "Boletos Participantes.pdf",
-                #         "Encode": "Base64",
-                #         "Size": "178",
-                #         "Value": data["Mpdf"],
-                #     }
-                # ],
-            },
-            "Options": {
-                "OpenTracking": "true",
-                "ClickTracking": "false",
-                "TextHtmlTracking": "true",
-                "AutoTextBody": "false",
-                "Personalization": "true",
-            },
-        }
-
-        ticket_data_rejection = {
-            "FromName": "Cooperativa PilahuinTio",
-            "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["email_asignador"]]},
-            "Message": {
-                "Subject": "Ticket Rechazado",
-                "Classification": "C",
-                "BasedOn": {"Id": "7", "Type": "Template"},
-                "Body": {
-                    "Format": "html",
-                    "Value": "obligatorio",
-                    "Variables": [
-                        {"Name": "NOMBRE", "Value": "Ejemplo"},
-                        {"Name": "IDTICKET", "Value": "Ejemplo"},
-                        {"Name": "FECHA", "Value": "Ejemplo"},
-                        {"Name": "AGENCIA", "Value": "Ejemplo"},
-                        {"Name": "TIPORECLAMO", "Value": "Ejemplo"}
-                    ]
-                },
-                # "Attachment": [
-                #     {
-                #         "FileName": "Boletos Participantes.pdf",
-                #         "Encode": "Base64",
-                #         "Size": "178",
-                #         "Value": data["Mpdf"],
-                #     }
-                # ],
-            },
-            "Options": {
-                "OpenTracking": "true",
-                "ClickTracking": "false",
-                "TextHtmlTracking": "true",
-                "AutoTextBody": "false",
-                "Personalization": "true",
-            },
-        }
-
-        ticket_data_resolution = {
-            "FromName": "Cooperativa PilahuinTio",
-            "From": "notificaciones@pilahuintio.fin.ec",
-            "To": {"Email": [data["emailcliente"]]},
-            "Message": {
-                "Subject": "Cooperativa PilahuinTio notificaciones",
-                "Classification": "C",
-                "BasedOn": {"Id": "7", "Type": "Template"},
-                "Body": {
-                    "Format": "html",
-                    "Value": "obligatorio",
-                    "Variables": [
-                        {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
-                        {"Name": "IDTICKET", "Value": data["idtarea"]},
-                        {"Name": "FECHA", "Value": data["date"]},
-                        {"Name": "AGENCIA", "Value": data["agency"]},
-                        {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
-                    ]
-                },
-                # "Attachment": [
-                #     {
-                #         "FileName": "Boletos Participantes.pdf",
-                #         "Encode": "Base64",
-                #         "Size": "178",
-                #         "Value": data["Mpdf"],
-                #     }
-                # ],
-            },
-            "Options": {
-                "OpenTracking": "true",
-                "ClickTracking": "false",
-                "TextHtmlTracking": "true",
-                "AutoTextBody": "false",
-                "Personalization": "true",
-            },
-        }
+        #
+        # ticket_data_assigment = {
+        #     "FromName": "Cooperativa PilahuinTio",
+        #     "From": "notificaciones@pilahuintio.fin.ec",
+        #     "To": {"Email": [data["email_asignado"]]},
+        #     "Message": {
+        #         "Subject": "Nuevo Ticket Asignado",
+        #         "Classification": "C",
+        #         "BasedOn": {"Id": "7", "Type": "Template"},
+        #         "Body": {
+        #             "Format": "html",
+        #             "Value": "obligatorio",
+        #             "Variables": [
+        #                 {"Name": "NOMBRE", "Value": "Ejemplo"},
+        #                 {"Name": "IDTICKET", "Value":  "Ejemplo"},
+        #                 {"Name": "FECHA", "Value":  "Ejemplo"},
+        #                 {"Name": "AGENCIA", "Value": "Ejemplo"},
+        #                 {"Name": "TIPORECLAMO", "Value":  "Ejemplo"}
+        #             ]
+        #         },
+        #         # "Attachment": [
+        #         #     {
+        #         #         "FileName": "Boletos Participantes.pdf",
+        #         #         "Encode": "Base64",
+        #         #         "Size": "178",
+        #         #         "Value": data["Mpdf"],
+        #         #     }
+        #         # ],
+        #     },
+        #     "Options": {
+        #         "OpenTracking": "true",
+        #         "ClickTracking": "false",
+        #         "TextHtmlTracking": "true",
+        #         "AutoTextBody": "false",
+        #         "Personalization": "true",
+        #     },
+        # }
+        #
+        # ticket_data_rejection = {
+        #     "FromName": "Cooperativa PilahuinTio",
+        #     "From": "notificaciones@pilahuintio.fin.ec",
+        #     "To": {"Email": [data["email_asignador"]]},
+        #     "Message": {
+        #         "Subject": "Ticket Rechazado",
+        #         "Classification": "C",
+        #         "BasedOn": {"Id": "7", "Type": "Template"},
+        #         "Body": {
+        #             "Format": "html",
+        #             "Value": "obligatorio",
+        #             "Variables": [
+        #                 {"Name": "NOMBRE", "Value": "Ejemplo"},
+        #                 {"Name": "IDTICKET", "Value": "Ejemplo"},
+        #                 {"Name": "FECHA", "Value": "Ejemplo"},
+        #                 {"Name": "AGENCIA", "Value": "Ejemplo"},
+        #                 {"Name": "TIPORECLAMO", "Value": "Ejemplo"}
+        #             ]
+        #         },
+        #         # "Attachment": [
+        #         #     {
+        #         #         "FileName": "Boletos Participantes.pdf",
+        #         #         "Encode": "Base64",
+        #         #         "Size": "178",
+        #         #         "Value": data["Mpdf"],
+        #         #     }
+        #         # ],
+        #     },
+        #     "Options": {
+        #         "OpenTracking": "true",
+        #         "ClickTracking": "false",
+        #         "TextHtmlTracking": "true",
+        #         "AutoTextBody": "false",
+        #         "Personalization": "true",
+        #     },
+        # }
+        #
+        # ticket_data_resolution = {
+        #     "FromName": "Cooperativa PilahuinTio",
+        #     "From": "notificaciones@pilahuintio.fin.ec",
+        #     "To": {"Email": [data["emailcliente"]]},
+        #     "Message": {
+        #         "Subject": "Cooperativa PilahuinTio notificaciones",
+        #         "Classification": "C",
+        #         "BasedOn": {"Id": "7", "Type": "Template"},
+        #         "Body": {
+        #             "Format": "html",
+        #             "Value": "obligatorio",
+        #             "Variables": [
+        #                 {"Name": "NOMBRE", "Value": "Example"},
+        #                 {"Name": "IDTICKET", "Value": "Example"},
+        #                 {"Name": "FECHA", "Value": "Example"},
+        #                 {"Name": "AGENCIA", "Value": "Example"},
+        #                 {"Name": "TIPORECLAMO", "Value": "Example"}
+        #             ]
+        #         },
+        #         # "Attachment": [
+        #         #     {
+        #         #         "FileName": "Boletos Participantes.pdf",
+        #         #         "Encode": "Base64",
+        #         #         "Size": "178",
+        #         #         "Value": data["Mpdf"],
+        #         #     }
+        #         # ],
+        #     },
+        #     "Options": {
+        #         "OpenTracking": "true",
+        #         "ClickTracking": "false",
+        #         "TextHtmlTracking": "true",
+        #         "AutoTextBody": "false",
+        #         "Personalization": "true",
+        #     },
+        # }
 
         if typeemial == "create_ticket_email":
             request_body = {"GeneralData": ticket_data_creation}
-        elif typeemial == "assign_ticket_email":
-            request_body = {"GeneralData": ticket_data_assigment}
-        elif typeemial == "rejection_ticket_email":
-            request_body = {"GeneralData": ticket_data_rejection}
-        else:
-            request_body = {"GeneralData": ticket_data_resolution}
+        # elif typeemial == "assign_ticket_email":
+        #     request_body = {"GeneralData": ticket_data_assigment}
+        # elif typeemial == "rejection_ticket_email":
+        #     request_body = {"GeneralData": ticket_data_rejection}
+        # else:
+        #     request_body = {"GeneralData": ticket_data_resolution}
 
         # Make the API request
         response = requests.post(
-            "https://api2019.masterbase.com/UniqueMail/v3/ALYGUTAY2MKTEC",
+            "https://api2019.masterbase.com/UniqueMail/v3/JAKAYSAMKTEC",
             headers=headers,
             json=request_body,
             timeout=30,
