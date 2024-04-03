@@ -1073,7 +1073,7 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
      LEFT JOIN jestados est ON est.idestado = tsk.idestado
-     RIGHT JOIN ( SELECT t.idtarea,
+     LEFT JOIN ( SELECT t.idtarea,
             ( SELECT jseguimientostareas.detalleresolucion
                    FROM jseguimientostareas
                   WHERE jseguimientostareas.idtarea = t.idtarea AND jseguimientostareas.fechacreacion = max(t.fechacreacion) AND jseguimientostareas.tituloseguimientotarea::text = 'Tarea rechazada'::text) AS detalleresolucion,

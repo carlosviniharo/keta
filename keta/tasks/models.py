@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, IntegerField, FloatField, ExpressionWrapper, F, Value, Func
+from django.db.models.functions import Cast, Replace
 from django.utils import timezone
 from tickets.models import Jproblemas, Jprioridades
 from users.models import Jusuarios
@@ -27,22 +28,49 @@ class JtareasticketManager(models.Manager):
     use_in_migration = True
 
     def create(self, **kwargs):
-        # Determine the value of the codigo field based on the indicador field
         if kwargs.get('indicador') == "P":
-            latest_main_ticket_code = self.filter(indicador="P").aggregate(Max('codigo'))['codigo__max']
-            next_main_ticket_code = str(int(latest_main_ticket_code) + 1) if latest_main_ticket_code else "1"
+            latest_main_ticket_code = self.filter(indicador="P").count()
+            next_main_ticket_code = str(latest_main_ticket_code + 1) if latest_main_ticket_code else "1"
             kwargs['codigo'] = next_main_ticket_code
         else:
             main_task = kwargs.get('tareaprincipal')
-            latest_sub_ticket_code = self.filter(
-                indicador="A",
-                tareaprincipal=main_task.idtarea
-            ).aggregate(Max('codigo'))['codigo__max']
-            main_ticket_code = main_task.codigo if main_task else ""
-            sub_ticket_number = int(latest_sub_ticket_code.split('.')[1]) + 1 if latest_sub_ticket_code else 1
-            kwargs['codigo'] = f"{main_ticket_code}-{sub_ticket_number}"
+            main_code = main_task.codigo
+            latest_ticket_count = self.filter(indicador="A", tareaprincipal=main_task.idtarea).count()
+            sub_ticket_number = latest_ticket_count + 1 if latest_ticket_count else 1
+            kwargs['codigo'] = f"{main_code}.{sub_ticket_number}"
+
+        # # Determine the value of the codigo field based on the indicador field
+        # if kwargs.get('indicador') == "P":
+        #     latest_main_ticket_code = (
+        #         self.filter(indicador="P")
+        #         .annotate(codigo_int=Cast('codigo', IntegerField()))
+        #         .aggregate(Max('codigo_int'))['codigo_int__max']
+        #     )
+        #     next_main_ticket_code = str(int(latest_main_ticket_code) + 1) if latest_main_ticket_code else "1"
+        #     kwargs['codigo'] = next_main_ticket_code
+        # else:
+        #     main_task = kwargs.get('tareaprincipal')
+        #
+        #     queryset = self.filter(indicador="A", tareaprincipal=main_task.idtarea)
+        #     queryset = queryset.annotate(
+        #         transformed_code=Cast(ExtractNumericPart('codigo'), IntegerField())
+        #     )
+        #
+        #     # Filter to get the original value corresponding to the maximum transformed code
+        #     latest_sub_ticket_code = queryset.filter(
+        #         transformed_code=queryset.aggregate(Max('transformed_code'))['transformed_code__max']).values_list(
+        #         'codigo', flat=True).first()
+        #
+        #     main_ticket_code = main_task.codigo if main_task else ""
+        #     sub_ticket_number = int(latest_sub_ticket_code.split('.')[1]) + 1 if latest_sub_ticket_code else 1
+        #     kwargs['codigo'] = f"{main_ticket_code}.{sub_ticket_number}"
 
         return super().create(**kwargs)
+
+
+# class ExtractNumericPart(Func):
+#     function = 'REGEXP_REPLACE'
+#     template = r"%(function)s(%(expressions)s, '\.', '', 'g')"
 
 
 class Jtareasticket(models.Model):
@@ -236,6 +264,39 @@ class Vtareasemail(models.Model):
     class Meta:
         managed = False
         db_table = 'vtareasemail'
+
+    objects = models.Manager()
+
+
+class Vemailnotificaciones(models.Model):
+    tarea = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
+    titulo_tarea = models.CharField()
+    fecha_asignacion = models.DateTimeField()
+    fechaentrega = models.DateTimeField()
+    sucursal_ticket = models.CharField()
+    idtecnico = models.IntegerField()
+    nombres_tecnico = models.CharField()
+    email_asignado = models.EmailField()
+    cargo_asignado = models.CharField()
+    departamento_usuario_asignado = models.CharField()
+    sucursal_usuario_asignado = models.CharField()
+    id_asignador = models.IntegerField()
+    nombres_asignador = models.CharField()
+    email_asignador = models.EmailField()
+    cargo_asignador = models.CharField()
+    tipo_reclamo = models.CharField()
+    tipo_comentario = models.CharField()
+    prioridad = models.CharField()
+    estado = models.CharField()
+    indicador = models.CharField(max_length=1)
+    tareaprincipal = models.BooleanField()
+    detalles_rechazo = models.CharField()
+    max_fechacreacion = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'vemailnotificaciones'
 
     objects = models.Manager()
 

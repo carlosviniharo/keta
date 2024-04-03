@@ -36,7 +36,7 @@ from .serializers import (
 DICTIONARY_HEADER_REPORT = {
     "xmlns": "http://www.seps.gob.ec/reclamoCI01",
     "estructura": "CI01",
-    "rucEntidad": "1234567890001",
+    "rucEntidad": "",
     "fechaCorte": "",
     "numRegistro": 0,
 }
