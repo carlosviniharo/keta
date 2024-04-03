@@ -60,11 +60,14 @@ def build_json(data, typeemial):
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "NOMBRE", "Value": "Ejemplo"},
-                            {"Name": "IDTICKET", "Value":  "Ejemplo"},
-                            {"Name": "FECHA", "Value":  "Ejemplo"},
-                            {"Name": "AGENCIA", "Value": "Ejemplo"},
-                            {"Name": "TIPORECLAMO", "Value":  "Ejemplo"}
+                            {"Name": "TECNICO", "Value": "nombres_tecnico"},
+                            {"Name": "IDTICKET", "Value":  "codigo"},
+                            {"Name": "TITULO", "Value": "titulo_tarea"},
+                            {"Name": "PRIORIDAD", "Value": "prioridad"},
+                            {"Name": "TIPORECLAMO", "Value":  "tipo_ticket"},
+                            {"Name": "FECHA", "Value": "fechaentrega"},
+                            {"Name": "ASIGNADOR", "Value": "nombres_asignador"},
+                            {"Name": "CARGOASIGNADOR", "Value": "cargo_asignador"}
                         ]
                     },
                     # "Attachment": [
@@ -100,11 +103,14 @@ def build_json(data, typeemial):
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "NOMBRE", "Value": "Ejemplo"},
-                            {"Name": "IDTICKET", "Value": "Ejemplo"},
-                            {"Name": "FECHA", "Value": "Ejemplo"},
-                            {"Name": "AGENCIA", "Value": "Ejemplo"},
-                            {"Name": "TIPORECLAMO", "Value": "Ejemplo"}
+                            {"Name": "ASIGNADOR", "Value": "nombres_asignador"},
+                            {"Name": "IDTICKET", "Value":  "codigo"},
+                            {"Name": "DETALLES", "Value": "detalles_rechazo"},
+                            {"Name": "PRIORIDAD", "Value": "prioridad"},
+                            {"Name": "FECHA", "Value": "max_fechacreacion"},
+                            {"Name": "TECNICO", "Value": "nombres_tecnico"},
+                            {"Name": "EMAIL", "Value": "email_asignado"},
+                            {"Name": "CARGO", "Value": "cargo_asignado"}
                         ]
                     },
                     # "Attachment": [

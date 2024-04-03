@@ -671,7 +671,8 @@ INSERT INTO public.jusuarios (first_name,last_name,is_active,direccionmac,date_j
 
 CREATE OR REPLACE VIEW public.vcobrosindebios
 AS SELECT tck.idtarea AS ticket,
-	tck.codigo,
+    tck.codigo,
+    corp.ruc AS ruccorporation,
     cod.codigotipoidentificacion AS tipoidentificacionsujeto,
     cli.identificacion AS identificacionsujeto,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS nomapellidonomrazonsocial,
@@ -695,6 +696,8 @@ AS SELECT tck.idtarea AS ticket,
      JOIN jtareasticket tck ON tck.idproblema = pro.idproblema
      JOIN jtipostransacciones tptran ON tptran.idtipotransaccion = pro.idtipotransaccion
      JOIN jconceptos con ON con.idconcepto = pro.idconcepto
+     JOIN jsucursales suc ON suc.idsucursal = pro.idsucursal
+     JOIN jcorporaciones corp ON corp.idcorporacion = suc.idcorporacion
      JOIN jestados es ON es.idestado = tck.idestado
      LEFT JOIN jresoluciones res ON res.idtarea = tck.idtarea
      LEFT JOIN jvaloresresoluciones val ON val.idresolucion = res.idresolucion

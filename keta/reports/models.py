@@ -6,6 +6,7 @@ from encrypted_field import EncryptedField
 class Vcobrosindebios(models.Model):
     ticket = models.IntegerField(primary_key=True)
     codigo = models.CharField()
+    ruccorporation = models.CharField()
     tipoidentificacionsujeto = models.CharField()
     identificacionsujeto = models.CharField()
     nomapellidonomrazonsocial = models.CharField()

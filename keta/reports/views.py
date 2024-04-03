@@ -131,6 +131,7 @@ class VcobrosindebiosReportView(ListAPIView):
             )
 
             serializer = self.get_serializer(queryset, many=True)
+            DICTIONARY_HEADER_REPORT["rucEntidad"] = serializer.data[0].get("ruccorporation")
             DICTIONARY_HEADER_REPORT["numRegistro"] = len(serializer.data)
             DICTIONARY_HEADER_REPORT["fechaCorte"] = format_date(str(fecha_final))
             yield '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -291,7 +292,8 @@ class GeneratePdfReport(RetrieveAPIView):
                 f"The file with the name '{DICTIONARY_ARCHIVO_REPORT['nombrearchivo']}' was not saved"
             )
 
-    def create_pdf_response(self, pdf):
+    @staticmethod
+    def create_pdf_response(pdf):
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = 'inline; filename="your_ticket.pdf"'
         return response
