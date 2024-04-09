@@ -23,7 +23,7 @@ class Jseguimientostareas(models.Model):
         db_table = "jseguimientostareas"
 
     objects = models.Manager()
-    
+
     def __str__(self):
         return self.tituloseguimientotarea
 
@@ -40,7 +40,7 @@ class Jnotificaciones(models.Model):
     class Meta:
         db_table = 'jnotificaciones'
         ordering = ['-created_at']
-        
+
     objects = models.Manager()
 
     def __str__(self):
@@ -58,6 +58,7 @@ class Vseguimientotareas(models.Model):
     fechamodificacion = models.DateTimeField()
     fecharegistro = models.DateTimeField()
     idtarea = models.IntegerField()
+    codigo = models.CharField()
     indicador = models.CharField()
     descripciontarea = models.CharField()
     tareaprincipal = models.IntegerField()

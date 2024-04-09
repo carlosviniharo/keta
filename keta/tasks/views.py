@@ -17,6 +17,7 @@ from trackers.utils.helper import create_notification, create_notification_new_c
 from resolvers.utils.helper import send_email
 from reports.utils.helper import format_date
 
+from .utils.helper import create_excel_file, adjust_weekday
 from .serializers import (
     JtareasticketSerializer,
     JestadotareasSerializer,
@@ -27,6 +28,7 @@ from .serializers import (
     JarchivoListSerializer,
     VtareasemailSerializer,
     VtareasrechazadasSerializer,
+    VemailnotificacionesSerializer,
 )
 from .models import (
     Jarchivos,
@@ -35,13 +37,16 @@ from .models import (
     Jestados,
     Vtareaestadocolor,
     Vtareas,
-    Vtareasemail, Vtareasrechazadas,
+    Vtareasemail,
+    Vtareasrechazadas,
+    Vemailnotificaciones,
 )
 from .utils import helper
 
 
 FATHER_TASK_INDICATOR = "P"
 SUB_TASK_INDICATOR = "A"
+DATE_FORMAT = "%d-%m-%Y"
 
 
 # TODO the store of archivos should be switched to a cloud as the files can grown with time.
@@ -164,7 +169,6 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         try:
             with transaction.atomic():
-                
                 if is_father:
                     create_date = timezone.now()
                     optimal_time, max_days_resolution = self.get_time_priority(object_priority)
@@ -188,14 +192,16 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                         raise APIException("There is not date in the view for the email.")
 
                     tarea_email_data["date"] = format_date(tarea_email_data["date"])
-                    send = send_email(tarea_email_data, "create_ticket_email")
+                    try:
+                        send_email(tarea_email_data, "create_ticket_email")
+                    except Exception as e:
+                        raise APIException(f"The following error occurred, {e}")
 
                     create_notification_new_claim(task_resp, request)
                 else:
                     fechaentrega_subtarea = task_data["tareaprincipal"].fechaentrega - timezone.timedelta(days=1)
 
-                    if fechaentrega_subtarea.weekday() > 4:
-                        fechaentrega_subtarea += timezone.timedelta(7 - fechaentrega_subtarea.weekday())
+                    fechaentrega_subtarea = adjust_weekday(fechaentrega_subtarea)
 
                     task_data["fechaentrega"] = fechaentrega_subtarea
 
@@ -207,6 +213,8 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                     
         except ValidationError as exc:
             return Response({"detail": exc}, status=status.HTTP_403_FORBIDDEN)
+
+        self.send_subtask_email(task_resp.data, is_father)
 
         return Response(task_resp.data, status=status.HTTP_201_CREATED)
 
@@ -238,8 +246,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         create_notification(serializer, request)
 
         return Response(serializer.data)
-    
-    
+
     @staticmethod
     def validate_task_data(task_data):
         check_indicator = task_data.get("indicador")
@@ -264,7 +271,6 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 )
             return False, ticket
         raise APIException("Invalid indicator")
-    
 
     @staticmethod
     def get_time_priority(priority):
@@ -280,6 +286,18 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         except (ObjectDoesNotExist, ValueError):
             return None, None
         return optimal_time, deadline
+
+    @staticmethod
+    def send_subtask_email(task_resp, is_father):
+        if not is_father:
+            # Giving format to the data and sending the email after create a claim
+            tarea_email = Vemailnotificaciones.objects.get(tarea=task_resp.get("idtarea"))
+            tarea_email = VemailnotificacionesSerializer(tarea_email)
+
+            try:
+                send_email(tarea_email, "assign_ticket_email")
+            except Exception as e:
+                raise APIException(f"The following error occurred, {e}")
 
 
 class JestadotareasViewSet(viewsets.ModelViewSet):
@@ -372,6 +390,52 @@ class FilteredTaskView(ListAPIView):
         "idestado__idestado",
         "indicador",
     ]
+
+
+class VtaskListView(ListAPIView):
+    queryset = Vtareas.objects.all()
+    serializer_class = VtareasSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        "tarea",
+        "cedula",
+        "sucursal",
+        "tipo_reclamo",
+        "tipo_comentario",
+        "fechaentrega",
+        "prioridad",
+        "estado",
+    ]
+
+    def get_queryset(self):
+        queryset = Vtareas.objects.all()
+
+        # Apply any filters specified in the request
+        queryset = self.filter_queryset(queryset)
+
+        # Apply custom date range filtering
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date and end_date:
+            start_date = timezone.datetime.strptime(start_date, DATE_FORMAT)
+            end_date = timezone.datetime.strptime(end_date, DATE_FORMAT) + timezone.timedelta(hours=23, minutes=59)
+            queryset = queryset.filter(fecha_asignacion__range=(start_date, end_date))
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class GenerateExcelView(VtaskListView):
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        queryset = queryset.filter(indicador=FATHER_TASK_INDICATOR)
+        serializer = self.get_serializer(queryset, many=True)
+        response = create_excel_file(serializer.data)
+        return response
 
 
 # Endpoints for the database views.

@@ -1,70 +1,16 @@
 import re
 
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from trackers.serializers import JnotificacionesSerilaizer, JseguimientostareasSerializer
+from rest_framework.exceptions import APIException
 
+from trackers.serializers import JseguimientostareasSerializer, JnotificacionesSerilaizer
 from users.models import Jusuarios
 
+from tasks.models import Vtareasemail, Vtareas, Vemailnotificaciones
+from tasks.serializers import VtareasemailSerializer, VtareasSerializer, VemailnotificacionesSerializer
+from resolvers.utils.helper import send_email
 
-# def create_notification(response, request):
-#     ticket_updated = response.data
-#     ticket_number = ticket_updated["idtarea"]
-#
-#     notification_dic = {
-#         "idtarea": ticket_updated["url"],
-#     }
-#     tracker_dic = {
-#         "idtarea": ticket_updated["url"],
-#     }
-#
-#     # Checking the state of the ticket
-#     pattern = r"/(?P<estado>\d+)/$"
-#     match = re.search(pattern, ticket_updated["idestado"])
-#     state = int(match.group("estado"))
-#
-#     if state == 2:
-#         notification_dic["notification_type"] = "Creation Notification"
-#         notification_dic["idusuario"] = ticket_updated["idusuarioasignado"]
-#         notification_dic["message"] = f"A new claim with ticket number {ticket_number} has been opened"
-#
-#         tracker_dic["tituloseguimientotarea"] = "Creacion de Tarea"
-#         tracker_dic["detalleresolucion"] = f"Se a registrado el reclamo numero {ticket_number} en KETA"
-#         tracker_dic["idusuario"] = ticket_updated["idusuarioqasigno"]
-#
-#     elif state == 3:
-#         notification_dic["notification_type"] = "Assignation Notification"
-#         notification_dic["idusuario"] = ticket_updated["idusuarioasignado"]
-#         notification_dic["message"] = f"The claim with ticket number ticket_number has been assigned to you"
-#
-#         user_id = int(ticket_updated['idusuarioasignado'].split('/')[-2])
-#         user_assigned = get_object_or_404(Jusuarios, idusuario=user_id)
-#         tracker_dic["tituloseguimientotarea"] = "Assignacion de Tarea"
-#         tracker_dic["detalleresolucion"] = (f"El reclamo numero {ticket_number} "
-#                                             f"ha sido asignado a {user_assigned.email}")
-#         tracker_dic["idusuario"] = ticket_updated["idusuarioqasigno"]
-#
-#     elif state == 6:
-#         notification_dic["notification_type"] = "Resolution Notification"
-#         notification_dic["idusuario"] = ticket_updated["idusuarioqasigno"]
-#         notification_dic["message"] = f"The claim with ticket number {ticket_number} has been solved"
-#
-#     notification = JnotificacionesSerilaizer(
-#         data=notification_dic,
-#         context={"request": request}
-#     )
-#
-#     notification.is_valid(raise_exception=True)
-#     notification.save()
-#
-#     if len(tracker_dic) > 1:
-#         track = JseguimientostareasSerializer(
-#             data=tracker_dic,
-#             context={"request": request}
-#         )
-#
-#         track.is_valid(raise_exception=True)
-#         track.save()
+
 def create_notification_new_claim(response, request):
     ticket_updated = response.data
     ticket_number = ticket_updated["idtarea"]
@@ -95,8 +41,23 @@ def create_notification(response, request):
 
     if state == 3:
         handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
+        # Giving format to the data and sending the email after create a claim
+        tarea_email = Vemailnotificaciones.objects.get(tarea=ticket_number)
+        tarea_email = VemailnotificacionesSerializer(tarea_email)
+
+        try:
+            send_email(tarea_email.data, "assign_ticket_email")
+        except Exception as e:
+            raise APIException(f"The following error occurred, {e}")
+
     elif state == 6:
         handle_resolution_notification(notification_dic, ticket_updated, ticket_number)
+
+    elif state == 8:
+        tarea_email = Vtareasemail.objects.get(idtarea=ticket_number)
+        tarea_email = VtareasemailSerializer(tarea_email)
+        tarea_email_data = tarea_email.data
+        send_email(tarea_email_data, "rejection_ticket_email")
 
     create_notification_entry(notification_dic, request)
     if len(tracker_dic) > 1:

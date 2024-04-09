@@ -2,6 +2,8 @@ import uuid
 import socket
 import requests
 from rest_framework import viewsets, status
+from rest_framework.exceptions import APIException
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 
 
@@ -43,7 +45,44 @@ class BaseViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.status = False
+        if hasattr(instance, 'is_active'):
+            instance.is_active = False
+        else:
+            instance.status = False
         instance.save()
         instance_data = self.get_serializer(instance)
         return Response(instance_data.data, status=status.HTTP_202_ACCEPTED)
+
+
+class BaseRetrieveView(RetrieveAPIView):
+    """
+    Base class for retrieval views.
+    """
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        return Response(
+            {
+                "message": "success",
+                "data": response.data
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+def get_query_by_id(parm_name, param_value, model):
+    """
+    Gets the query that matches a specific id in the model.
+    :param parm_name: str
+    :param param_value: str
+    :param model: ORM object
+    :return: a set of objects
+    """
+
+    if param_value is None or param_value == "":
+        raise APIException(f"{parm_name} not provided")
+
+    objects_retrieved = model.objects.filter(**{parm_name: param_value})
+
+    if not objects_retrieved:
+        raise APIException(f"There was not found record with this id {param_value}")
+    return objects_retrieved

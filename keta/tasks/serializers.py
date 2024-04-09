@@ -10,6 +10,7 @@ from .models import (
     Vtareas,
     Vtareasemail,
     Vtareasrechazadas,
+    Vemailnotificaciones,
 )
 
 
@@ -50,6 +51,12 @@ class VtareasSerializer(serializers.ModelSerializer):
 class VtareasemailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vtareasemail
+        fields = "__all__"
+
+
+class VemailnotificacionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vemailnotificaciones
         fields = "__all__"
 
 

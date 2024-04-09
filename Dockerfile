@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu
+FROM ubuntu:latest
 
 # Set environment variable to prevent buffering of Python's standard output
 ENV PYTHONUNBUFFERED=1
@@ -53,6 +53,9 @@ RUN pip install -r requirements.txt
 # Set the working directory
 WORKDIR /var/www/html
 
+# Permissions for temp files in the docker
+RUN chmod 703 /var/www/html
+
 # Copy your project files
 COPY keta  .
 
@@ -61,6 +64,6 @@ COPY site-config.conf /etc/apache2/sites-available/000-default.conf
 
 #EXPOSE 8000
 
-# Expose ports and start Apache
+## Expose ports and start Apache
 EXPOSE 80 3500
 CMD ["apache2ctl", "-D", "FOREGROUND"]

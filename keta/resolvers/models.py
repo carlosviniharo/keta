@@ -15,9 +15,9 @@ class Jclasificacionesresoluciones(models.Model):
 
     class Meta:
         db_table = "jclasificacionesresoluciones"
-    
+
     objects = models.Manager()
-    
+
     def __str__(self):
         return self.descripcionclasificacion
 
@@ -70,7 +70,7 @@ class Jresoluciones(models.Model):
     class Meta:
         db_table = "jresoluciones"
         unique_together = ("idtarea",)
-    
+
     objects = models.Manager()
 
     def __str__(self):
@@ -107,6 +107,7 @@ class Jvaloresresoluciones(models.Model):
 
 class Vresoluciones(models.Model):
     idtarea = models.IntegerField(primary_key=True)
+    codigo = models.CharField()
     idresolucion = models.IntegerField()
     fullname = models.CharField()
     emailcliente = models.CharField()
@@ -117,17 +118,17 @@ class Vresoluciones(models.Model):
     descripcionresolucion = models.CharField()
     tickettype = models.CharField()
     date = models.DateTimeField()
-    
+
     class Meta:
         managed = False
         db_table = "vresoluciones"
 
     objects = models.Manager()
-    
+
     def __str__(self):
         return self.idresolucion
-    
-    
-    
-    
+
+
+
+
 

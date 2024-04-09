@@ -12,6 +12,8 @@ from .views import (
     JarchivosCreateView,
     JarchivosViewSet,
     VtareasrechazadasListView,
+    VtaskListView,
+    GenerateExcelView,
 )
 
 router = DefaultRouter()
@@ -44,6 +46,11 @@ urlpatterns = [
         name="vtareas-list"
     ),
     path(
+        "allTasks/",
+        VtaskListView.as_view(),
+        name="alltasks-list"
+    ),
+    path(
         "archivoslist/",
         JarchivosListView.as_view(),
         name="archivos-list"
@@ -57,5 +64,10 @@ urlpatterns = [
         "createarchivos/",
         JarchivosCreateView.as_view(),
         name="archivos-create"
+    ),
+    path(
+        "generateExcel/",
+        GenerateExcelView.as_view(),
+        name="generate-excel"
     ),
 ]

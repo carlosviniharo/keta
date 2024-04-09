@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 
-from .utils.helper import BaseViewSet
+from .utils.helper import BaseViewSet, BaseRetrieveView, get_query_by_id
 
 from .serializers import (
     JusuariosSerializer,
@@ -46,9 +46,10 @@ from .models import (
 
 
 # Views for registering users and persons
-class JusuariosViewSet(viewsets.ModelViewSet):
+class JusuariosViewSet(BaseViewSet):
     queryset = Jusuarios.objects.all()
     serializer_class = JusuariosSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         persona_serializer = JpersonasSerializer(
@@ -89,10 +90,30 @@ class JusuariosViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    def update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        newpassword = serializer.validated_data.pop("password", None)
 
-class JpersonasViewSet(viewsets.ModelViewSet):
+        if newpassword:
+            instance.set_password(newpassword)
+            instance.save()
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class JpersonasViewSet(BaseViewSet):
     queryset = Jpersonas.objects.all()
     serializer_class = JpersonasSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -181,6 +202,14 @@ class JsucursalesViewSet(viewsets.ModelViewSet):
     serializer_class = JsucursalesSerializer
 
 
+class BranchesByCorporationView(ListAPIView):
+    serializer_class = JsucursalesSerializer
+
+    def get_queryset(self):
+        idcorporacion = self.request.query_params.get("idcorporacion")
+        return get_query_by_id("idcorporacion", idcorporacion, Jsucursales)
+
+
 class JtiposidentificacionesViewSet(viewsets.ModelViewSet):
     queryset = Jtiposidentificaciones.objects.all()
     serializer_class = JtiposidentificacionesSerializer
@@ -247,13 +276,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
 
 
-# TODO: Implement token pruning mechanism to clean up the blacklist. Tokens
-#  from logged-out users are added to the blacklist, which can grow large
-#  over time.To prevent performance issues and optimize database usage,
-#  periodically remove expired tokens.Use a scheduled task to run at
-#  regular intervals for this cleanup.
-
-
+# TODO: Implement token pruning mechanism to clean up the blacklist.
 class CustomLogoutView(APIView):
     """
     An endpoint to logout users.
@@ -281,8 +304,14 @@ class VusuariosReportView(ListAPIView):
     serializer_class = VusuariosSerializer
 
 
+class VusuariosActiveView(ListAPIView):
+    serializer_class = VusuariosSerializer
+
+    def get_queryset(self):
+        return Vusuarios.objects.filter(is_active=True)
+
+
 class VusuariosAsignationView(ListAPIView):
-    
     serializer_class = VusuariosSerializer
     
     def get_queryset(self):
@@ -301,5 +330,10 @@ class VusuariosAsignationView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-        
+
+
+class VusersIdView(BaseRetrieveView):
+    serializer_class = VusuariosSerializer
+    queryset = Vusuarios.objects.all()
+    # permission_classes = (IsAuthenticated,)
     
