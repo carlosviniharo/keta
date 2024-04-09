@@ -5,26 +5,27 @@ from rest_framework.exceptions import APIException
 
 
 def build_json(data, typeemial):
+    request_body = {}
 
     if typeemial == "create_ticket_email":
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From": "saludos@jakaysa.com",
+                "From": "notificacioes@jakaysa.com",
                 "To": {"Email": [data["emailcliente"]]},
                 "Message": {
                     "Subject": "Cooperativa PalanquinTio notificaciones",
                     "Classification": "C",
-                    "BasedOn": {"Id": "1", "Type": "Template"},
+                    "BasedOn": {"Id": "3", "Type": "Template"},
                     "Body": {
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "NOMBRE", "Value": f"{data['fullname']}"},
-                            {"Name": "IDTICKET", "Value": data["idtarea"]},
-                            {"Name": "FECHA", "Value": data["date"]},
-                            {"Name": "AGENCIA", "Value": data["agency"]},
-                            {"Name": "TIPORECLAMO", "Value": data["tickettype"]}
+                            {"Name": "fullname", "Value": f"{data['fullname']}"},
+                            {"Name": "codigo", "Value": data["codigo"]},
+                            {"Name": "date", "Value": data["date"]},
+                            {"Name": "agency", "Value": data["agency"]},
+                            {"Name": "tickettype", "Value": data["tickettype"]}
                         ]
                     },
                     # "Attachment": [
@@ -50,24 +51,24 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "saludos@jakaysa.com",
+                "From":  "notificacioes@jakaysa.com",
                 "To": {"Email": [str(data["email_asignado"])]},
                 "Message": {
                     "Subject": "Nuevo Ticket Asignado",
                     "Classification": "C",
-                    "BasedOn": {"Id": "7", "Type": "Template"},
+                    "BasedOn": {"Id": "2", "Type": "Template"},
                     "Body": {
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "TECNICO", "Value": "nombres_tecnico"},
-                            {"Name": "IDTICKET", "Value":  "codigo"},
-                            {"Name": "TITULO", "Value": "titulo_tarea"},
-                            {"Name": "PRIORIDAD", "Value": "prioridad"},
-                            {"Name": "TIPORECLAMO", "Value":  "tipo_ticket"},
-                            {"Name": "FECHA", "Value": "fechaentrega"},
-                            {"Name": "ASIGNADOR", "Value": "nombres_asignador"},
-                            {"Name": "CARGOASIGNADOR", "Value": "cargo_asignador"}
+                            {"Name": "nombres_tecnico", "Value": "nombres_tecnico"},
+                            {"Name": "codigo", "Value":  "codigo"},
+                            {"Name": "titulo_tarea", "Value": "titulo_tarea"},
+                            {"Name": "prioridad", "Value": "prioridad"},
+                            {"Name": "tipo_ticket", "Value":  "tipo_ticket"},
+                            {"Name": "fechaentrega", "Value": "fechaentrega"},
+                            {"Name": "nombres_asignador", "Value": "nombres_asignador"},
+                            {"Name": "cargo_asignador", "Value": "cargo_asignador"}
                         ]
                     },
                     # "Attachment": [
@@ -93,24 +94,23 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "saludos@jakaysa.com",
+                "From":  "notificacioes@jakaysa.com",
                 "To": {"Email": [str(data["email_asignador"])]},
                 "Message": {
                     "Subject": "Ticket Rechazado",
                     "Classification": "C",
-                    "BasedOn": {"Id": "7", "Type": "Template"},
+                    "BasedOn": {"Id": "5", "Type": "Template"},
                     "Body": {
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "ASIGNADOR", "Value": "nombres_asignador"},
-                            {"Name": "IDTICKET", "Value":  "codigo"},
-                            {"Name": "DETALLES", "Value": "detalles_rechazo"},
-                            {"Name": "PRIORIDAD", "Value": "prioridad"},
-                            {"Name": "FECHA", "Value": "max_fechacreacion"},
-                            {"Name": "TECNICO", "Value": "nombres_tecnico"},
-                            {"Name": "EMAIL", "Value": "email_asignado"},
-                            {"Name": "CARGO", "Value": "cargo_asignado"}
+                            {"Name": "nombres_asignador", "Value": "nombres_asignador"},
+                            {"Name": "codigo", "Value":  "codigo"},
+                            {"Name": "max_fechacreacion", "Value": "max_fechacreacion"},
+                            {"Name": "detalles_rechazo", "Value": "detalles_rechazo"},
+                            {"Name": "nombres_tecnico", "Value": "nombres_tecnico"},
+                            {"Name": "email_asignado", "Value": "email_asignado"},
+                            {"Name": "cargo_asignado", "Value": "cargo_asignado"}
                         ]
                     },
                     # "Attachment": [
@@ -132,25 +132,25 @@ def build_json(data, typeemial):
             }
         }
 
-    else:
+    elif typeemial == "resolution_ticket_email":
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "saludos@jakaysa.com",
+                "From":  "notificacioes@jakaysa.com",
                 "To": {"Email": [str(data["emailcliente"])]},
                 "Message": {
                     "Subject": "Cooperativa PilahuinTio notificaciones",
                     "Classification": "C",
-                    "BasedOn": {"Id": "7", "Type": "Template"},
+                    "BasedOn": {"Id": "4", "Type": "Template"},
                     "Body": {
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "NOMBRE", "Value": "Example"},
-                            {"Name": "IDTICKET", "Value": "Example"},
-                            {"Name": "FECHA", "Value": "Example"},
-                            {"Name": "AGENCIA", "Value": "Example"},
-                            {"Name": "TIPORECLAMO", "Value": "Example"}
+                            {"Name": "fullname", "Value": "fullname"},
+                            {"Name": "codigo", "Value": "codigo"},
+                            {"Name": "fecharesolucion", "Value": "fecharesolucion"},
+                            {"Name": "agency", "Value": "agency"},
+                            {"Name": "tickettype", "Value": "tickettype"}
                         ]
                     },
                     # "Attachment": [
