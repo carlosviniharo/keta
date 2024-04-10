@@ -53,11 +53,11 @@ RUN pip install -r requirements.txt
 # Set the working directory
 WORKDIR /var/www/html
 
-# Permissions for temp files in the docker
-RUN chmod 703 /var/www/html
-
 # Copy your project files
 COPY keta  .
+
+# Permissions for temp files in the docker
+RUN chmod 703 /var/www/html
 
 # Copy Apache configuration
 COPY site-config.conf /etc/apache2/sites-available/000-default.conf
