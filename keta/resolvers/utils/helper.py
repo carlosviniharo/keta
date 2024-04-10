@@ -3,6 +3,8 @@ import requests
 from decouple import config
 from rest_framework.exceptions import APIException
 
+from reports.utils.helper import format_date
+
 
 def build_json(data, typeemial):
     request_body = {}
@@ -11,7 +13,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From": "notificacioes@jakaysa.com",
+                "From": "notificaciones@jakaysa.com",
                 "To": {"Email": [data["emailcliente"]]},
                 "Message": {
                     "Subject": "Cooperativa PalanquinTio notificaciones",
@@ -51,7 +53,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificacioes@jakaysa.com",
+                "From":  "notificaciones@jakaysa.com",
                 "To": {"Email": [str(data["email_asignado"])]},
                 "Message": {
                     "Subject": "Nuevo Ticket Asignado",
@@ -61,14 +63,14 @@ def build_json(data, typeemial):
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "nombres_tecnico", "Value": "nombres_tecnico"},
-                            {"Name": "codigo", "Value":  "codigo"},
-                            {"Name": "titulo_tarea", "Value": "titulo_tarea"},
-                            {"Name": "prioridad", "Value": "prioridad"},
-                            {"Name": "tipo_ticket", "Value":  "tipo_ticket"},
-                            {"Name": "fechaentrega", "Value": "fechaentrega"},
-                            {"Name": "nombres_asignador", "Value": "nombres_asignador"},
-                            {"Name": "cargo_asignador", "Value": "cargo_asignador"}
+                            {"Name": "nombres_tecnico", "Value": data["nombres_tecnico"]},
+                            {"Name": "codigo", "Value":  data["codigo"]},
+                            {"Name": "titulo_tarea", "Value": data["titulo_tarea"]},
+                            {"Name": "prioridad", "Value": data["prioridad"]},
+                            {"Name": "tipo_ticket", "Value":  data["tipo_ticket"]},
+                            {"Name": "fechaentrega", "Value": format_date(data["fechaentrega"])},
+                            {"Name": "nombres_asignador", "Value": data["nombres_asignador"]},
+                            {"Name": "cargo_asignador", "Value": data["cargo_asignador"]}
                         ]
                     },
                     # "Attachment": [
@@ -94,7 +96,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificacioes@jakaysa.com",
+                "From":  "notificaciones@jakaysa.com",
                 "To": {"Email": [str(data["email_asignador"])]},
                 "Message": {
                     "Subject": "Ticket Rechazado",
@@ -104,13 +106,13 @@ def build_json(data, typeemial):
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "nombres_asignador", "Value": "nombres_asignador"},
-                            {"Name": "codigo", "Value":  "codigo"},
-                            {"Name": "max_fechacreacion", "Value": "max_fechacreacion"},
-                            {"Name": "detalles_rechazo", "Value": "detalles_rechazo"},
-                            {"Name": "nombres_tecnico", "Value": "nombres_tecnico"},
-                            {"Name": "email_asignado", "Value": "email_asignado"},
-                            {"Name": "cargo_asignado", "Value": "cargo_asignado"}
+                            {"Name": "nombres_asignador", "Value": data["nombres_asignador"]},
+                            {"Name": "codigo", "Value":  data["codigo"]},
+                            {"Name": "max_fechacreacion", "Value": format_date(data["max_fechacreacion"])},
+                            {"Name": "detalles_rechazo", "Value": data["detalles_rechazo"]},
+                            {"Name": "nombres_tecnico", "Value": data["nombres_tecnico"]},
+                            {"Name": "email_asignado", "Value": data["email_asignado"]},
+                            {"Name": "cargo_asignado", "Value": data["cargo_asignado"]}
                         ]
                     },
                     # "Attachment": [
@@ -136,7 +138,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificacioes@jakaysa.com",
+                "From":  "notificaciones@jakaysa.com",
                 "To": {"Email": [str(data["emailcliente"])]},
                 "Message": {
                     "Subject": "Cooperativa PilahuinTio notificaciones",
@@ -146,11 +148,11 @@ def build_json(data, typeemial):
                         "Format": "html",
                         "Value": "obligatorio",
                         "Variables": [
-                            {"Name": "fullname", "Value": "fullname"},
-                            {"Name": "codigo", "Value": "codigo"},
-                            {"Name": "fecharesolucion", "Value": "fecharesolucion"},
-                            {"Name": "agency", "Value": "agency"},
-                            {"Name": "tickettype", "Value": "tickettype"}
+                            {"Name": "fullname", "Value": data["fullname"]},
+                            {"Name": "codigo", "Value": data["codigo"]},
+                            {"Name": "fecharesolucion", "Value": data["date"]},
+                            {"Name": "agency", "Value": data["agency"]},
+                            {"Name": "tickettype", "Value": data["tickettype"]}
                         ]
                     },
                     # "Attachment": [

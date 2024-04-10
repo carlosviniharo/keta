@@ -1059,6 +1059,7 @@ AS SELECT tsk.idtarea AS tarea,
     prio.descripcionprioridad AS prioridad,
     est.descripcionestado AS estado,
     tsk.indicador,
+    tptck.descripciontipoticket AS tipo_ticket,
     tsk.tareaprincipal,
     latest.detalleresolucion AS detalles_rechazo,
     latest.max_fechacreacion

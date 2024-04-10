@@ -290,6 +290,7 @@ class Vemailnotificaciones(models.Model):
     prioridad = models.CharField()
     estado = models.CharField()
     indicador = models.CharField(max_length=1)
+    tipo_ticket = models.CharField()
     tareaprincipal = models.BooleanField()
     detalles_rechazo = models.CharField()
     max_fechacreacion = models.DateTimeField()

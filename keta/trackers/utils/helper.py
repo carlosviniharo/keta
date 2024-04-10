@@ -53,12 +53,6 @@ def create_notification(response, request):
     elif state == 6:
         handle_resolution_notification(notification_dic, ticket_updated, ticket_number)
 
-    elif state == 8:
-        tarea_email = Vtareasemail.objects.get(idtarea=ticket_number)
-        tarea_email = VtareasemailSerializer(tarea_email)
-        tarea_email_data = tarea_email.data
-        send_email(tarea_email_data, "rejection_ticket_email")
-
     create_notification_entry(notification_dic, request)
     if len(tracker_dic) > 1:
         create_tracker_entry(tracker_dic, request)

@@ -236,6 +236,15 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=data_task, partial=partial)
         serializer.is_valid(raise_exception=True)
 
+        if update_assignment == 8 or update_assignment == 2:
+            tarea_email = Vemailnotificaciones.objects.get(tarea=instance.idtarea)
+            tarea_email = VemailnotificacionesSerializer(tarea_email)
+
+            try:
+                send_email(tarea_email.data, "rejection_ticket_email")
+            except Exception as e:
+                raise APIException(f"The following error occurred, {e}")
+
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):
