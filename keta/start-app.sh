@@ -23,6 +23,6 @@ initialize_django
 
 # Start Django
 ## Uncomment the appropriate line based on your preference.
-#apache2ctl -D FOREGROUND
+apache2ctl -D FOREGROUND
 # OR
 #python manage.py runserver 0.0.0.0:8000
