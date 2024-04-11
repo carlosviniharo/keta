@@ -207,4 +207,4 @@ def send_email(data_email, typeemial):
         # Success in sending the email
         print(response.status_code)
     else:
-        print(response.status_code)
+        raise APIException(f"Response code {response.status_code} and auth_header = {usermaster}:{password}")

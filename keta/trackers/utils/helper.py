@@ -28,6 +28,7 @@ def create_notification_new_claim(response, request):
 
 def create_notification(response, request):
     ticket_updated = response.data
+    ticket_request = request.data
     ticket_number = ticket_updated["idtarea"]
 
     notification_dic = {
@@ -37,10 +38,10 @@ def create_notification(response, request):
         "idtarea": ticket_updated["url"],
     }
 
-    state = get_ticket_state(ticket_updated)
+    state = get_ticket_state(ticket_request)
 
     if state == 3:
-        handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic)
+        handle_assignation_notification(notification_dic, ticket_request, ticket_number, tracker_dic)
         # Giving format to the data and sending the email after create a claim
         tarea_email = Vemailnotificaciones.objects.get(tarea=ticket_number)
         tarea_email = VemailnotificacionesSerializer(tarea_email)
@@ -52,6 +53,9 @@ def create_notification(response, request):
 
     elif state == 6:
         handle_resolution_notification(notification_dic, ticket_updated, ticket_number)
+
+    elif state == 2 or state == 8:
+        pass
 
     create_notification_entry(notification_dic, request)
     if len(tracker_dic) > 1:
@@ -78,20 +82,20 @@ def handle_creation_notification(notification_dic, ticket_updated, ticket_number
     })
 
 
-def handle_assignation_notification(notification_dic, ticket_updated, ticket_number, tracker_dic):
+def handle_assignation_notification(notification_dic, ticket_request, ticket_number, tracker_dic):
     notification_dic.update({
         "notification_type": "Assignation Notification",
-        "idusuario": ticket_updated["idusuarioasignado"],
+        "idusuario": ticket_request["idusuarioasignado"],
         "message": f"The claim with ticket number {ticket_number} has been assigned to you"
     })
 
-    user_id = int(ticket_updated['idusuarioasignado'].split('/')[-2])
+    user_id = int(ticket_request['idusuarioasignado'].split('/')[-2])
     user_assigned = get_object_or_404(Jusuarios, idusuario=user_id)
 
     tracker_dic.update({
         "tituloseguimientotarea": "Assignacion de Tarea",
         "detalleresolucion": f"El reclamo numero {ticket_number} ha sido asignado a {user_assigned.email}",
-        "idusuario": ticket_updated["idusuarioqasigno"]
+        "idusuario": ticket_request["idusuarioqasigno"]
     })
 
 

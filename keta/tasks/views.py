@@ -247,12 +247,12 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
 
         self.perform_update(serializer)
 
+        create_notification(serializer, request)
+
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
-
-        create_notification(serializer, request)
 
         return Response(serializer.data)
 
