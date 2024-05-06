@@ -244,9 +244,9 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
                 send_email(tarea_email.data, "rejection_ticket_email")
             except Exception as e:
                 raise APIException(f"The following error occurred, {e}")
-
+        
         self.perform_update(serializer)
-
+        
         create_notification(serializer, request)
 
         if getattr(instance, '_prefetched_objects_cache', None):
@@ -304,7 +304,7 @@ class JtareasticketViewSet(viewsets.ModelViewSet):
             tarea_email = VemailnotificacionesSerializer(tarea_email)
 
             try:
-                send_email(tarea_email, "assign_ticket_email")
+                send_email(tarea_email.data, "assign_ticket_email")
             except Exception as e:
                 raise APIException(f"The following error occurred, {e}")
 

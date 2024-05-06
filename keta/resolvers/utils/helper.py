@@ -13,10 +13,10 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From": "notificaciones@jakaysa.com",
+                "From": "notificaciones@pilahuintio.fin.ec",
                 "To": {"Email": [data["emailcliente"]]},
                 "Message": {
-                    "Subject": "Cooperativa PalanquinTio notificaciones",
+                    "Subject": "Cooperativa PilahuinTio notificaciones",
                     "Classification": "C",
                     "BasedOn": {"Id": "3", "Type": "Template"},
                     "Body": {
@@ -53,7 +53,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificaciones@jakaysa.com",
+                "From":  "notificaciones@pilahuintio.fin.ec",
                 "To": {"Email": [str(data["email_asignado"])]},
                 "Message": {
                     "Subject": "Nuevo Ticket Asignado",
@@ -96,7 +96,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificaciones@jakaysa.com",
+                "From":  "notificaciones@pilahuintio.fin.ec",
                 "To": {"Email": [str(data["email_asignador"])]},
                 "Message": {
                     "Subject": "Ticket Rechazado",
@@ -138,7 +138,7 @@ def build_json(data, typeemial):
         request_body = {
             "GeneralData": {
                 "FromName": "Cooperativa PilahuinTio",
-                "From":  "notificaciones@jakaysa.com",
+                "From":  "notificaciones@pilahuintio.fin.ec",
                 "To": {"Email": [str(data["emailcliente"])]},
                 "Message": {
                     "Subject": "Cooperativa PilahuinTio notificaciones",

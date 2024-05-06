@@ -10,19 +10,20 @@ wait_for_postgresql() {
 
 # Function to initialize Django.
 initialize_django() {
-    python manage.py makemigrations
-    python manage.py migrate
-    python manage.py collectstatic --noinput
+    /venv/bin/python manage.py makemigrations
+    /venv/bin/python manage.py migrate
+    /venv/bin/python manage.py collectstatic --noinput
 }
 
 # Wait for the Database to be ready.
-wait_for_postgresql
+#wait_for_postgresql
 
 # Initialize Django
 initialize_django
 
 # Start Django
-## Uncomment the appropriate line based on your preference.
-#apache2ctl -D FOREGROUND
+# Uncomment the appropriate line based on your preference.
+source /venv/bin/activate
+apache2ctl -D FOREGROUND
 # OR
- python manage.py runserver 0.0.0.0:8000
+# python manage.py runserver 0.0.0.0:8000
