@@ -599,10 +599,9 @@ INSERT INTO public.jprioridades (codigoprioridad,descripcionprioridad,duracionpr
 --jroles
 
 INSERT INTO public.jroles (nombrerol,descripcionrol,status,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro) VALUES
-	 ('Supervisor','Asigna',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Asistente','Recibe',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Tecnico','Soluciona',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Operador','Distribuye',true,'2023-09-27 12:54:14.76141-05','2023-09-27 12:54:14.76141-05','186.101.18.252',NULL,'2023-09-27 12:54:14.229349-05');
+	 ('Supervisor','Asigna - Distribuye',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
+	 ('Asistente','Recibe',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
+	 ('Ejecutivo','Soluciona',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL);
 
 UPDATE public.jroles SET status= TRUE;
 
