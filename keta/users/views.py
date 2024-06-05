@@ -315,7 +315,7 @@ class VusuariosAsignationView(ListAPIView):
     serializer_class = VusuariosSerializer
     
     def get_queryset(self):
-        return Vusuarios.objects.filter(rol__in=["Supervisor", "Tecnico"])
+        return Vusuarios.objects.filter(rol__in=["Supervisor", "Ejecutivo"])
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
