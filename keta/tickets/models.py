@@ -3,6 +3,8 @@ from django.db import models
 from encrypted_field.fields import EncryptedField
 from users.models import Jusuarios, Jpersonas, Jsucursales, Jdepartamentos
 from .utils.helper import generate_ticket_id
+from django.utils.timezone import now
+from datetime import timedelta
 
 
 class Jcanalesrecepciones(models.Model):
@@ -276,6 +278,7 @@ class Jproblemas(models.Model):
     objects = models.Manager()
 
     def save(self, *args, **kwargs):
+        time_threshold = now() - timedelta(minutes=10)
         existing_instances = Jproblemas.objects.filter(
             idtipotransaccion=self.idtipotransaccion,
             idtipocomentario=self.idtipocomentario,
@@ -283,6 +286,7 @@ class Jproblemas(models.Model):
             idtipoticket=self.idtipoticket,
             idprioridad=self.idprioridad,
             monto=self.monto,
+            fecharegistro__gte=time_threshold
         ).exclude(pk=self.pk)
 
         if existing_instances.exists():
