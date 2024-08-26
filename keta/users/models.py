@@ -156,6 +156,7 @@ class Jpersonas(models.Model):
     direccion = models.CharField(max_length=500, null=False)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     extension = models.CharField(max_length=10, blank=True, null=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         db_table = "jpersonas"
@@ -346,17 +347,38 @@ class Vusuarios(models.Model):
     idusuario = models.IntegerField(primary_key=True)
     nombres = models.CharField()
     apellidos = models.CharField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    fechamodificacion = models.DateTimeField()
     email = models.EmailField()
-    rol = models.CharField()
-    sucursal = models.CharField()
-    departamento = models.CharField()
+    username = models.CharField()
+    last_login = models.DateTimeField()
+    idcargo = models.IntegerField()
     cargo = models.CharField()
-
-    objects = models.Manager()
+    iddepartamento = models.IntegerField()
+    departamento = models.CharField()
+    idsucursal = models.IntegerField()
+    sucursal = models.CharField()
+    idpersona = models.IntegerField()
+    identificacion = models.CharField()
+    celular = models.CharField()
+    telefono = models.CharField()
+    extension = models.CharField()
+    direccion = models.CharField()
+    idgenero = models.IntegerField()
+    descripciongenero = models.CharField()
+    idtipoidentificacion = models.IntegerField()
+    descripciontipoidentificacion = models.CharField()
+    idtipopersona = models.IntegerField()
+    descripciontipopersona = models.CharField()
+    idrol = models.IntegerField()
+    rol = models.CharField()
 
     class Meta:
         managed = False
         db_table = "vusers"
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.nombres

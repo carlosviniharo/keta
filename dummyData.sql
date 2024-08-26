@@ -181,71 +181,71 @@ INSERT INTO public.jcorporaciones (nombrecorporacion,descripcioncorporacion,repr
 --jdepartamentos
 
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040001','GERENCIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040002','SUBGERENCIA OPERATIVA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040003','DIRECCIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040004','JURIDICO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040005','AUDITORIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040006','CUMPLIMIENTO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040007','RIESGOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040009','FINANCIERO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040010','PROCESOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1);
+	 ('G040001','GERENCIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040002','SUBGERENCIA OPERATIVA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040003','DIRECCIONES',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040004','JURIDICO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040005','AUDITORIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040006','CUMPLIMIENTO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040007','RIESGOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040009','FINANCIERO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040010','PROCESOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040011','SISTEMAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040012','CREDITOS Y COBRANZAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040013','MARKETING',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040014','SERVICIOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040015','CAJAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040016','MENSAJERIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040017','RECURSOS HUMANOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040018','CALL CENTER',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040019','COACTIVAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040020','SEGURIDAD FISICA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1);
+	 ('G040011','SISTEMAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040012','CREDITOS Y COBRANZAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040013','MARKETING',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040014','SERVICIOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040015','CAJAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040016','MENSAJERIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040017','RECURSOS HUMANOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040018','CALL CENTER',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040019','COACTIVAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040020','SEGURIDAD FISICA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040021','RESPONSABILIDAD SOCIAL',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040022','ACTIVOS FIJOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040023','INVERSIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
-	 ('G040001','GERENCIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040002','SUBGERENCIA OPERATIVA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040003','DIRECCIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040004','JURIDICO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040005','AUDITORIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040006','CUMPLIMIENTO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040007','RIESGOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2);
+	 ('G040021','RESPONSABILIDAD SOCIAL',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040022','ACTIVOS FIJOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040023','INVERSIONES',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',1),
+	 ('G040001','GERENCIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040002','SUBGERENCIA OPERATIVA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040003','DIRECCIONES',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040004','JURIDICO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040005','AUDITORIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040006','CUMPLIMIENTO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040007','RIESGOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040009','FINANCIERO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040010','PROCESOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040011','SISTEMAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040012','CREDITOS Y COBRANZAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040013','MARKETING',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040014','SERVICIOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040015','CAJAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040016','MENSAJERIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040017','RECURSOS HUMANOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2);
+	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040009','FINANCIERO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040010','PROCESOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040011','SISTEMAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040012','CREDITOS Y COBRANZAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040013','MARKETING',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040014','SERVICIOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040015','CAJAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040016','MENSAJERIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040017','RECURSOS HUMANOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040018','CALL CENTER',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040019','COACTIVAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040020','SEGURIDAD FISICA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040021','RESPONSABILIDAD SOCIAL',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040022','ACTIVOS FIJOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040023','INVERSIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
-	 ('G040001','GERENCIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040002','SUBGERENCIA OPERATIVA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040003','DIRECCIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040004','JURIDICO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3);
+	 ('G040018','CALL CENTER',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040019','COACTIVAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040020','SEGURIDAD FISICA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040021','RESPONSABILIDAD SOCIAL',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040022','ACTIVOS FIJOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040023','INVERSIONES',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',2),
+	 ('G040001','GERENCIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040002','SUBGERENCIA OPERATIVA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040003','DIRECCIONES',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040004','JURIDICO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
-	 ('G040005','AUDITORIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040006','CUMPLIMIENTO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040007','RIESGOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040009','FINANCIERO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040010','PROCESOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040011','SISTEMAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040012','CREDITOS Y COBRANZAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040013','MARKETING',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
-	 ('G040014','SERVICIOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3);
+	 ('G040005','AUDITORIA',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040006','CUMPLIMIENTO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040007','RIESGOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040009','FINANCIERO',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040010','PROCESOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040011','SISTEMAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040012','CREDITOS Y COBRANZAS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040013','MARKETING',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
+	 ('G040014','SERVICIOS',TRUE,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3);
 INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
 	 ('G040015','CAJAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
 	 ('G040016','MENSAJERIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',3),
@@ -484,6 +484,34 @@ INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,
 	 ('G040021','RESPONSABILIDAD SOCIAL',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',12),
 	 ('G040022','ACTIVOS FIJOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',12),
 	 ('G040023','INVERSIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',12);
+INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
+     ('G040001','GERENCIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040002','SUBGERENCIA OPERATIVA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040003','DIRECCIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040004','JURIDICO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040005','AUDITORIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040006','CUMPLIMIENTO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040007','RIESGOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13);
+INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
+	 ('G040008','JEFATURAS Y SUPERVISORES AGENCIAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040009','FINANCIERO',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040010','PROCESOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040011','SISTEMAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040012','CREDITOS Y COBRANZAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040013','MARKETING',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040014','SERVICIOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040015','CAJAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040016','MENSAJERIA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040017','RECURSOS HUMANOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13);
+INSERT INTO public.jdepartamentos (codigodepartamento,nombredepartamento,status,descripciondepartamento,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idsucursal) VALUES
+	 ('G040018','CALL CENTER',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040019','COACTIVAS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040020','SEGURIDAD FISICA',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040021','RESPONSABILIDAD SOCIAL',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040022','ACTIVOS FIJOS',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13),
+	 ('G040023','INVERSIONES',NULL,'',NULL,NULL,NULL,NULL,'2023-11-17 17:11:36.662762-05',13);
+
+UPDATE public.jdepartamentos SET status= TRUE;
 
 --jestados
 
@@ -503,6 +531,8 @@ INSERT INTO public.jgeneros (codigogenero,descripciongenero,fecharegistro, statu
 	 ('M','Masculino',NULL, TRUE),
 	 ('F','Femenino',NULL, TRUE),
 	 ('N','No aplica',NULL, TRUE);
+
+UPDATE public.jgeneros SET status= TRUE;
 
 --jgeografia
 
@@ -535,6 +565,8 @@ INSERT INTO public.jgeografia (codigogeografia,nombre,nivel,status,fechacreacion
 	 ('23','Santo Domingo De Los Tsachilas',2,NULL,NULL,NULL,NULL,NULL,NULL,1),
 	 ('24','Santa Elena',2,NULL,NULL,NULL,NULL,NULL,NULL,1);
 
+UPDATE public.jgeografia SET status= TRUE;
+
 --jmarcastarjetas
 
 INSERT INTO public.jmarcastarjetas (codigomarcatarjeta,descripcionmarcatarjeta,fecharegistro) VALUES
@@ -545,17 +577,17 @@ INSERT INTO public.jmarcastarjetas (codigomarcatarjeta,descripcionmarcatarjeta,f
 
 --jpersonas
 
-INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension") VALUES
-	 ('0000000000','admin','jakaysa','admin@jakaysa.com','','','OTAVALO','2023-11-22 10:31:49.00421-05',2,1,1,NULL),
-	 ('1600862096','ELVIA YOLANDA','CAMUENDO CASTAÑEDA','ecamuendo@pilahuintio.ec','0991481542','062999040','CALLE MODESTO JARAMILLO','2023-11-20 09:31:24.093006-05',2,1,1,NULL),
-	 ('1720588621','LEYDI YULEIMY','ALBARRAN IPIALES','albarranleydi586@gmail.com','0968966009','062999040','SAN JUAN DE ILUMAN CALLE PRINCIPAL 12','2023-11-20 09:36:27.787237-05',2,1,1,NULL),
-	 ('1004418875','CYNTHIA SUSANA','CALAPI FLORES','cynthi190197@hotmail.com','0959794956','062999040','COMUNIDAD DE SAN IGNACIO','2023-11-20 09:41:25.367425-05',2,1,1,NULL),
-	 ('1004131270','SAMIA YUYARINA','BURGA SANTELLAN','samiaburga@gmail.com','0999840148','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 09:44:53.538166-05',2,1,1,NULL),
-	 ('1003573282','LUCIO TARQUINO','PILLAJO CHIZA','tpillajo10@gmail.com','0994010008','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 10:11:48.122831-05',1,1,1,NULL),
-	 ('1709825978','JAIRO ALFREDO','SANCHEZ MORA','jairo.sanchez@pilahuintio.ec','0999840148','062999040','CDLA. IMABAYA CALLE GENERAL RAMON VOZ MEDIANO','2023-11-20 10:16:55.059344-05',1,1,1,NULL),
-	 ('1600710576','CHRISTIAN BLADIMIR','SISA MALIZA','csisa@pilahuintio.ec','0995268263','062999040','OTAVALO, CALLE 5','2023-11-22 10:31:49.00421-05',1,1,1,NULL);
-INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension") VALUES
-	 ('1005173776','KATERIN VANESA','GRANDA CABASCANGO','katerin286_@hotmail.com','0968776032','062999040','CALLE PRINCIPAL SUCRE Y MEJIA','2023-11-22 10:31:49.00421-05',2,1,1,NULL);
+INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension", status) VALUES
+	 ('0000000000','admin','jakaysa','admin@jakaysa.com','','','OTAVALO','2023-11-22 10:31:49.00421-05',2,1,1,NULL, True),
+	 ('1600862096','ELVIA YOLANDA','CAMUENDO CASTAÑEDA','ecamuendo@pilahuintio.ec','0991481542','062999040','CALLE MODESTO JARAMILLO','2023-11-20 09:31:24.093006-05',2,1,1,NULL, True),
+	 ('1720588621','LEYDI YULEIMY','ALBARRAN IPIALES','albarranleydi586@gmail.com','0968966009','062999040','SAN JUAN DE ILUMAN CALLE PRINCIPAL 12','2023-11-20 09:36:27.787237-05',2,1,1,NULL, True),
+	 ('1004418875','CYNTHIA SUSANA','CALAPI FLORES','cynthi190197@hotmail.com','0959794956','062999040','COMUNIDAD DE SAN IGNACIO','2023-11-20 09:41:25.367425-05',2,1,1,NULL, True),
+	 ('1004131270','SAMIA YUYARINA','BURGA SANTELLAN','samiaburga@gmail.com','0999840148','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 09:44:53.538166-05',2,1,1,NULL, True),
+	 ('1003573282','LUCIO TARQUINO','PILLAJO CHIZA','tpillajo10@gmail.com','0994010008','062999040','BARRIO CARDON BAJO CALLE PRINCIPAL 13','2023-11-20 10:11:48.122831-05',1,1,1,NULL, True),
+	 ('1709825978','JAIRO ALFREDO','SANCHEZ MORA','jairo.sanchez@pilahuintio.ec','0999840148','062999040','CDLA. IMABAYA CALLE GENERAL RAMON VOZ MEDIANO','2023-11-20 10:16:55.059344-05',1,1,1,NULL, True),
+	 ('1600710576','CHRISTIAN BLADIMIR','SISA MALIZA','csisa@pilahuintio.ec','0995268263','062999040','OTAVALO, CALLE 5','2023-11-22 10:31:49.00421-05',1,1,1,NULL, True);
+INSERT INTO public.jpersonas (identificacion,nombre,apellido,emailcliente,celular,telefono,direccion,fecharegistro,idgenero,idtipoidentificacion,idtipopersona,"extension", status) VALUES
+	 ('1005173776','KATERIN VANESA','GRANDA CABASCANGO','katerin286_@hotmail.com','0968776032','062999040','CALLE PRINCIPAL SUCRE Y MEJIA','2023-11-22 10:31:49.00421-05',2,1,1,NULL, True);
 
 --jprioridades
 
@@ -567,27 +599,29 @@ INSERT INTO public.jprioridades (codigoprioridad,descripcionprioridad,duracionpr
 --jroles
 
 INSERT INTO public.jroles (nombrerol,descripcionrol,status,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro) VALUES
-	 ('Supervisor','Asigna',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Asistente','Recibe',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Tecnico','Soluciona',NULL,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
-	 ('Operador','Distribuye',true,'2023-09-27 12:54:14.76141-05','2023-09-27 12:54:14.76141-05','186.101.18.252',NULL,'2023-09-27 12:54:14.229349-05');
+	 ('Supervisor','Asigna - Distribuye',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
+	 ('Asistente','Recibe',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL),
+	 ('Ejecutivo','Soluciona',True,'2023-07-31 16:35:30.416854-05',NULL,NULL,NULL,NULL);
+
+UPDATE public.jroles SET status= TRUE;
 
 --jsucursales
 
 INSERT INTO public.jsucursales (codigosucursal,nombresucursal,descripcionsucursal,direccionsucursal,telefonosucursal,status,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idcorporacion,idpais) VALUES
-	 ('1','MATRIZ OTAVALO',NULL,'SUCRE 1212 Entre Morales y Salinas','062999040',NULL,'2023-07-31 16:34:45.745452-05',NULL,NULL,NULL,'2023-11-16 12:18:33.651777-05',1,11),
-	 ('2','AGENCIA IBARRA','','Jaime Rivadeneira 680 y Mariano Acosta','062642780',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.076861-05',1,11),
-	 ('3','AGENCIA ATUNTAQUI','','Calle Olmedo sn Entre Bolivar y Pasaje Julio Lopez','062910000',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.092924-05',1,11),
-	 ('4','SUCURSAL TULCAN','','Bolivar sn y Panamá','062981285',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.109299-05',1,11),
-	 ('5','AGENCIA QUITO CARAPUNGO','','Av. Padre Luis Vaccari  N14-147 y Rio Villorita','(02) 2010 013 / (02)2428 394',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.12384-05',1,11),
-	 ('6','AGENCIA QUITO CENTRO','','PASAJE SUCRE ENTRE GARCÍA MORENO Y VENEZUELA','022954582',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.136136-05',1,11),
-	 ('7','AGENCIA CAYAMBE','','Sucre OEO 44 y Rocafuerte','',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.149348-05',1,11),
-	 ('8','AGENCIA  TUMBACO','','Juan Montalvo S1-172 y Gonzalo de Vera','022379218',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.404873-05',1,11),
-	 ('9','AGENCIA  SANTO DOMINGO','','Av. De los Tsáchilas 272 y Calle Machala','022750 088',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.418767-05',1,11),
-	 ('10','AGENCIA  PORTOVIEJO','','Av. América  y Reales Tamarindos','052654 913',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.670503-05',1,11);
+	 ('1','MATRIZ OTAVALO',NULL,'SUCRE 1212 Entre Morales y Salinas','062999040',True,'2023-07-31 16:34:45.745452-05',NULL,NULL,NULL,'2023-11-16 12:18:33.651777-05',1,11),
+	 ('2','AGENCIA IBARRA','','Jaime Rivadeneira 680 y Mariano Acosta','062642780',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.076861-05',1,11),
+	 ('3','AGENCIA ATUNTAQUI','','Calle Olmedo sn Entre Bolivar y Pasaje Julio Lopez','062910000',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.092924-05',1,11),
+	 ('4','SUCURSAL TULCAN','','Bolivar sn y Panamá','062981285',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.109299-05',1,5),
+	 ('5','AGENCIA QUITO CARAPUNGO','','Av. Padre Luis Vaccari  N14-147 y Rio Villorita','(02) 2010 013 / (02)2428 394',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.12384-05',1,18),
+	 ('6','AGENCIA QUITO CENTRO','','PASAJE SUCRE ENTRE GARCÍA MORENO Y VENEZUELA','022954582',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.136136-05',1,18),
+	 ('7','AGENCIA CAYAMBE','','Sucre OEO 44 y Rocafuerte','',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.149348-05',1,18),
+	 ('8','AGENCIA  TUMBACO','','Juan Montalvo S1-172 y Gonzalo de Vera','022379218',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.404873-05',1,18),
+	 ('9','AGENCIA  SANTO DOMINGO','','Av. De los Tsáchilas 272 y Calle Machala','022750 088',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.418767-05',1,24),
+	 ('10','AGENCIA  PORTOVIEJO','','Av. América  y Reales Tamarindos','052654 913',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.670503-05',1,14);
 INSERT INTO public.jsucursales (codigosucursal,nombresucursal,descripcionsucursal,direccionsucursal,telefonosucursal,status,fechacreacion,fechamodificacion,ipcreacion,ipmodificacion,fecharegistro,idcorporacion,idpais) VALUES
-	 ('11','AGENCIA  MANTA','','AV 22  y Calle 13','052623 351',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.684278-05',1,11),
-	 ('12','MONTECRISTI','','9 de Junio  y Manta','',NULL,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.709441-05',1,11);
+	 ('11','AGENCIA  MANTA','','AV 22  y Calle 13','052623 351',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.684278-05',1,14),
+	 ('12','MONTECRISTI','','9 de Junio  y Manta','',True,'2023-11-16 12:26:38.914-05',NULL,NULL,NULL,'2023-11-16 12:27:27.709441-05',1,14),
+	 ('13','AGENCIA LAGO AGRIO','','Av. Quito y Nueva Loja','',True,NOW(),NULL,NULL,NULL, NOW(),1,22);
 
 --jtickettipos
 
@@ -671,6 +705,8 @@ INSERT INTO public.jusuarios (first_name,last_name,is_active,direccionmac,date_j
 
 CREATE OR REPLACE VIEW public.vcobrosindebios
 AS SELECT tck.idtarea AS ticket,
+    tck.codigo,
+    corp.ruc AS ruccorporation,
     cod.codigotipoidentificacion AS tipoidentificacionsujeto,
     cli.identificacion AS identificacionsujeto,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS nomapellidonomrazonsocial,
@@ -694,6 +730,8 @@ AS SELECT tck.idtarea AS ticket,
      JOIN jtareasticket tck ON tck.idproblema = pro.idproblema
      JOIN jtipostransacciones tptran ON tptran.idtipotransaccion = pro.idtipotransaccion
      JOIN jconceptos con ON con.idconcepto = pro.idconcepto
+     JOIN jsucursales suc ON suc.idsucursal = pro.idsucursal
+     JOIN jcorporaciones corp ON corp.idcorporacion = suc.idcorporacion
      JOIN jestados es ON es.idestado = tck.idestado
      LEFT JOIN jresoluciones res ON res.idtarea = tck.idtarea
      LEFT JOIN jvaloresresoluciones val ON val.idresolucion = res.idresolucion
@@ -704,6 +742,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportecobrosindebidos
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     suc.nombresucursal AS nombredepartamento,
     cli.nombre,
     cli.apellido,
@@ -724,6 +763,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportereclamosgenerales
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     com.descripciontipocomentario AS comentario,
     COALESCE(suc_q.nombresucursal, ' '::character varying) AS agencia,
     COALESCE(dep_q.nombredepartamento, ' '::character varying) AS departamento,
@@ -750,6 +790,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vreportereclamostarjeta
 AS SELECT tck.idtarea AS ticket,
+	tck.codigo,
     cli.nombre AS name,
     cli.apellido AS lastname,
     cd.numerotarjeta AS cardnumber,
@@ -773,6 +814,7 @@ AS SELECT tck.idtarea AS ticket,
 
 CREATE OR REPLACE VIEW public.vresoluciones
 AS SELECT t.idtarea,
+	t.codigo,
     r.idresolucion,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS fullname,
     cli.emailcliente,
@@ -799,6 +841,7 @@ AS SELECT t.idtarea,
 CREATE OR REPLACE VIEW public.vtareaestadocolor
 AS SELECT tr1.idtarea AS tarea,
     pro.numeroticket AS no_ticket,
+    tr1.codigo,
     col.color,
     col.tiempoiniciocolor AS tiempo_inicial_del_color,
     col.tiempocolor AS tiempo_final_del_color,
@@ -823,22 +866,23 @@ AS SELECT tr1.idtarea AS tarea,
             ELSE false
         END AS now_state
    FROM jestadotareas col
-     JOIN jtareasticket tr1 ON col.idtarea = tr1.idtarea
-     JOIN jproblemas pro ON tr1.idproblema = pro.idproblema
-     JOIN jusuarios u ON tr1.idusuarioqasigno = u.idusuario
-     JOIN jusuarios ua ON tr1.idusuarioasignado = ua.idusuario
-     JOIN jprioridades pri ON tr1.idprioridad = pri.idprioridad
-     JOIN jsucursales suc ON pro.idsucursal = suc.idsucursal
-     JOIN jpersonas cli ON pro.idpersona = cli.idpersona
-     JOIN jtickettipos tptr1 ON pro.idtipoticket = tptr1.idtipoticket
-     JOIN jtiposcomentarios com ON pro.idtipocomentario = com.idtipocomentario
-     JOIN jestados et ON tr1.idestado = et.idestado
+     LEFT JOIN jtareasticket tr1 ON col.idtarea = tr1.idtarea
+     LEFT JOIN jproblemas pro ON tr1.idproblema = pro.idproblema
+     LEFT JOIN jusuarios u ON tr1.idusuarioqasigno = u.idusuario
+     LEFT JOIN jusuarios ua ON tr1.idusuarioasignado = ua.idusuario
+     LEFT JOIN jprioridades pri ON tr1.idprioridad = pri.idprioridad
+     LEFT JOIN jsucursales suc ON pro.idsucursal = suc.idsucursal
+     LEFT JOIN jpersonas cli ON pro.idpersona = cli.idpersona
+     LEFT JOIN jtickettipos tptr1 ON pro.idtipoticket = tptr1.idtipoticket
+     LEFT JOIN jtiposcomentarios com ON pro.idtipocomentario = com.idtipocomentario
+     LEFT JOIN jestados et ON tr1.idestado = et.idestado
   WHERE tr1.idestado <> 7;
 
 -- public.vtareas
 
 CREATE OR REPLACE VIEW public.vtareas
 AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
     pro.numeroticket AS ticket_no,
     tsk.descripciontarea AS titulo_tarea,
         CASE
@@ -850,13 +894,11 @@ AS SELECT tsk.idtarea AS tarea,
     tsk.fechaextension AS fecha_extension,
     sucr.nombresucursal AS sucursal,
     cre.idusuario AS idcreador,
+    per.identificacion AS cedula,
     (cre.first_name::text || ' '::text) || cre.last_name::text AS creador,
-    per.nombre AS nombre_cliente,
-    per.apellido AS apellido_cliente,
-	per.identificacion AS cedula,
+    (per.nombre::text || ' '::text) || per.apellido::text AS nombre_cliente,
     users.idusuario AS idtecnico,
-    users.first_name AS nombres_tecnico,
-    users.last_name AS apellidos_tecnico,
+    (users.first_name::text || ' '::text) || users.last_name::text  AS nombres_tecnico,
     car.descripcioncargo AS cargo,
     dep.nombredepartamento AS departamento_usuario_asignado,
     sucr_u.nombresucursal AS sucursal_usuario_asignado,
@@ -865,6 +907,7 @@ AS SELECT tsk.idtarea AS tarea,
     prio.descripcionprioridad AS prioridad,
     est.descripcionestado AS estado,
     tsk.fechaentrega,
+    res.fecharesolucion,
     tsk.indicador,
     tsk.tareaprincipal
    FROM jtareasticket tsk
@@ -879,24 +922,50 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = pro.idtipoticket
      LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
-     LEFT JOIN jestados est ON est.idestado = tsk.idestado;
+     LEFT JOIN jestados est ON est.idestado = tsk.idestado
+     LEFT JOIN jresoluciones res ON res.idtarea = tsk.idtarea;
 
--- public.vusers source
+-- public.vusers
 
 CREATE OR REPLACE VIEW public.vusers
 AS SELECT users.idusuario,
     users.first_name AS nombres,
     users.last_name AS apellidos,
+    users.is_active,
+    users.date_joined,
+    users.fechamodificacion,
     users.email,
-    rol.nombrerol AS rol,
-    sucr.nombresucursal AS sucursal,
+    users.username,
+    users.last_login,
+    car.idcargo,
+    car.descripcioncargo AS cargo,
+    dep.iddepartamento,
     dep.nombredepartamento AS departamento,
-    car.descripcioncargo AS cargo
+    sucr.idsucursal,
+    sucr.nombresucursal AS sucursal,
+    per.idpersona,
+    per.identificacion,
+    per.celular,
+    per.telefono,
+    per.extension,
+    per.direccion,
+    gen.idgenero,
+    gen.descripciongenero,
+    typeid.idtipoidentificacion,
+    typeid.descripciontipoidentificacion,
+    typeper.idtipopersona,
+    typeper.descripciontipopersona,
+    rol.idrol,
+    rol.nombrerol AS rol
    FROM jusuarios users
-     LEFT JOIN jroles rol ON rol.idrol = users.idrol
+     LEFT JOIN jcargos car ON car.idcargo = users.idcargo
      LEFT JOIN jdepartamentos dep ON dep.iddepartamento = users.iddepartamento
      LEFT JOIN jsucursales sucr ON sucr.idsucursal = dep.idsucursal
-     LEFT JOIN jcargos car ON car.idcargo = users.idcargo;
+     LEFT JOIN jpersonas per ON per.idpersona = users.idpersona
+     LEFT JOIN jgeneros gen ON gen.idgenero = per.idgenero
+     LEFT JOIN jtiposidentificaciones typeid ON typeid.idtipoidentificacion = per.idtipoidentificacion
+     LEFT JOIN jtipospersonas typeper ON typeper.idtipopersona = per.idtipopersona
+     LEFT JOIN jroles rol ON rol.idrol = users.idrol;
 
 -- public.vvaloresresoluciones
 
@@ -904,6 +973,7 @@ CREATE OR REPLACE VIEW public.vvaloresresoluciones
 AS SELECT v.idvaloresresoluciones,
     r.idresolucion,
     r.numeroresolucion,
+    t.codigo,
     p.numeroticket,
     tr.descripciontiporesolucion,
     v.monto,
@@ -927,6 +997,7 @@ AS SELECT seg.idseguimientotarea,
     seg.fechamodificacion,
     seg.fecharegistro,
     seg.idtarea,
+    task.codigo,
     task.indicador,
     task.descripciontarea,
     task.tareaprincipal,
@@ -940,6 +1011,7 @@ AS SELECT seg.idseguimientotarea,
 
 CREATE OR REPLACE VIEW public.vtareasemail
 AS SELECT t.idtarea,
+    t.codigo,
     (cli.nombre::text || ' '::text) || cli.apellido::text AS fullname,
     cli.emailcliente,
     suc.nombresucursal AS agency,
@@ -960,6 +1032,7 @@ AS SELECT t.idtarea,
 
 CREATE OR REPLACE VIEW public.vtareasrechazadas
 AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
     pro.numeroticket AS ticket_no,
     tsk.descripciontarea AS titulo_tarea,
     tsk.fechaasignacion AS fecha_asignacion,
@@ -995,3 +1068,54 @@ AS SELECT tsk.idtarea AS tarea,
      LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
      LEFT JOIN jestados est ON est.idestado = tsk.idestado
   WHERE tsk.indicador::text = 'A'::text AND tsk.idestado = 8;
+
+-- public.vemailnotificaciones
+
+CREATE OR REPLACE VIEW public.vemailnotificaciones
+AS SELECT tsk.idtarea AS tarea,
+    tsk.codigo,
+    tsk.descripciontarea AS titulo_tarea,
+    tsk.fechaasignacion AS fecha_asignacion,
+    tsk.fechaentrega,
+    sucr.nombresucursal AS sucursal_ticket,
+    users.idusuario AS idtecnico,
+    (users.first_name::text || ' '::text) || users.last_name::text AS nombres_tecnico,
+    users.email AS email_asignado,
+    car.descripcioncargo AS cargo_asignado,
+    dep.nombredepartamento AS departamento_usuario_asignado,
+    sucr_u.nombresucursal AS sucursal_usuario_asignado,
+    u.idusuario AS id_asignador,
+    (u.first_name::text || ' '::text) || u.last_name::text AS nombres_asignador,
+    u.email AS email_asignador,
+    car_u.descripcioncargo AS cargo_asignador,
+    tptck.descripciontipoticket AS tipo_reclamo,
+    tpcomm.descripciontipocomentario AS tipo_comentario,
+    prio.descripcionprioridad AS prioridad,
+    est.descripcionestado AS estado,
+    tsk.indicador,
+    tptck.descripciontipoticket AS tipo_ticket,
+    tsk.tareaprincipal,
+    latest.detalleresolucion AS detalles_rechazo,
+    latest.max_fechacreacion
+   FROM jtareasticket tsk
+     LEFT JOIN jproblemas pro ON pro.idproblema = tsk.idproblema
+     LEFT JOIN jsucursales sucr ON sucr.idsucursal = pro.idsucursal
+     LEFT JOIN jpersonas per ON per.idpersona = pro.idpersona
+     LEFT JOIN jusuarios users ON users.idusuario = tsk.idusuarioasignado
+     LEFT JOIN jcargos car ON car.idcargo = users.idcargo
+     LEFT JOIN jdepartamentos dep ON dep.iddepartamento = users.iddepartamento
+     LEFT JOIN jsucursales sucr_u ON sucr_u.idsucursal = dep.idsucursal
+     LEFT JOIN jusuarios u ON u.idusuario = tsk.idusuarioqasigno
+     LEFT JOIN jcargos car_u ON car_u.idcargo = u.idcargo
+     LEFT JOIN jtickettipos tptck ON tptck.idtipoticket = pro.idtipoticket
+     LEFT JOIN jtiposcomentarios tpcomm ON tpcomm.idtipocomentario = pro.idtipocomentario
+     LEFT JOIN jprioridades prio ON prio.idprioridad = pro.idprioridad
+     LEFT JOIN jestados est ON est.idestado = tsk.idestado
+     LEFT JOIN ( SELECT t.idtarea,
+            ( SELECT jseguimientostareas.detalleresolucion
+                   FROM jseguimientostareas
+                  WHERE jseguimientostareas.idtarea = t.idtarea AND jseguimientostareas.fechacreacion = max(t.fechacreacion) AND jseguimientostareas.tituloseguimientotarea::text = 'Tarea rechazada'::text) AS detalleresolucion,
+            max(t.fechacreacion) AS max_fechacreacion
+           FROM jseguimientostareas t
+          WHERE t.tituloseguimientotarea::text = 'Tarea rechazada'::text
+          GROUP BY t.idtarea) latest ON latest.idtarea = tsk.idtarea;

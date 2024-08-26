@@ -6,8 +6,31 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import timezone
+import pandas as pd
 
 from users.models import Jdiasfestivos
+
+
+DICTIONARY_NAMES_EXCEL = {
+    "codigo": "Código",
+    "titulo_tarea": "Título del Ticket",
+    "fecha_creacion": "Fecha de Creación",
+    "fecha_asignacion": "Fecha de Asignación",
+    "sucursal": "Sucursal",
+    "creador": "Asistente Receptor",
+    "cedula": "Número de Cédula del Cliente",
+    "nombre_cliente": "Nombre del Cliente",
+    "nombres_tecnico": "Usuario Asignado al Ticket",
+    "cargo": "Cargo",
+    "departamento_usuario_asignado": "Departamento del Usuario Asignado",
+    "sucursal_usuario_asignado": "Sucursal del Usuario Asignado",
+    "tipo_reclamo": "Tipo de Reclamo",
+    "tipo_comentario": "Tipo de Comentario",
+    "prioridad": "Prioridad",
+    "estado": "Estado",
+    "fechaentrega": "Fecha de Entrega Estimada",
+    "fecharesolucion": "Fecha de Resolución",
+}
 
 
 def convert_pdf_to_b64(pdf_file):
@@ -53,28 +76,24 @@ def convert_base64_to_pdf(base64_string, filename, mimetype):
 
 def calculate_weekends(create_time, optimal_time, extended_time):
 
+    # Calculate end dates based on optimal and extended times
     end_optimal_date = create_time + timezone.timedelta(days=int(optimal_time))
     end_extended_date = create_time + timezone.timedelta(days=int(extended_time))
 
+    # Count weekends between create time and end dates
     optimal_weekends = count_weekends(create_time, end_optimal_date)
     extended_weekends = count_weekends(create_time, end_extended_date)
 
-    optimal_date = (
-            create_time + timezone.timedelta(days=int(optimal_time)) + timezone.timedelta(days=int(optimal_weekends))
-    )
-
+    # Calculate optimal and extended dates considering weekends and holidays
+    optimal_date = create_time + timezone.timedelta(days=int(optimal_time) + int(optimal_weekends))
     optimal_date += timezone.timedelta(days=calculate_holidays(create_time, optimal_date))
 
-    extended_date = (
-            create_time + timezone.timedelta(days=int(extended_time)) + timezone.timedelta(days=int(extended_weekends))
-    )
-
+    extended_date = create_time + timezone.timedelta(days=int(extended_time) + int(extended_weekends))
     extended_date += timezone.timedelta(days=calculate_holidays(create_time, extended_date))
 
-    if optimal_date.weekday() > 4:
-        optimal_date += timezone.timedelta(7 - optimal_date.weekday())
-    if extended_date.weekday() > 4:
-        extended_date += timezone.timedelta(7 - extended_date.weekday())
+    # Ensure that the resulting dates does not fall on weekdays
+    optimal_date = adjust_weekday(optimal_date)
+    extended_date = adjust_weekday(extended_date)
 
     return optimal_date, extended_date
 
@@ -121,3 +140,40 @@ def count_weekends(start_date, end_date) -> int:
 def calculate_holidays(start_date, end_date):
     holidays = Jdiasfestivos.objects.filter(fecha__date__range=(start_date, end_date), status=True)
     return len(holidays) if holidays else 0
+
+
+def adjust_weekday(date):
+    # If date falls on a weekend (Saturday or Sunday), adjust to next Monday
+    if date.weekday() > 4:
+        date += timezone.timedelta(7 - date.weekday())
+    return date
+
+
+def create_excel_file(data_object_dict):
+
+    df_tickets = pd.DataFrame(
+        data_object_dict,
+        columns=list(DICTIONARY_NAMES_EXCEL.keys())
+    )
+    # Formatting the data
+    df_tickets["fecha_creacion"] = pd.to_datetime(df_tickets['fecha_creacion']).dt.strftime('%Y-%m-%d')
+    df_tickets["fecha_asignacion"] = pd.to_datetime(df_tickets['fecha_asignacion']).dt.strftime('%Y-%m-%d')
+    df_tickets["fechaentrega"] = pd.to_datetime(df_tickets['fechaentrega']).dt.strftime('%Y-%m-%d')
+    df_tickets["fecharesolucion"] = pd.to_datetime(df_tickets['fecharesolucion']).dt.strftime('%Y-%m-%d')
+    df_tickets.fillna(value="Información pendiente", inplace=True)
+    # Create the BytesIO object
+    excel_object = io.BytesIO()
+
+    # Create an Excel writer
+    with pd.ExcelWriter(excel_object, engine='xlsxwriter') as writer:
+        df_tickets.to_excel(writer, sheet_name='Tickets', index=False, header=list(DICTIONARY_NAMES_EXCEL.values()))
+
+    excel_object.seek(0)
+
+    response = HttpResponse(
+        excel_object,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=your_excel_file.xlsx'
+
+    return response
