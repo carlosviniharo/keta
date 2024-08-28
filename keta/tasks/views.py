@@ -455,6 +455,11 @@ class VtareaestadocolorListView(ListAPIView):
     def list(self, request, *args, **kwargs):
         idtarea = self.request.query_params.get("idtarea", None)
         id_asignado = self.request.query_params.get("id_asignado", None)
+        colorStatus = self.request.query_params.get("color", None)
+
+        if colorStatus:
+            colorStatusList = colorStatus.split(',')
+            print(colorStatusList)
 
         queryset_main_task = Vtareaestadocolor.objects.filter(now_state=True)
 
@@ -466,6 +471,11 @@ class VtareaestadocolorListView(ListAPIView):
         if id_asignado is not None:
             queryset_main_task = queryset_main_task.filter(
                 id_asignado=id_asignado
+            )
+        
+        if colorStatus:
+            queryset_main_task = queryset_main_task.filter(
+                color__in=colorStatusList
             )
 
         if not queryset_main_task.exists():

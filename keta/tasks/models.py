@@ -327,7 +327,7 @@ class Vtareasrechazadas(models.Model):
     tareaprincipal = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = False # Cuando se hacen las migraciones no le considere cuando esta en estado false 
         db_table = 'vtareasrechazadas'
 
     objects = models.Manager()

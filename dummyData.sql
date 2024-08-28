@@ -523,7 +523,8 @@ INSERT INTO public.jestados (codigoestado,descripcionestado) VALUES
 	 (4,'En espera'),
 	 (5,'Resuelto'),
 	 (6,'Cerrado - Cancelado'),
-	 (7, 'Rechazado');
+	 (7, 'Rechazado'),
+	 (8, 'Caducado');
 
 --jgeneros
 
