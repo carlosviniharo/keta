@@ -18,6 +18,9 @@ initialize_django() {
 # Wait for the Database to be ready.
 #wait_for_postgresql
 
+# Start cron service in the background
+service cron start
+
 # Initialize Django
 initialize_django
 
@@ -26,4 +29,4 @@ initialize_django
 source /venv/bin/activate
 apache2ctl -D FOREGROUND
 # OR
-# python manage.py runserver 0.0.0.0:8000
+# python management.py runserver 0.0.0.0:8000

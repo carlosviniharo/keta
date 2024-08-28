@@ -1,0 +1,1 @@
+* * * * * /bin/sh -c "echo Start: \$(date) >> /var/log/update_state.log 2>&1; /venv/bin/python /var/www/html/manage.py update_state >> /var/log/update_state.log 2>&1; echo End: \$(date) >> /var/log/update_state.log 2>&1"
